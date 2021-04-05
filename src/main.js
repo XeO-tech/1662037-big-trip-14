@@ -7,6 +7,8 @@ import { createEventItemTemplate } from './view/event-item.js';
 import { createEditEventFormTemplate } from './view/form-edit-event.js';
 import { createAddEventFormTemplate } from './view/form-add-event.js';
 
+const EVENT_NUMBERS = 3;
+
 const renderElement = (container, element, position) => {
   container.insertAdjacentHTML(position, element);
 };
@@ -26,6 +28,6 @@ renderElement(sortingElement, createSortingTemplate(), 'afterbegin');
 renderElement(eventListElement, createEditEventFormTemplate(), 'afterbegin');
 renderElement(eventListElement, createAddEventFormTemplate(), 'beforeend');
 
-for (let i = 0; i < 3; i++) {
+for (let i = 0; i < EVENT_NUMBERS; i++) {
   renderElement(eventListElement, createEventItemTemplate(), 'beforeend');
 }
