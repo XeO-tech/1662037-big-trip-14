@@ -6,6 +6,7 @@ import { createSortingTemplate } from './view/sorting.js';
 import { createEventItemTemplate } from './view/event-item.js';
 import { createEditEventFormTemplate } from './view/form-edit-event.js';
 import { createAddEventFormTemplate } from './view/form-add-event.js';
+import './mocks/event.js';
 
 const EVENT_NUMBERS = 3;
 
