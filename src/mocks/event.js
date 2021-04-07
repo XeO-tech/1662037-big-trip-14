@@ -3,10 +3,8 @@ import dayjs from 'dayjs';
 import { eventTypes } from '../consts.js';
 
 const MAX_DESCRIPTION_LENGTH = 5;
-const MAX_PHOTOS = 5;
+const MAX_PHOTOS = 2;
 const MAX_OFFERS = 5;
-
-
 
 const cities = ['Los Angeles', 'San Francisco', 'Las Vegas'];
 
@@ -17,7 +15,6 @@ const generateStartDate = () => dayjs()
   .format();
 
 const generateEndDate = () => dayjs()
-  .add(getRandomIntFromRange(0,1), 'day')
   .add(getRandomIntFromRange(0, 1), 'hour')
   .add(getRandomIntFromRange(1, 2) * 10, 'minute')
   .format();
