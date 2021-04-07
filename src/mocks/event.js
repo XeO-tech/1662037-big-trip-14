@@ -1,11 +1,12 @@
 import { getRandomIntFromRange, getRandomArrayElement} from '../utils.js';
 import dayjs from 'dayjs';
+import { eventTypes } from '../consts.js';
 
 const MAX_DESCRIPTION_LENGTH = 5;
-const MAX_PHOTOS = 10;
+const MAX_PHOTOS = 5;
 const MAX_OFFERS = 5;
 
-const eventTypes = ['Taxi', 'Bus', 'Train', 'Ship', 'Transport', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
+
 
 const cities = ['Los Angeles', 'San Francisco', 'Las Vegas'];
 

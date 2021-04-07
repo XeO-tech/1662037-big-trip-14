@@ -28,14 +28,10 @@ renderElement(tripInfoElement, createTripInfoTemplate(), 'afterbegin');
 renderElement(tripInfoElement, createTripCostTemplate(), 'beforeend');
 renderElement(menuElement, createSiteMenuTemplate(), 'beforeend');
 renderElement(sortingElement, createSortingTemplate(), 'afterbegin');
-renderElement(eventListElement, createEditEventFormTemplate(), 'afterbegin');
+renderElement(eventListElement, createEditEventFormTemplate(events[0]), 'afterbegin');
 renderElement(eventListElement, createAddEventFormTemplate(), 'beforeend');
 
-for (let i = 0; i < EVENT_NUMBERS; i++) {
+for (let i = 1; i < EVENT_NUMBERS; i++) {
   renderElement(eventListElement, createEventItemTemplate(events[i]), 'beforeend');
 }
-
-
-console.log(events);
-
 

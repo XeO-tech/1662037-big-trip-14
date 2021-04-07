@@ -1,20 +1,19 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 
-export const createEventItemTemplate = (events) => {
-  const { type, destination, startDate, endDate, cost, offers } = events;
+export const createEventItemTemplate = (event) => {
+  const { type, destination, startDate, endDate, cost, offers } = event;
   let timeRangeFormat, durationFormat, eventDuration;
 
   const renderOffers = () => {
-    let renderedOffers = [];
-    offers.forEach((offer) => {
-      renderedOffers.push(`<li class="event__offer">
+    const renderedOffers = offers.map((offer) => {
+      return `<li class="event__offer">
       <span class="event__offer-title">${offer.name}</span>
       &plus;&euro;&nbsp;
       <span class="event__offer-price">${offer.price}</span>
-    </li>`);
+    </li>`;
     });
-    return renderedOffers.join('');
+    return (renderedOffers.length > 0) ? renderedOffers.join('') : '';
   };
 
   const defineDurationAndFormats = () => {
