@@ -45,8 +45,12 @@ export const generateEvent = () => {
       description: generateDescription(),
       photos: generatePhotos(),
     },
+    test: function() {
+      console.log(this.type);
+
+    },
     // offers: generateEventOffersList(this.type),
   };
 };
-
-console.log(generateEvent());
+let d = generateEvent();
+console.log(d.test());
