@@ -1,39 +1,25 @@
 import { getRandomIntFromRange, getRandomArrayElement} from '../utils.js';
 import dayjs from 'dayjs';
-import duration from 'dayjs/plugin/duration';
 
 const MAX_DESCRIPTION_LENGTH = 5;
 const MAX_PHOTOS = 10;
 const MAX_OFFERS = 5;
 
-const eventTypes = ['Taxi', 'Bus', 'Train', 'Ship', 'Transport', 'Drive', 'Flight', 'Check-in', 'Sightseeng', 'Restaurant'];
+const eventTypes = ['Taxi', 'Bus', 'Train', 'Ship', 'Transport', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
 
 const cities = ['Los Angeles', 'San Francisco', 'Las Vegas'];
 
-const generateDatesAndTime = () => {
-  dayjs.extend(duration);
-  let time;
-  const startDate = dayjs().subtract(getRandomIntFromRange(0,1), 'day').subtract(getRandomIntFromRange(0, 1), 'hour').subtract(getRandomIntFromRange(0, 1) * 10, 'minute');
-  const endDate = dayjs().add(getRandomIntFromRange(0,1), 'day').add(getRandomIntFromRange(0, 1), 'hour').add(getRandomIntFromRange(1, 2) * 10, 'minute');
-  const difference = dayjs.duration(endDate.diff(startDate));
+const generateStartDate = () => dayjs()
+  .subtract(getRandomIntFromRange(0,1), 'day')
+  .subtract(getRandomIntFromRange(0, 1), 'hour')
+  .subtract(getRandomIntFromRange(0, 1) * 10, 'minute')
+  .format();
 
-  switch (true) {
-    case difference.days() > 0:
-      time = difference.format('DD[D] HH[H] mm[M]');
-      break;
-    case difference.days() === 0 && difference.hours() > 0:
-      time = difference.format('HH[H] mm[M]');
-      break;
-    default:
-      time = difference.format('mm[M]');
-  }
-
-  return {
-    startDate: startDate.format('DD/MM/YY HH:mm'),
-    endDate: endDate.format('DD/MM/YY HH:mm'),
-    time,
-  };
-};
+const generateEndDate = () => dayjs()
+  .add(getRandomIntFromRange(0,1), 'day')
+  .add(getRandomIntFromRange(0, 1), 'hour')
+  .add(getRandomIntFromRange(1, 2) * 10, 'minute')
+  .format();
 
 const generateCost = () => Math.floor(Math.random() * getRandomIntFromRange(1, 100)) * 10;
 
@@ -49,27 +35,26 @@ const generateEventOffersList = (type) => {
     .map(() => {
       return {
         type,
-        name: `OfferName ${getRandomIntFromRange(1,100)}`,
-        cost: generateCost(),
+        name: `Offer ${getRandomIntFromRange(1,100)}`,
+        price: generateCost(),
       };
     });
 };
 
 export const generateEvent = () => {
   const type = getRandomArrayElement(eventTypes);
-  const datesAndTime = generateDatesAndTime();
 
   return {
     type,
     destination: getRandomArrayElement(cities),
-    startDate: datesAndTime.startDate,
-    endDate: datesAndTime.endDate,
-    time: datesAndTime.time,
+    startDate: generateStartDate(),
+    endDate: generateEndDate(),
     cost: generateCost(),
     destinationInfo: {
       description: generateDescription(),
       photos: generatePhotos(),
     },
     offers: generateEventOffersList(type),
+    isFavorite: Boolean(getRandomIntFromRange(0,1)),
   };
 };

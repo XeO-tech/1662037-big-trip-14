@@ -14,6 +14,8 @@ const renderElement = (container, element, position) => {
   container.insertAdjacentHTML(position, element);
 };
 
+const events = new Array(EVENT_NUMBERS).fill().map(() => generateEvent());
+
 const filtersElement = document.querySelector('.trip-controls__filters');
 const tripInfoElement = document.querySelector('.trip-main__trip-info');
 const menuElement = document.querySelector('.trip-main__trip-controls');
@@ -30,10 +32,10 @@ renderElement(eventListElement, createEditEventFormTemplate(), 'afterbegin');
 renderElement(eventListElement, createAddEventFormTemplate(), 'beforeend');
 
 for (let i = 0; i < EVENT_NUMBERS; i++) {
-  renderElement(eventListElement, createEventItemTemplate(), 'beforeend');
+  renderElement(eventListElement, createEventItemTemplate(events[i]), 'beforeend');
 }
 
-const events = new Array(EVENT_NUMBERS).fill().map(() => generateEvent());
+
 console.log(events);
 
 
