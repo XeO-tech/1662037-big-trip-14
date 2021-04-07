@@ -8,7 +8,7 @@ import { createEditEventFormTemplate } from './view/form-edit-event.js';
 import { createAddEventFormTemplate } from './view/form-add-event.js';
 import { generateEvent} from './mocks/event.js';
 
-const EVENT_NUMBERS = 3;
+const EVENT_NUMBERS = 20;
 
 const renderElement = (container, element, position) => {
   container.insertAdjacentHTML(position, element);
@@ -33,6 +33,7 @@ for (let i = 0; i < EVENT_NUMBERS; i++) {
   renderElement(eventListElement, createEventItemTemplate(), 'beforeend');
 }
 
-const events = new Array(20).fill().map(() => generateEvent());
+const events = new Array(EVENT_NUMBERS).fill().map(() => generateEvent());
+console.log(events);
 
 
