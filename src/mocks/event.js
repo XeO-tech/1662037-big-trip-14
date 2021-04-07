@@ -8,13 +8,13 @@ const MAX_OFFERS = 5;
 
 const cities = ['Los Angeles', 'San Francisco', 'Las Vegas'];
 
-const generateStartDate = () => dayjs()
+const generateStartDateTime = () => dayjs()
   .subtract(getRandomIntFromRange(0,1), 'day')
   .subtract(getRandomIntFromRange(0, 1), 'hour')
   .subtract(getRandomIntFromRange(0, 1) * 10, 'minute')
   .format();
 
-const generateEndDate = () => dayjs()
+const generateEndDateTime = () => dayjs()
   .add(getRandomIntFromRange(0, 1), 'hour')
   .add(getRandomIntFromRange(1, 2) * 10, 'minute')
   .format();
@@ -33,7 +33,7 @@ const generateEventOffersList = (type) => {
     .map(() => {
       return {
         type,
-        name: `Offer ${getRandomIntFromRange(1,100)}`,
+        title: `Offer ${getRandomIntFromRange(1,100)}`,
         price: generateCost(),
       };
     });
@@ -45,8 +45,8 @@ export const generateEvent = () => {
   return {
     type,
     destination: getRandomArrayElement(cities),
-    startDate: generateStartDate(),
-    endDate: generateEndDate(),
+    startDateTime: generateStartDateTime(),
+    endDateTime: generateEndDateTime(),
     cost: generateCost(),
     destinationInfo: {
       description: generateDescription(),

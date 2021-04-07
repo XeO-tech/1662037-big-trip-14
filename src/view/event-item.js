@@ -1,10 +1,11 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
+dayjs.extend(duration);
 
 const renderOffers = (offers) => {
   const renderedOffers = offers.map((offer) => {
     return `<li class="event__offer">
-    <span class="event__offer-title">${offer.name}</span>
+    <span class="event__offer-title">${offer.title}</span>
     &plus;&euro;&nbsp;
     <span class="event__offer-price">${offer.price}</span>
   </li>`;
@@ -12,55 +13,50 @@ const renderOffers = (offers) => {
   return (renderedOffers.length > 0) ? renderedOffers.join('') : '';
 };
 
-const defineEventDuration = (startDate, endDate) => {
-  dayjs.extend(duration);
-  return dayjs.duration(dayjs(endDate).diff(dayjs(startDate)));
-};
-
-const defineEventDurationFormats = (datesDifference) => {
+const defineDateTimeFormats = (eventDuration) => {
   switch (true) {
-    case datesDifference.days() > 0:
+    case eventDuration.days() > 0:
       return {
         durationFormat: 'DD[D] HH[H] mm[M]',
-        timeRangeFormat: 'DD/MM/YY HH:mm',
+        dateTimeFormat: 'DD/MM/YY HH:mm',
       };
-    case datesDifference.days() === 0 && datesDifference.hours() > 0:
+    case eventDuration.days() === 0 && eventDuration.hours() > 0:
       return {
         durationFormat: 'HH[H] mm[M]',
-        timeRangeFormat: 'HH:mm',
+        dateTimeFormat: 'HH:mm',
       };
     default:
       return {
         durationFormat: 'mm[M]',
-        timeRangeFormat: 'HH:mm',
+        dateTimeFormat: 'HH:mm',
       };
   }
 };
 
 export const createEventItemTemplate = (event) => {
-  const { type, destination, startDate, endDate, cost, offers, isFavorite } = event;
-  const datesDifference = defineEventDuration(startDate, endDate);
-  const { durationFormat, timeRangeFormat } = defineEventDurationFormats(datesDifference);
-  const day = dayjs(startDate).format('DD MMM');
-  const startTime = dayjs(startDate).format(timeRangeFormat);
-  const endTime = dayjs(endDate).format(timeRangeFormat);
-  const eventDuration = datesDifference.format(durationFormat);
-  const favorite = isFavorite ? ' event__favorite-btn--active': '';
+  const { type, destination, startDateTime, endDateTime, cost, offers, isFavorite } = event;
+  const eventDuration = dayjs.duration(dayjs(endDateTime).diff(dayjs(startDateTime)));
+  const { durationFormat, dateTimeFormat } = defineDateTimeFormats(eventDuration);
+  const startDay = dayjs(startDateTime).format('DD MMM');
+  const startDateTimeFormatted = dayjs(startDateTime).format(dateTimeFormat);
+  const endDateTimeFormatted = dayjs(endDateTime).format(dateTimeFormat);
+  const eventDurationFormatted = eventDuration.format(durationFormat);
+  const favoriteClassName = isFavorite ? 'event__favorite-btn--active': '';
 
   return `<li class="trip-events__item">
   <div class="event">
-    <time class="event__date" datetime="${startDate}">${day}</time>
+    <time class="event__date" datetime="${startDateTime}">${startDay}</time>
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
     </div>
     <h3 class="event__title">${type} ${destination}</h3>
     <div class="event__schedule">
       <p class="event__time">
-        <time class="event__start-time" datetime="${startDate}">${startTime}</time>
+        <time class="event__start-time" datetime="${startDateTime}">${startDateTimeFormatted}</time>
         &mdash;
-        <time class="event__end-time" datetime="${endDate}">${endTime}</time>
+        <time class="event__end-time" datetime="${endDateTime}">${endDateTimeFormatted}</time>
       </p>
-      <p class="event__duration">${eventDuration}</p>
+      <p class="event__duration">${eventDurationFormatted}</p>
     </div>
     <p class="event__price">
       &euro;&nbsp;<span class="event__price-value">${cost}</span>
@@ -69,7 +65,7 @@ export const createEventItemTemplate = (event) => {
     <ul class="event__selected-offers">
       ${renderOffers(offers)}
     </ul>
-    <button class="event__favorite-btn${favorite}" type="button">
+    <button class="event__favorite-btn ${favoriteClassName}" type="button">
       <span class="visually-hidden">Add to favorite</span>
       <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
         <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
