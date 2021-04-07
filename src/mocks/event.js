@@ -9,9 +9,9 @@ const eventTypes = ['Taxi', 'Bus', 'Train', 'Ship', 'Transport', 'Drive', 'Fligh
 
 const cities = ['Los Angeles', 'San Francisco', 'Las Vegas'];
 
-const generetaDateBegins = () => dayjs().subtract(getRandomIntFromRange(1, 10), 'day').format('DD/MM/YY HH:mm');
+const generetastartDate = () => dayjs().subtract(getRandomIntFromRange(1, 10), 'day').format('DD/MM/YY HH:mm');
 
-const generetaDateEnds = () => dayjs().add(getRandomIntFromRange(1, 10), 'day').format('DD/MM/YY HH:mm');
+const generetaendDate = () => dayjs().add(getRandomIntFromRange(1, 10), 'day').format('DD/MM/YY HH:mm');
 
 const generateCost = () => Math.floor(Math.random() * getRandomIntFromRange(1, 100)) * 10;
 
@@ -35,22 +35,18 @@ const generateEventOffersList = (type) => {
 };
 
 export const generateEvent = () => {
+  const type = getRandomArrayElement(eventTypes);
   return {
-    type: getRandomArrayElement(eventTypes),
+    type,
     destination: getRandomArrayElement(cities),
-    dateBegins: generetaDateBegins(),
-    dateEnds: generetaDateEnds(),
+    startDate: generetastartDate(),
+    endDate: generetaendDate(),
     cost: generateCost(),
     destinationInfo: {
       description: generateDescription(),
       photos: generatePhotos(),
     },
-    test: function() {
-      console.log(this.type);
 
-    },
-    // offers: generateEventOffersList(this.type),
+    offers: generateEventOffersList(type),
   };
 };
-let d = generateEvent();
-console.log(d.test());
