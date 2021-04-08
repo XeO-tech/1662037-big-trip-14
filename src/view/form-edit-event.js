@@ -17,7 +17,7 @@ const renderOffers = (offers) => {
   let counter = 0;
   return offers
     .map((offer) => {
-      const offerShortCut = offer.title.toLowerCase().replace(/\s+/g, '');
+      const offerShortCut = offer.title.toLowerCase().replace(/\s+/g, '_');
       counter++;
       return `<div class="event__offer-selector">
       <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerShortCut}-${counter}" type="checkbox" name="event-offer-${offerShortCut}" checked>
@@ -31,16 +31,16 @@ const renderOffers = (offers) => {
     .join('');
 };
 
-const renderPhotos = (photosUrls) => {
-  return photosUrls
-    .map((url) => {
-      return `<img class="event__photo" src="${url}" alt="Event photo">`;
+const renderPhotos = (pictures) => {
+  return pictures
+    .map((picture) => {
+      return `<img class="event__photo" src="${picture.src}" alt="Event photo">`;
     })
     .join('');
 };
 
 export const createEditEventFormTemplate = (event = {}) => {
-  const { type = 'flight', destination, startDateTime, endDateTime, cost = '', destinationInfo, offers} = event;
+  const { type = 'flight', destination, date_from: startDateTime, date_to: endDateTime, base_price: basePrice = '', offers} = event;
   const startDateTimeFormatted = dayjs(startDateTime).format('DD/MM/YY HH:mm');
   const endDateTimeFormatted = dayjs(endDateTime).format('DD/MM/YY HH:mm');
 
@@ -64,7 +64,7 @@ export const createEditEventFormTemplate = (event = {}) => {
         <label class="event__label  event__type-output" for="event-destination-1">
           ${type}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" list="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
         <datalist id="destination-list-1">
           <option value="Amsterdam"></option>
           <option value="Geneva"></option>
@@ -83,7 +83,7 @@ export const createEditEventFormTemplate = (event = {}) => {
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${cost}">
+        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
       </div>
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
       <button class="event__reset-btn" type="reset">Delete</button>
@@ -100,10 +100,10 @@ export const createEditEventFormTemplate = (event = {}) => {
       </section>
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${destinationInfo.description}</p>
+        <p class="event__destination-description">${destination.description}</p>
         <div class="event__photos-container">
                       <div class="event__photos-tape">
-                       ${renderPhotos(destinationInfo.photos)}
+                       ${renderPhotos(destination.pictures)}
                       </div>
                     </div>
       </section>

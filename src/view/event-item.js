@@ -34,7 +34,7 @@ const defineDateTimeFormats = (eventDuration) => {
 };
 
 export const createEventItemTemplate = (event) => {
-  const { type, destination, startDateTime, endDateTime, cost, offers, isFavorite } = event;
+  const { type, destination, date_from: startDateTime, date_to: endDateTime, base_price: basePrice, offers, is_favorite: isFavorite } = event;
   const eventDuration = dayjs.duration(dayjs(endDateTime).diff(dayjs(startDateTime)));
   const { durationFormat, dateTimeFormat } = defineDateTimeFormats(eventDuration);
   const startDay = dayjs(startDateTime).format('DD MMM');
@@ -50,7 +50,7 @@ export const createEventItemTemplate = (event) => {
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
     </div>
-    <h3 class="event__title">${typeFormatted} ${destination}</h3>
+    <h3 class="event__title">${typeFormatted} ${destination.name}</h3>
     <div class="event__schedule">
       <p class="event__time">
         <time class="event__start-time" datetime="${startDateTime}">${startDateTimeFormatted}</time>
@@ -60,7 +60,7 @@ export const createEventItemTemplate = (event) => {
       <p class="event__duration">${eventDurationFormatted}</p>
     </div>
     <p class="event__price">
-      &euro;&nbsp;<span class="event__price-value">${cost}</span>
+      &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
     </p>
     <h4 class="visually-hidden">Offers:</h4>
     <ul class="event__selected-offers">
