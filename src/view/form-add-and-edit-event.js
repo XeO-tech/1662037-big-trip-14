@@ -1,4 +1,4 @@
-import { eventTypes } from '../consts.js';
+import { eventTypes, cities } from '../consts.js';
 import dayjs from 'dayjs';
 
 const renderTypesMenu = (currentType) => {
@@ -11,6 +11,12 @@ const renderTypesMenu = (currentType) => {
       </div>`;
     })
     .join('');
+};
+
+const renderDestinationsOptions = () => {
+  return cities
+    .map((city) => `<option value="${city}"></option>`)
+    .join();
 };
 
 const renderOffers = (offers) => {
@@ -40,7 +46,7 @@ const renderPhotos = (pictures) => {
 };
 
 export const createEditEventFormTemplate = (event = {}) => {
-  const isAddNewForm = !('type' in event);
+  const isAddNewEventForm = Object.keys(event).length === 0;
   const {
     type = 'flight',
     destination,
@@ -73,11 +79,9 @@ export const createEditEventFormTemplate = (event = {}) => {
         <label class="event__label  event__type-output" for="event-destination-1">
           ${type}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${isAddNewForm ? '' : destination.name}" list="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${isAddNewEventForm ? '' : destination.name}" list="destination-list-1">
         <datalist id="destination-list-1">
-          <option value="Amsterdam"></option>
-          <option value="Geneva"></option>
-          <option value="Chamonix"></option>
+          ${renderDestinationsOptions()}
         </datalist>
       </div>
       <div class="event__field-group  event__field-group--time">
@@ -95,24 +99,24 @@ export const createEditEventFormTemplate = (event = {}) => {
         <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
       </div>
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-      <button class="event__reset-btn" type="reset">Delete</button>
-      <button class="event__rollup-btn" type="button">
-        <span class="visually-hidden">Open event</span>
-      </button>
+      <button class="event__reset-btn" type="reset">${isAddNewEventForm ? 'Cancel' : 'Delete'}</button>
+      ${isAddNewEventForm ? '' : `<button class="event__rollup-btn" type="button">
+      <span class="visually-hidden">Open event</span>
+    </button>`}
     </header>
     <section class="event__details">
       <section class="event__section  event__section--offers ${offersClassName}">
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
         <div class="event__available-offers">
-          ${isAddNewForm ? '' : renderOffers(offers)}
+          ${isAddNewEventForm ? '' : renderOffers(offers)}
         </div>
       </section>
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${isAddNewForm ? '' : destination.description}</p>
+        <p class="event__destination-description">${isAddNewEventForm ? '' : destination.description}</p>
         <div class="event__photos-container">
                       <div class="event__photos-tape">
-                       ${isAddNewForm ? '': renderPhotos(destination.pictures)}
+                       ${isAddNewEventForm ? '': renderPhotos(destination.pictures)}
                       </div>
                     </div>
       </section>

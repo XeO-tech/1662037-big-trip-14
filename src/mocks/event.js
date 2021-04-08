@@ -52,8 +52,26 @@ const generateOffersList = () => {
     });
 };
 
+const generateOffers = () => {
+  return eventTypes.map((type) => {
+    return {
+      type,
+      offers: new Array(getRandomIntFromRange(0, MAX_OFFERS)).fill()
+        .map(() => {
+          return {
+            title: `${type} offer ${getRandomIntFromRange(1,100)}`,
+            price: generatePrice(),
+          };
+        }),
+    };
+  });
+};
+
+const offersFullList = generateOffers();
+
 export const generateEvent = () => {
   const type = getRandomArrayElement(eventTypes);
+  const offers = offersFullList.find((element) => element.type === type).offers;
 
   return {
     base_price: generatePrice(),
@@ -61,7 +79,7 @@ export const generateEvent = () => {
     date_to: generateEndDateTime(),
     destination: generateDestination(),
     is_favorite: Boolean(getRandomIntFromRange(0,1)),
-    offers: generateOffersList(),
+    offers,
     type,
   };
 };

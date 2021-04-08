@@ -4,9 +4,8 @@ import { createTripCostTemplate } from './view/trip-cost.js';
 import { createSiteMenuTemplate } from './view/site-menu.js';
 import { createSortingTemplate } from './view/sorting.js';
 import { createEventItemTemplate } from './view/event-item.js';
-import { createEditEventFormTemplate } from './view/form-edit-event.js';
-import { createAddEventFormTemplate } from './view/form-add-event.js';
-import { generateEvent} from './mocks/event.js';
+import { createEditEventFormTemplate } from './view/form-add-and-edit-event.js';
+import { generateEvent } from './mocks/event.js';
 
 const EVENT_NUMBERS = 20;
 
@@ -15,6 +14,7 @@ const renderElement = (container, element, position) => {
 };
 
 const events = new Array(EVENT_NUMBERS).fill().map(() => generateEvent());
+
 
 const filtersElement = document.querySelector('.trip-controls__filters');
 const tripInfoElement = document.querySelector('.trip-main__trip-info');
@@ -28,8 +28,8 @@ renderElement(tripInfoElement, createTripInfoTemplate(), 'afterbegin');
 renderElement(tripInfoElement, createTripCostTemplate(), 'beforeend');
 renderElement(menuElement, createSiteMenuTemplate(), 'beforeend');
 renderElement(sortingElement, createSortingTemplate(), 'afterbegin');
-renderElement(eventListElement, createEditEventFormTemplate(events[0]), 'afterbegin');
-renderElement(eventListElement, createEditEventFormTemplate(), 'beforeend');
+// renderElement(eventListElement, createEditEventFormTemplate(), 'afterbegin');
+renderElement(eventListElement, createEditEventFormTemplate(events[0]), 'beforeend');
 
 for (let i = 1; i < EVENT_NUMBERS; i++) {
   renderElement(eventListElement, createEventItemTemplate(events[i]), 'beforeend');
