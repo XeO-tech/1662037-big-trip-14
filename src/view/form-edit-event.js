@@ -40,9 +40,18 @@ const renderPhotos = (pictures) => {
 };
 
 export const createEditEventFormTemplate = (event = {}) => {
-  const { type = 'flight', destination, date_from: startDateTime, date_to: endDateTime, base_price: basePrice = '', offers} = event;
-  const startDateTimeFormatted = dayjs(startDateTime).format('DD/MM/YY HH:mm');
-  const endDateTimeFormatted = dayjs(endDateTime).format('DD/MM/YY HH:mm');
+  const isAddNewForm = !('type' in event);
+  const {
+    type = 'flight',
+    destination,
+    date_from: startDateTime = null,
+    date_to: endDateTime = null,
+    base_price: basePrice = '',
+    offers = null,
+  } = event;
+  const startDateTimeFormatted = startDateTime === null ? '' : dayjs(startDateTime).format('DD/MM/YY HH:mm');
+  const endDateTimeFormatted = endDateTime === null ? '' : dayjs(endDateTime).format('DD/MM/YY HH:mm');
+  const offersClassName = offers === null ? '' : offers.length === 0 ? 'visually-hidden' : '';
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -64,7 +73,7 @@ export const createEditEventFormTemplate = (event = {}) => {
         <label class="event__label  event__type-output" for="event-destination-1">
           ${type}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${isAddNewForm ? '' : destination.name}" list="destination-list-1">
         <datalist id="destination-list-1">
           <option value="Amsterdam"></option>
           <option value="Geneva"></option>
@@ -92,18 +101,18 @@ export const createEditEventFormTemplate = (event = {}) => {
       </button>
     </header>
     <section class="event__details">
-      <section class="event__section  event__section--offers">
+      <section class="event__section  event__section--offers ${offersClassName}">
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
         <div class="event__available-offers">
-          ${renderOffers(offers)}
+          ${isAddNewForm ? '' : renderOffers(offers)}
         </div>
       </section>
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${destination.description}</p>
+        <p class="event__destination-description">${isAddNewForm ? '' : destination.description}</p>
         <div class="event__photos-container">
                       <div class="event__photos-tape">
-                       ${renderPhotos(destination.pictures)}
+                       ${isAddNewForm ? '': renderPhotos(destination.pictures)}
                       </div>
                     </div>
       </section>

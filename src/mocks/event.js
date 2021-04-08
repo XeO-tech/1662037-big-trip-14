@@ -1,12 +1,10 @@
 import { getRandomIntFromRange, getRandomArrayElement} from '../utils.js';
 import dayjs from 'dayjs';
-import { eventTypes } from '../consts.js';
+import { eventTypes, cities } from '../consts.js';
 
 const MAX_DESCRIPTION_LENGTH = 5;
 const MAX_PHOTOS = 2;
 const MAX_OFFERS = 5;
-
-const cities = ['Los Angeles', 'San Francisco', 'Las Vegas'];
 
 const generateStartDateTime = () => dayjs()
   .subtract(getRandomIntFromRange(0,1), 'day')
@@ -44,7 +42,7 @@ const generateDestination = () => {
   };
 };
 
-const generateEventOffersList = () => {
+const generateOffersList = () => {
   return new Array(getRandomIntFromRange(0, MAX_OFFERS)).fill()
     .map(() => {
       return {
@@ -63,7 +61,7 @@ export const generateEvent = () => {
     date_to: generateEndDateTime(),
     destination: generateDestination(),
     is_favorite: Boolean(getRandomIntFromRange(0,1)),
-    offers: generateEventOffersList(),
+    offers: generateOffersList(),
     type,
   };
 };
