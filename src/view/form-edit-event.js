@@ -1,19 +1,37 @@
 import { eventTypes } from '../consts.js';
 import dayjs from 'dayjs';
 
-const generateTypesMenu = (currentType) => {
+const renderTypesMenu = (currentType) => {
   return eventTypes
     .map((type) => {
-      const typeInLowerCase = type.toLowerCase();
+      const typeFormatted = type.charAt(0).toUpperCase() + type.slice(1);
       return `<div class="event__type-item">
-      <input id="event-type-${typeInLowerCase}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${typeInLowerCase}" ${type === currentType ? 'checked' : ''}>
-      <label class="event__type-label  event__type-label--${typeInLowerCase}" for="event-type-${typeInLowerCase}-1">${type}</label>
+      <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${type === currentType ? 'checked' : ''}>
+      <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${typeFormatted}</label>
       </div>`;
     })
     .join('');
 };
 
-const generatePhotos = (photosUrls) => {
+const renderOffers = (offers) => {
+  let counter = 0;
+  return offers
+    .map((offer) => {
+      const offerShortCut = offer.title.toLowerCase().replace(/\s+/g, '');
+      counter++;
+      return `<div class="event__offer-selector">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerShortCut}-${counter}" type="checkbox" name="event-offer-${offerShortCut}" checked>
+      <label class="event__offer-label" for="event-offer-${offerShortCut}-${counter}">
+        <span class="event__offer-title">${offer.title}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${offer.price}</span>
+      </label>
+    </div>`;
+    })
+    .join('');
+};
+
+const renderPhotos = (photosUrls) => {
   return photosUrls
     .map((url) => {
       return `<img class="event__photo" src="${url}" alt="Event photo">`;
@@ -22,7 +40,7 @@ const generatePhotos = (photosUrls) => {
 };
 
 export const createEditEventFormTemplate = (event = {}) => {
-  const { type = 'Flight', destination, startDateTime, endDateTime, cost = '', destinationInfo, offers} = event;
+  const { type = 'flight', destination, startDateTime, endDateTime, cost = '', destinationInfo, offers} = event;
   const startDateTimeFormatted = dayjs(startDateTime).format('DD/MM/YY HH:mm');
   const endDateTimeFormatted = dayjs(endDateTime).format('DD/MM/YY HH:mm');
 
@@ -32,13 +50,13 @@ export const createEditEventFormTemplate = (event = {}) => {
       <div class="event__type-wrapper">
         <label class="event__type  event__type-btn" for="event-type-toggle-1">
           <span class="visually-hidden">Choose event type</span>
-          <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
+          <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
         </label>
         <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
         <div class="event__type-list">
           <fieldset class="event__type-group">
             <legend class="visually-hidden">Event type</legend>
-            ${generateTypesMenu(type)}
+            ${renderTypesMenu(type)}
           </fieldset>
         </div>
       </div>
@@ -77,46 +95,7 @@ export const createEditEventFormTemplate = (event = {}) => {
       <section class="event__section  event__section--offers">
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
         <div class="event__available-offers">
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
-            <label class="event__offer-label" for="event-offer-luggage-1">
-              <span class="event__offer-title">Add luggage</span>
-              &plus;&euro;&nbsp;
-              <span class="event__offer-price">50</span>
-            </label>
-          </div>
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-1" type="checkbox" name="event-offer-comfort" checked>
-            <label class="event__offer-label" for="event-offer-comfort-1">
-              <span class="event__offer-title">Switch to comfort</span>
-              &plus;&euro;&nbsp;
-              <span class="event__offer-price">80</span>
-            </label>
-          </div>
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-1" type="checkbox" name="event-offer-meal">
-            <label class="event__offer-label" for="event-offer-meal-1">
-              <span class="event__offer-title">Add meal</span>
-              &plus;&euro;&nbsp;
-              <span class="event__offer-price">15</span>
-            </label>
-          </div>
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-seats-1" type="checkbox" name="event-offer-seats">
-            <label class="event__offer-label" for="event-offer-seats-1">
-              <span class="event__offer-title">Choose seats</span>
-              &plus;&euro;&nbsp;
-              <span class="event__offer-price">5</span>
-            </label>
-          </div>
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-train-1" type="checkbox" name="event-offer-train">
-            <label class="event__offer-label" for="event-offer-train-1">
-              <span class="event__offer-title">Travel by train</span>
-              &plus;&euro;&nbsp;
-              <span class="event__offer-price">40</span>
-            </label>
-          </div>
+          ${renderOffers(offers)}
         </div>
       </section>
       <section class="event__section  event__section--destination">
@@ -124,7 +103,7 @@ export const createEditEventFormTemplate = (event = {}) => {
         <p class="event__destination-description">${destinationInfo.description}</p>
         <div class="event__photos-container">
                       <div class="event__photos-tape">
-                       ${generatePhotos(destinationInfo.photos)}
+                       ${renderPhotos(destinationInfo.photos)}
                       </div>
                     </div>
       </section>
