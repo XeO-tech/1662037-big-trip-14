@@ -5,9 +5,20 @@ const sortByDateDescending = (a, b) => new Date(b) - new Date(a);
 
 const generateTripRoute = (events) => {
   const eventsSortedByStartDate = [...events].sort((a, b) => new Date(a.date_from) - new Date(b.date_from));
-  const routeSet = new Set (eventsSortedByStartDate.map((element) => element.destination.name));
+  const uniqueDestinations = new Set (eventsSortedByStartDate.map((element) => element.destination.name));
 
-  return Array.from(routeSet).join(' &mdash; ');
+  return Array.from(uniqueDestinations).join(' &mdash; ');
+
+  // Код выше выводит уникальные пункты назначения из всего массива, отсортированние в порядке посещени. Он не учитывает случаи, когда в место возвращаются после посещения другого. Нижестоящий код учитывает это, но плохо подходит для тестовых данных, так как они хаотичны и в итоге приводят к длинному маршруту. Когда перейдем на использование серверных данных и сможем добавлять свои точки, тогда перейду на ниженаписанный код.
+
+  // const destinationsSortedByDate = eventsSortedByStartDate.map((element) => element.destination.name);
+  // const uniqueDestinations = [];
+  // for (let i = 0; i < destinationsSortedByDate.length; i++) {
+  //   if (destinationsSortedByDate[i] !== destinationsSortedByDate[i + 1]) {
+  //     uniqueDestinations.push(destinationsSortedByDate[i]);
+  //   }
+  // }
+  // return uniqueDestinations.join(' &mdash; ');
 };
 
 const generateTripDates = (events) => {
