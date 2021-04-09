@@ -57,7 +57,8 @@ export const createEditEventFormTemplate = (event = {}) => {
   } = event;
   const startDateTimeFormatted = startDateTime === null ? '' : dayjs(startDateTime).format('DD/MM/YY HH:mm');
   const endDateTimeFormatted = endDateTime === null ? '' : dayjs(endDateTime).format('DD/MM/YY HH:mm');
-  const offersClassName = offers === null ? '' : offers.length === 0 ? 'visually-hidden' : '';
+  const offersClassName = offers === null || offers.length === 0 ? 'visually-hidden' : '';
+  const destinationClassName = isAddNewEventForm || Object.keys(destination).length === 0 ? 'visually-hidden' : '';
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -111,7 +112,7 @@ export const createEditEventFormTemplate = (event = {}) => {
           ${isAddNewEventForm ? '' : renderOffers(offers)}
         </div>
       </section>
-      <section class="event__section  event__section--destination">
+      <section class="event__section  event__section--destination ${destinationClassName}">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
         <p class="event__destination-description">${isAddNewEventForm ? '' : destination.description}</p>
         <div class="event__photos-container">

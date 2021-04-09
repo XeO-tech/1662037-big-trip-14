@@ -7,12 +7,13 @@ const MAX_PHOTOS = 2;
 const MAX_OFFERS = 5;
 
 const generateStartDateTime = () => dayjs()
-  .subtract(getRandomIntFromRange(0,1), 'day')
+  .subtract(getRandomIntFromRange(0,5), 'day')
   .subtract(getRandomIntFromRange(0, 1), 'hour')
   .subtract(getRandomIntFromRange(0, 1) * 10, 'minute')
   .format();
 
-const generateEndDateTime = () => dayjs()
+const generateEndDateTime = (startDateTime) => dayjs(startDateTime)
+  .add(getRandomIntFromRange(0, 1), 'day')
   .add(getRandomIntFromRange(0, 1), 'hour')
   .add(getRandomIntFromRange(1, 2) * 10, 'minute')
   .format();
@@ -72,11 +73,13 @@ const offersFullList = generateOffers();
 export const generateEvent = () => {
   const type = getRandomArrayElement(eventTypes);
   const offers = offersFullList.find((element) => element.type === type).offers;
+  const startDateTime = generateStartDateTime();
+  const endDateTime = generateEndDateTime(startDateTime);
 
   return {
     base_price: generatePrice(),
-    date_from: generateStartDateTime(),
-    date_to: generateEndDateTime(),
+    date_from: startDateTime,
+    date_to: endDateTime,
     destination: generateDestination(),
     is_favorite: Boolean(getRandomIntFromRange(0,1)),
     offers,

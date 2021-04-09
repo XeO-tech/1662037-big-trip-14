@@ -15,12 +15,12 @@ const renderElement = (container, element, position) => {
 
 const events = new Array(EVENT_NUMBERS).fill().map(() => generateEvent());
 
-
 const filtersElement = document.querySelector('.trip-controls__filters');
 const tripInfoElement = document.querySelector('.trip-main__trip-info');
 const menuElement = document.querySelector('.trip-main__trip-controls');
 const sortingElement = document.querySelector('.trip-events');
 const eventListElement = document.querySelector('.trip-events__list');
+const blankListPlaceholder = '<p>Click New Event to create your first point</p>';
 
 
 renderElement(filtersElement, createFiltersTemplate(), 'beforeend');
@@ -28,10 +28,12 @@ renderElement(tripInfoElement, createTripInfoTemplate(), 'afterbegin');
 renderElement(tripInfoElement, createTripCostTemplate(), 'beforeend');
 renderElement(menuElement, createSiteMenuTemplate(), 'beforeend');
 renderElement(sortingElement, createSortingTemplate(), 'afterbegin');
-// renderElement(eventListElement, createEditEventFormTemplate(), 'afterbegin');
+renderElement(eventListElement, createEditEventFormTemplate(), 'afterbegin');
 renderElement(eventListElement, createEditEventFormTemplate(events[0]), 'beforeend');
 
 for (let i = 1; i < EVENT_NUMBERS; i++) {
   renderElement(eventListElement, createEventItemTemplate(events[i]), 'beforeend');
 }
-
+if (Object.keys(events).length === 0) {
+  renderElement(eventListElement, blankListPlaceholder, 'afterbegin');
+}
