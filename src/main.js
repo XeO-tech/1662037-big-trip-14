@@ -25,7 +25,7 @@ const blankListPlaceholder = '<p>Click New Event to create your first point</p>'
 
 renderElement(filtersElement, createFiltersTemplate(), 'beforeend');
 renderElement(tripInfoElement, createTripInfoTemplate(), 'afterbegin');
-renderElement(tripInfoElement, createTripCostTemplate(), 'beforeend');
+renderElement(tripInfoElement, createTripCostTemplate(events), 'beforeend');
 renderElement(menuElement, createSiteMenuTemplate(), 'beforeend');
 renderElement(sortingElement, createSortingTemplate(), 'afterbegin');
 renderElement(eventListElement, createEditEventFormTemplate(), 'afterbegin');

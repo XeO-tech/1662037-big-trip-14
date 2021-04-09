@@ -13,7 +13,7 @@ const generateStartDateTime = () => dayjs()
   .format();
 
 const generateEndDateTime = (startDateTime) => dayjs(startDateTime)
-  .add(getRandomIntFromRange(0, 1), 'day')
+  .add(getRandomIntFromRange(0, 2), 'day')
   .add(getRandomIntFromRange(0, 1), 'hour')
   .add(getRandomIntFromRange(1, 2) * 10, 'minute')
   .format();
@@ -41,16 +41,6 @@ const generateDestination = () => {
     name: getRandomArrayElement(cities),
     pictures: generatePhotos(),
   };
-};
-
-const generateOffersList = () => {
-  return new Array(getRandomIntFromRange(0, MAX_OFFERS)).fill()
-    .map(() => {
-      return {
-        title: `Offer ${getRandomIntFromRange(1,100)}`,
-        price: generatePrice(),
-      };
-    });
 };
 
 const generateOffers = () => {
