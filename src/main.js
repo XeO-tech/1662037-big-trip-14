@@ -29,7 +29,7 @@ renderElement(tripInfoElement, createTripInfoTemplate(events), 'afterbegin');
 renderElement(tripInfoElement, createTripCostTemplate(events), 'beforeend');
 renderElement(menuElement, createSiteMenuTemplate(), 'beforeend');
 renderElement(sortingElement, createSortingTemplate(), 'afterbegin');
-renderElement(eventListElement, createEditEventFormTemplate(), 'afterbegin');
+// renderElement(eventListElement, createEditEventFormTemplate(), 'afterbegin');
 renderElement(eventListElement, createEditEventFormTemplate(eventsSortedByStartDate[0]), 'beforeend');
 
 for (let i = 1; i < EVENT_NUMBERS; i++) {
