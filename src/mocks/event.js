@@ -1,4 +1,4 @@
-import { getRandomIntFromRange, getRandomArrayElement} from '../utils.js';
+import { getRandomIntFromRange, getRandomArrayElement } from '../utils.js';
 import dayjs from 'dayjs';
 import { eventTypes, cities } from '../consts.js';
 
@@ -7,7 +7,7 @@ const MAX_PHOTOS = 2;
 const MAX_OFFERS = 5;
 
 const generateStartDateTime = () => dayjs()
-  .subtract(getRandomIntFromRange(0,5), 'day')
+  .subtract(getRandomIntFromRange(0, 7), 'day')
   .subtract(getRandomIntFromRange(0, 1), 'hour')
   .subtract(getRandomIntFromRange(0, 1) * 10, 'minute')
   .format();
