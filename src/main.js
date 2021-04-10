@@ -1,15 +1,15 @@
-import { createFiltersTemplate } from './view/filters.js';
 import { createTripInfoTemplate } from './view/trip-info.js';
 import { createTripCostTemplate } from './view/trip-cost.js';
-import { createSiteMenuTemplate } from './view/site-menu.js';
-import { createSortingTemplate } from './view/sorting.js';
 import { createEventItemTemplate } from './view/event-item.js';
 import { createEditEventFormTemplate } from './view/form-add-and-edit-event.js';
+import SortingPanel from './view/sorting-panel.js';
 import EmptyListPlaceholder  from './view/no-events.js';
+import Filters from './view/filters.js';
+import SiteMenu from './view/site-menu.js';
 import { generateEvents } from './mocks/events.js';
 import { sortEventsByStartDateAscending, render } from './utils.js';
 
-const EVENT_NUMBERS = 0;
+const EVENT_NUMBERS = 2;
 
 const renderElement = (container, element, position) => {
   container.insertAdjacentHTML(position, element);
@@ -24,11 +24,11 @@ const menuElement = document.querySelector('.trip-main__trip-controls');
 const sortingElement = document.querySelector('.trip-events');
 const eventListElement = document.querySelector('.trip-events__list');
 
-renderElement(filtersElement, createFiltersTemplate(), 'beforeend');
+render(filtersElement, new Filters().getElement(), 'beforeend');
 renderElement(tripInfoElement, createTripInfoTemplate(events), 'afterbegin');
 renderElement(tripInfoElement, createTripCostTemplate(events), 'beforeend');
-renderElement(menuElement, createSiteMenuTemplate(), 'beforeend');
-renderElement(sortingElement, createSortingTemplate(), 'afterbegin');
+render(menuElement, new SiteMenu().getElement(), 'beforeend');
+render(sortingElement, new SortingPanel().getElement(), 'afterbegin');
 // renderElement(eventListElement, createEditEventFormTemplate(), 'afterbegin');
 renderElement(eventListElement, createEditEventFormTemplate(eventsSortedByStartDate[0]), 'beforeend');
 
