@@ -5,7 +5,6 @@ import { eventTypes, cities } from '../consts.js';
 const MAX_DESCRIPTION_LENGTH = 5;
 const MAX_PHOTOS = 2;
 const MAX_OFFERS = 5;
-const EVENT_NUMBERS = 20;
 
 const generateStartDateTime = () => dayjs()
   .subtract(getRandomIntFromRange(0, 7), 'day')
