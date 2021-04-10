@@ -1,3 +1,4 @@
+import { createElement } from '../utils.js';
 import { eventTypes, cities } from '../consts.js';
 import dayjs from 'dayjs';
 
@@ -45,8 +46,8 @@ const renderPhotos = (pictures) => {
     .join('');
 };
 
-export const createEditEventFormTemplate = (event = {}) => {
-  const isAddNewEventForm = Object.keys(event).length === 0;
+const createAddAndEditFormTemplate = (eventInfo = {}) => {
+  const isAddNewEventForm = Object.keys(eventInfo).length === 0;
   const {
     type = 'flight',
     destination,
@@ -54,7 +55,7 @@ export const createEditEventFormTemplate = (event = {}) => {
     date_to: endDateTime = null,
     base_price: basePrice = '',
     offers = null,
-  } = event;
+  } = eventInfo;
   const startDateTimeFormatted = startDateTime === null ? '' : dayjs(startDateTime).format('DD/MM/YY HH:mm');
   const endDateTimeFormatted = endDateTime === null ? '' : dayjs(endDateTime).format('DD/MM/YY HH:mm');
   const offersClassName = offers === null || offers.length === 0 ? 'visually-hidden' : '';
@@ -125,4 +126,23 @@ export const createEditEventFormTemplate = (event = {}) => {
   </form>
 </li>`;
 };
+
+export default class AddAndEditForm {
+  constructor(eventInfo) {
+    this._element = null;
+    this._eventInfo = eventInfo;
+  }
+  getTemplate() {
+    return createAddAndEditFormTemplate(this._eventInfo);
+  }
+  getElement() {
+    if (this._element === null) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+  removeElement() {
+    this._element = null;
+  }
+}
 

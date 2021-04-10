@@ -1,19 +1,15 @@
-import { createTripInfoTemplate } from './view/trip-info.js';
-import { createTripCostTemplate } from './view/trip-cost.js';
-import { createEventItemTemplate } from './view/event-item.js';
-import { createEditEventFormTemplate } from './view/form-add-and-edit-event.js';
-import SortingPanel from './view/sorting-panel.js';
-import EmptyListPlaceholder  from './view/no-events.js';
-import Filters from './view/filters.js';
-import SiteMenu from './view/site-menu.js';
+import TripInfoView from './view/trip-info.js';
+import TripCostView from './view/trip-cost.js';
+import EventItemView from './view/event-item.js';
+import AddAndEditFormView from './view/form-add-and-edit-event.js';
+import SortingPanelView from './view/sorting-panel.js';
+import EmptyListPlaceholderView  from './view/no-events.js';
+import FiltersPanelView from './view/filters.js';
+import SiteMenuView from './view/site-menu.js';
 import { generateEvents } from './mocks/events.js';
 import { sortEventsByStartDateAscending, render } from './utils.js';
 
 const EVENT_NUMBERS = 2;
-
-const renderElement = (container, element, position) => {
-  container.insertAdjacentHTML(position, element);
-};
 
 const events = generateEvents(EVENT_NUMBERS);
 const eventsSortedByStartDate = sortEventsByStartDateAscending(events);
@@ -24,18 +20,18 @@ const menuElement = document.querySelector('.trip-main__trip-controls');
 const sortingElement = document.querySelector('.trip-events');
 const eventListElement = document.querySelector('.trip-events__list');
 
-render(filtersElement, new Filters().getElement(), 'beforeend');
-renderElement(tripInfoElement, createTripInfoTemplate(events), 'afterbegin');
-renderElement(tripInfoElement, createTripCostTemplate(events), 'beforeend');
-render(menuElement, new SiteMenu().getElement(), 'beforeend');
-render(sortingElement, new SortingPanel().getElement(), 'afterbegin');
-// renderElement(eventListElement, createEditEventFormTemplate(), 'afterbegin');
-renderElement(eventListElement, createEditEventFormTemplate(eventsSortedByStartDate[0]), 'beforeend');
+render(filtersElement, new FiltersPanelView().getElement(), 'beforeend');
+render(tripInfoElement, new TripInfoView(events).getElement(), 'afterbegin');
+render(tripInfoElement, new TripCostView(events).getElement(), 'beforeend');
+render(menuElement, new SiteMenuView().getElement(), 'beforeend');
+render(sortingElement, new SortingPanelView().getElement(), 'afterbegin');
+// render(eventListElement, new AddAndEditFormView().getElement(), 'beforeend');
+render(eventListElement, new AddAndEditFormView(eventsSortedByStartDate[0]).getElement(), 'beforeend');
+
 
 for (let i = 1; i < EVENT_NUMBERS; i++) {
-  renderElement(eventListElement, createEventItemTemplate(eventsSortedByStartDate[i]), 'beforeend');
+  render(eventListElement, new EventItemView(eventsSortedByStartDate[i]).getElement(), 'beforeend');
 }
 if (Object.keys(events).length === 0) {
-  // renderElement(eventListElement, createEmptyListPlaceholder(), 'afterbegin');
-  render(eventListElement, new EmptyListPlaceholder().getElement(), 'beforebegin');
+  render(eventListElement, new EmptyListPlaceholderView().getElement(), 'beforebegin');
 }

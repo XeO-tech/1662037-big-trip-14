@@ -21,7 +21,7 @@ const createFiltersTemplate = () => {
 </form>`;
 };
 
-export default class Filters {
+export default class FiltersPanel {
   constructor() {
     this._element = null;
   }

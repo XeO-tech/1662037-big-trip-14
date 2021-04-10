@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
-import { defineDateTimeFormats } from '../utils.js';
+import { defineDateTimeFormats, createElement } from '../utils.js';
 dayjs.extend(duration);
 
 const renderOffers = (offers) => {
@@ -14,7 +14,7 @@ const renderOffers = (offers) => {
   return (renderedOffers.length > 0) ? renderedOffers.join('') : '';
 };
 
-export const createEventItemTemplate = (event) => {
+const createEventItemTemplate = (event) => {
   const {
     type,
     destination,
@@ -67,3 +67,22 @@ export const createEventItemTemplate = (event) => {
   </div>
   </li>`;
 };
+
+export default class EventItem {
+  constructor (eventInfo) {
+    this._element = null;
+    this._eventInfo = eventInfo;
+  }
+  getTemplate() {
+    return createEventItemTemplate(this._eventInfo);
+  }
+  getElement() {
+    if (this._element === null) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+  removeElement() {
+    this._element = null;
+  }
+}

@@ -1,6 +1,5 @@
 import dayjs from 'dayjs';
-import { sortByDateAscending, sortByDateDescending } from '../utils.js';
-
+import { sortByDateAscending, sortByDateDescending, createElement} from '../utils.js';
 
 const generateTripRoute = (events) => {
   const eventsSortedByStartDate = [...events].sort((a, b) => new Date(a.date_from) - new Date(b.date_from));
@@ -28,10 +27,29 @@ const generateTripDates = (events) => {
   return `${dayjs(startDate).format('MMM DD')}&nbsp;&mdash;&nbsp;${dayjs(endDate).format(endDateFormat)}`;
 };
 
-export const createTripInfoTemplate = (events) => {
+const createTripInfoTemplate = (events) => {
   return `<div class="trip-info__main">
   <h1 class="trip-info__title">${generateTripRoute(events)}</h1>
   <p class="trip-info__dates">${generateTripDates(events)}</p>
 </div>`;
 };
+
+export default class TripInfo {
+  constructor(events) {
+    this._element = null;
+    this._events = events;
+  }
+  getTemplate() {
+    return createTripInfoTemplate(this._events);
+  }
+  getElement() {
+    if (this._element === null) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+  removeElement() {
+    this._element = null;
+  }
+}
 
