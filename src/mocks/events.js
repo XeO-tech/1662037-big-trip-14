@@ -5,6 +5,7 @@ import { eventTypes, cities } from '../consts.js';
 const MAX_DESCRIPTION_LENGTH = 5;
 const MAX_PHOTOS = 2;
 const MAX_OFFERS = 5;
+const EVENT_NUMBERS = 20;
 
 const generateStartDateTime = () => dayjs()
   .subtract(getRandomIntFromRange(0, 7), 'day')
@@ -60,7 +61,7 @@ const generateOffers = () => {
 
 const offersFullList = generateOffers();
 
-export const generateEvent = () => {
+const generateOneEvent = () => {
   const type = getRandomArrayElement(eventTypes);
   const offers = offersFullList.find((element) => element.type === type).offers;
   const startDateTime = generateStartDateTime();
@@ -76,3 +77,6 @@ export const generateEvent = () => {
     type,
   };
 };
+
+export const generateEvents = (eventNumbers) => new Array(eventNumbers).fill().map(() => generateOneEvent());
+

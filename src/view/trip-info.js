@@ -1,7 +1,6 @@
 import dayjs from 'dayjs';
+import { sortByDateAscending, sortByDateDescending } from '../utils.js';
 
-const sortByDateAscending = (a, b) => new Date(a) - new Date(b);
-const sortByDateDescending = (a, b) => new Date(b) - new Date(a);
 
 const generateTripRoute = (events) => {
   const eventsSortedByStartDate = [...events].sort((a, b) => new Date(a.date_from) - new Date(b.date_from));

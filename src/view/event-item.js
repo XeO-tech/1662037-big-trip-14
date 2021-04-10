@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
+import { defineDateTimeFormats } from '../utils.js';
 dayjs.extend(duration);
 
 const renderOffers = (offers) => {
@@ -11,26 +12,6 @@ const renderOffers = (offers) => {
   </li>`;
   });
   return (renderedOffers.length > 0) ? renderedOffers.join('') : '';
-};
-
-const defineDateTimeFormats = (eventDuration) => {
-  switch (true) {
-    case eventDuration.days() > 0:
-      return {
-        durationFormat: 'DD[D] HH[H] mm[M]',
-        dateTimeFormat: 'DD/MM/YY HH:mm',
-      };
-    case eventDuration.days() === 0 && eventDuration.hours() > 0:
-      return {
-        durationFormat: 'HH[H] mm[M]',
-        dateTimeFormat: 'HH:mm',
-      };
-    default:
-      return {
-        durationFormat: 'mm[M]',
-        dateTimeFormat: 'HH:mm',
-      };
-  }
 };
 
 export const createEventItemTemplate = (event) => {
