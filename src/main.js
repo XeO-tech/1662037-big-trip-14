@@ -5,11 +5,11 @@ import { createSiteMenuTemplate } from './view/site-menu.js';
 import { createSortingTemplate } from './view/sorting.js';
 import { createEventItemTemplate } from './view/event-item.js';
 import { createEditEventFormTemplate } from './view/form-add-and-edit-event.js';
-import { createEmptyListPlaceholder } from './view/no-events.js';
+import EmptyListPlaceholder  from './view/no-events.js';
 import { generateEvents } from './mocks/events.js';
-import { sortEventsByStartDateAscending } from './utils.js';
+import { sortEventsByStartDateAscending, render } from './utils.js';
 
-const EVENT_NUMBERS = 20;
+const EVENT_NUMBERS = 0;
 
 const renderElement = (container, element, position) => {
   container.insertAdjacentHTML(position, element);
@@ -36,5 +36,6 @@ for (let i = 1; i < EVENT_NUMBERS; i++) {
   renderElement(eventListElement, createEventItemTemplate(eventsSortedByStartDate[i]), 'beforeend');
 }
 if (Object.keys(events).length === 0) {
-  renderElement(eventListElement, createEmptyListPlaceholder(), 'afterbegin');
+  // renderElement(eventListElement, createEmptyListPlaceholder(), 'afterbegin');
+  render(eventListElement, new EmptyListPlaceholder().getElement(), 'beforebegin');
 }

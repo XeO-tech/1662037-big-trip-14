@@ -22,6 +22,26 @@ export const defineDateTimeFormats = (eventDuration) => {
   }
 };
 
+export const createElement = (template) => {
+  const newElement = document.createElement('div');
+  newElement.innerHTML = template;
+  return newElement.firstChild;
+};
+
+export const render = (container, element, position) => {
+  switch (position) {
+    case 'beforebegin':
+      container.parentNode.append(element);
+      break;
+    case 'afterbegin':
+      container.prepend(element);
+      break;
+    case 'beforeend':
+      container.append(element);
+      break;
+  }
+};
+
 export const sortByDateAscending = (a, b) => new Date(a) - new Date(b);
 export const sortByDateDescending = (a, b) => new Date(b) - new Date(a);
 export const sortEventsByStartDateAscending = (events) => [...events].sort((a, b) => sortByDateAscending(a.date_from, b.date_from));
