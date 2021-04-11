@@ -21,8 +21,8 @@ const sortingElement = document.querySelector('.trip-events');
 const eventListElement = document.querySelector('.trip-events__list');
 
 const renderEvent = (parentElement, eventItem) => {
-  const eventElement = new EventItemView(eventItem);
-  const eventEditFormElement = new AddAndEditFormView(eventItem);
+  const eventComponent = new EventItemView(eventItem);
+  const eventEditFormComponent = new AddAndEditFormView(eventItem);
 
   const onEscKeydown = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
@@ -32,20 +32,30 @@ const renderEvent = (parentElement, eventItem) => {
   };
 
   const replaceEventWithEditForm = () => {
-    parentElement.replaceChild(eventEditFormElement.getElement(), eventElement.getElement());
-    document.addEventListener('keydown', onEscKeydown);
+    parentElement.replaceChild(eventEditFormComponent.getElement(), eventComponent.getElement());
   };
 
   const replaceEditFormWithEvent = () => {
-    parentElement.replaceChild(eventElement.getElement(), eventEditFormElement.getElement());
-    document.removeEventListener('keydown', onEscKeydown);
+    parentElement.replaceChild(eventComponent.getElement(), eventEditFormComponent.getElement());
   };
 
-  eventElement.getElement().querySelector('.event__rollup-btn').addEventListener('click', replaceEventWithEditForm);
-  eventEditFormElement.getElement().querySelector('.event__rollup-btn').addEventListener('click', replaceEditFormWithEvent);
-  eventEditFormElement.getElement().querySelector('form').addEventListener('submit', replaceEditFormWithEvent);
+  eventComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+    replaceEventWithEditForm();
+    document.addEventListener('keydown', onEscKeydown);
+  });
 
-  render(parentElement, eventElement.getElement(), 'beforeend');
+  eventEditFormComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+    replaceEditFormWithEvent();
+    document.removeEventListener('keydown', onEscKeydown);
+  });
+
+  eventEditFormComponent.getElement().querySelector('form').addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    replaceEditFormWithEvent();
+    document.removeEventListener('keydown', onEscKeydown);
+  });
+
+  render(parentElement, eventComponent.getElement(), 'beforeend');
 };
 
 render(filtersElement, new FiltersPanelView().getElement(), 'beforeend');
