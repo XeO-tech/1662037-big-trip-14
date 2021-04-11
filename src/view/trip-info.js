@@ -1,8 +1,9 @@
 import dayjs from 'dayjs';
-import { sortByDateAscending, sortByDateDescending, createElement} from '../utils.js';
+import { sortEventsByStartDateAscending, sortByDateAscending, sortByDateDescending, createElement} from '../utils.js';
 
 const generateTripRoute = (events) => {
-  const eventsSortedByStartDate = [...events].sort((a, b) => new Date(a.date_from) - new Date(b.date_from));
+  const eventsSortedByStartDate = sortEventsByStartDateAscending(events);
+  ;
   const uniqueDestinations = new Set (eventsSortedByStartDate.map((element) => element.destination.name));
 
   return Array.from(uniqueDestinations).join(' &mdash; ');
