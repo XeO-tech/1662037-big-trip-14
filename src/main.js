@@ -9,7 +9,7 @@ import SiteMenuView from './view/site-menu.js';
 import { generateEvents } from './mocks/events.js';
 import { sortEventsByStartDateAscending, render } from './utils.js';
 
-const EVENT_NUMBERS = 10;
+const EVENT_NUMBERS = 20;
 
 const events = generateEvents(EVENT_NUMBERS);
 const eventsSortedByStartDate = sortEventsByStartDateAscending(events);
@@ -24,19 +24,19 @@ const renderEvent = (parentElement, eventItem) => {
   const eventComponent = new EventItemView(eventItem);
   const eventEditFormComponent = new AddAndEditFormView(eventItem);
 
-  const onEscKeydown = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
-      evt.preventDefault();
-      replaceEditFormWithEvent();
-    }
-  };
-
   const replaceEventWithEditForm = () => {
     parentElement.replaceChild(eventEditFormComponent.getElement(), eventComponent.getElement());
   };
 
   const replaceEditFormWithEvent = () => {
     parentElement.replaceChild(eventComponent.getElement(), eventEditFormComponent.getElement());
+  };
+
+  const onEscKeydown = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      replaceEditFormWithEvent();
+    }
   };
 
   eventComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
@@ -58,15 +58,17 @@ const renderEvent = (parentElement, eventItem) => {
   render(parentElement, eventComponent.getElement(), 'beforeend');
 };
 
-render(filtersElement, new FiltersPanelView().getElement(), 'beforeend');
-render(tripInfoElement, new TripInfoView(events).getElement(), 'afterbegin');
-render(tripInfoElement, new TripCostView(events).getElement(), 'beforeend');
-render(menuElement, new SiteMenuView().getElement(), 'beforeend');
-render(sortingElement, new SortingPanelView().getElement(), 'afterbegin');
+const renderAllEvents = (events) => {
+  if (Object.keys(events).length === 0) {
+    render(eventListElement, new EmptyListPlaceholderView().getElement(), 'beforebegin');
+    return;
+  }
+  render(tripInfoElement, new TripInfoView(events).getElement(), 'afterbegin');
+  render(tripInfoElement, new TripCostView(events).getElement(), 'beforeend');
+  render(sortingElement, new SortingPanelView().getElement(), 'afterbegin');
+  eventsSortedByStartDate.forEach((eventItem) => renderEvent(eventListElement,eventItem));
+};
 
-for (let i = 0; i < EVENT_NUMBERS; i++) {
-  renderEvent(eventListElement, eventsSortedByStartDate[i]);
-}
-if (Object.keys(events).length === 0) {
-  render(eventListElement, new EmptyListPlaceholderView().getElement(), 'beforebegin');
-}
+render(menuElement, new SiteMenuView().getElement(), 'beforeend');
+render(filtersElement, new FiltersPanelView().getElement(), 'beforeend');
+renderAllEvents(events);
