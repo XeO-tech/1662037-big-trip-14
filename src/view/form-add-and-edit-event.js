@@ -2,15 +2,6 @@ import { createElement } from '../utils.js';
 import { eventTypes, cities } from '../consts.js';
 import dayjs from 'dayjs';
 
-const BLANK_EVENT = {
-  type: 'flight',
-  destination,
-  date_from: null,
-  date_to:  null,
-  base_price: '',
-  offers = null,
-}
-
 const renderTypesMenu = (currentType) => {
   return eventTypes
     .map((type) => {

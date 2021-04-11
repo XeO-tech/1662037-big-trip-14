@@ -9,7 +9,7 @@ import SiteMenuView from './view/site-menu.js';
 import { generateEvents } from './mocks/events.js';
 import { sortEventsByStartDateAscending, render } from './utils.js';
 
-const EVENT_NUMBERS = 2;
+const EVENT_NUMBERS = 10;
 
 const events = generateEvents(EVENT_NUMBERS);
 const eventsSortedByStartDate = sortEventsByStartDateAscending(events);
@@ -20,17 +20,42 @@ const menuElement = document.querySelector('.trip-main__trip-controls');
 const sortingElement = document.querySelector('.trip-events');
 const eventListElement = document.querySelector('.trip-events__list');
 
+const renderEvent = (parentElement, eventItem) => {
+  const eventElement = new EventItemView(eventItem);
+  const eventEditFormElement = new AddAndEditFormView(eventItem);
+
+  const onEscKeydown = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      replaceEditFormWithEvent();
+    }
+  };
+
+  const replaceEventWithEditForm = () => {
+    parentElement.replaceChild(eventEditFormElement.getElement(), eventElement.getElement());
+    document.addEventListener('keydown', onEscKeydown);
+  };
+
+  const replaceEditFormWithEvent = () => {
+    parentElement.replaceChild(eventElement.getElement(), eventEditFormElement.getElement());
+    document.removeEventListener('keydown', onEscKeydown);
+  };
+
+  eventElement.getElement().querySelector('.event__rollup-btn').addEventListener('click', replaceEventWithEditForm);
+  eventEditFormElement.getElement().querySelector('.event__rollup-btn').addEventListener('click', replaceEditFormWithEvent);
+  eventEditFormElement.getElement().querySelector('form').addEventListener('submit', replaceEditFormWithEvent);
+
+  render(parentElement, eventElement.getElement(), 'beforeend');
+};
+
 render(filtersElement, new FiltersPanelView().getElement(), 'beforeend');
 render(tripInfoElement, new TripInfoView(events).getElement(), 'afterbegin');
 render(tripInfoElement, new TripCostView(events).getElement(), 'beforeend');
 render(menuElement, new SiteMenuView().getElement(), 'beforeend');
 render(sortingElement, new SortingPanelView().getElement(), 'afterbegin');
-// render(eventListElement, new AddAndEditFormView().getElement(), 'beforeend');
-render(eventListElement, new AddAndEditFormView(eventsSortedByStartDate[0]).getElement(), 'beforeend');
 
-
-for (let i = 1; i < EVENT_NUMBERS; i++) {
-  render(eventListElement, new EventItemView(eventsSortedByStartDate[i]).getElement(), 'beforeend');
+for (let i = 0; i < EVENT_NUMBERS; i++) {
+  renderEvent(eventListElement, eventsSortedByStartDate[i]);
 }
 if (Object.keys(events).length === 0) {
   render(eventListElement, new EmptyListPlaceholderView().getElement(), 'beforebegin');
