@@ -3,7 +3,6 @@ import { sortEventsByStartDateAscending, sortByDateAscending, sortByDateDescendi
 
 const generateTripRoute = (events) => {
   const eventsSortedByStartDate = sortEventsByStartDateAscending(events);
-  ;
   const uniqueDestinations = new Set (eventsSortedByStartDate.map((element) => element.destination.name));
 
   return Array.from(uniqueDestinations).join(' &mdash; ');
