@@ -3,7 +3,6 @@ import TripCostView from './view/trip-cost.js';
 import EventItemView from './view/event-item.js';
 import AddAndEditFormView from './view/form-add-and-edit-event.js';
 import SortingPanelView from './view/sorting-panel.js';
-import EmptyListPlaceholderView  from './view/no-events.js';
 import FiltersPanelView from './view/filters.js';
 import SiteMenuView from './view/site-menu.js';
 import { generateEvents } from './mocks/events.js';
@@ -28,41 +27,18 @@ const renderEvent = (parentElement, eventItem) => {
     parentElement.replaceChild(eventEditFormComponent.getElement(), eventComponent.getElement());
   };
 
-  const replaceEditFormWithEvent = () => {
-    parentElement.replaceChild(eventComponent.getElement(), eventEditFormComponent.getElement());
-  };
-
-  const onEscKeydown = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
-      evt.preventDefault();
-      replaceEditFormWithEvent();
-    }
-  };
-
   eventComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
     replaceEventWithEditForm();
-    document.addEventListener('keydown', onEscKeydown);
   });
 
-  eventEditFormComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
-    replaceEditFormWithEvent();
-    document.removeEventListener('keydown', onEscKeydown);
-  });
-
-  eventEditFormComponent.getElement().querySelector('form').addEventListener('submit', (evt) => {
-    evt.preventDefault();
-    replaceEditFormWithEvent();
-    document.removeEventListener('keydown', onEscKeydown);
+  eventEditFormComponent.getElement().querySelector('form').addEventListener('submit', () => {
+    replaceEventWithEditForm();
   });
 
   render(parentElement, eventComponent.getElement(), 'beforeend');
 };
 
 const renderAllEvents = (events) => {
-  if (Object.keys(events).length === 0) {
-    render(eventListElement, new EmptyListPlaceholderView().getElement(), 'beforebegin');
-    return;
-  }
   render(tripInfoElement, new TripInfoView(events).getElement(), 'afterbegin');
   render(tripInfoElement, new TripCostView(events).getElement(), 'beforeend');
   render(sortingElement, new SortingPanelView().getElement(), 'afterbegin');
