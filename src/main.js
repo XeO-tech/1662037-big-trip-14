@@ -39,18 +39,17 @@ const renderEvent = (parentElement, eventItem) => {
     }
   };
 
-  eventComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+  eventComponent.setArrowClickHandler(() => {
     replaceEventWithEditForm();
     document.addEventListener('keydown', onEscKeydown);
   });
 
-  eventEditFormComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+  eventEditFormComponent.setArrowClickHandler(() => {
     replaceEditFormWithEvent();
     document.removeEventListener('keydown', onEscKeydown);
   });
 
-  eventEditFormComponent.getElement().querySelector('form').addEventListener('submit', (evt) => {
-    evt.preventDefault();
+  eventEditFormComponent.setSubmitHandler(() => {
     replaceEditFormWithEvent();
     document.removeEventListener('keydown', onEscKeydown);
   });

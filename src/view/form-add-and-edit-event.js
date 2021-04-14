@@ -131,9 +131,26 @@ export default class AddAndEditForm extends AbstractView {
   constructor(eventInfo) {
     super();
     this._eventInfo = eventInfo;
+    this._submitHandler = this._submitHandler.bind(this);
+    this._arrowClickHandler = this._arrowClickHandler.bind(this);
   }
   getTemplate() {
     return createAddAndEditFormTemplate(this._eventInfo);
+  }
+  _submitHandler(evt) {
+    evt.preventDefault();
+    this._callback.submit();
+  }
+  _arrowClickHandler() {
+    this._callback.arrowClick();
+  }
+  setSubmitHandler(callback) {
+    this._callback.submit = callback;
+    this.getElement().querySelector('form').addEventListener('submit', this._submitHandler);
+  }
+  setArrowClickHandler(callback) {
+    this._callback.arrowClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._arrowClickHandler);
   }
 }
 

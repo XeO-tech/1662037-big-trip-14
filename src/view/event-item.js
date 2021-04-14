@@ -73,11 +73,19 @@ export default class EventItem extends AbstractView {
   constructor (eventInfo) {
     super();
     this._eventInfo = eventInfo;
+    this._ArrowClickHandler = this._ArrowClickHandler.bind(this);
   }
   getTemplate() {
     return createEventItemTemplate(this._eventInfo);
   }
   removeElement() {
     this._element = null;
+  }
+  _ArrowClickHandler() {
+    this._callback.arrowClick();
+  }
+  setArrowClickHandler(callback) {
+    this._callback.arrowClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._ArrowClickHandler);
   }
 }
