@@ -1,7 +1,8 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
-import { defineDateTimeFormats, createElement } from '../utils.js';
+import { defineDateTimeFormats } from '../utils.js';
 dayjs.extend(duration);
+import AbstractView from './abstract.js';
 
 const renderOffers = (offers) => {
   const renderedOffers = offers.map((offer) => {
@@ -68,19 +69,13 @@ const createEventItemTemplate = (event) => {
   </li>`;
 };
 
-export default class EventItem {
+export default class EventItem extends AbstractView {
   constructor (eventInfo) {
-    this._element = null;
+    super();
     this._eventInfo = eventInfo;
   }
   getTemplate() {
     return createEventItemTemplate(this._eventInfo);
-  }
-  getElement() {
-    if (this._element === null) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
   }
   removeElement() {
     this._element = null;

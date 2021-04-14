@@ -1,4 +1,4 @@
-import { createElement } from '../utils.js';
+import AbstractView from './abstract.js';
 import { eventTypes, cities } from '../consts.js';
 import dayjs from 'dayjs';
 
@@ -127,22 +127,13 @@ const createAddAndEditFormTemplate = (eventInfo = {}) => {
 </li>`;
 };
 
-export default class AddAndEditForm {
+export default class AddAndEditForm extends AbstractView {
   constructor(eventInfo) {
-    this._element = null;
+    super();
     this._eventInfo = eventInfo;
   }
   getTemplate() {
     return createAddAndEditFormTemplate(this._eventInfo);
-  }
-  getElement() {
-    if (this._element === null) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-  removeElement() {
-    this._element = null;
   }
 }
 

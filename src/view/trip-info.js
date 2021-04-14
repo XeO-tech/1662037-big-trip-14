@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
-import { sortEventsByStartDateAscending, sortByDateAscending, sortByDateDescending, createElement} from '../utils.js';
+import { sortEventsByStartDateAscending, sortByDateAscending, sortByDateDescending} from '../utils.js';
+import AbstractView from './abstract.js';
 
 const generateTripRoute = (events) => {
   const eventsSortedByStartDate = sortEventsByStartDateAscending(events);
@@ -34,22 +35,13 @@ const createTripInfoTemplate = (events) => {
 </div>`;
 };
 
-export default class TripInfo {
+export default class TripInfo extends AbstractView {
   constructor(events) {
-    this._element = null;
+    super();
     this._events = events;
   }
   getTemplate() {
     return createTripInfoTemplate(this._events);
-  }
-  getElement() {
-    if (this._element === null) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-  removeElement() {
-    this._element = null;
   }
 }
 
