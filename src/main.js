@@ -7,12 +7,13 @@ import EmptyListPlaceholderView  from './view/no-events.js';
 import FiltersPanelView from './view/filters.js';
 import SiteMenuView from './view/site-menu.js';
 import { generateEvents } from './mocks/events.js';
-import { sortEventsByStartDateAscending, render } from './utils.js';
+import { sortEventsByStartDateAscending } from './utils/events.js';
+import { render, replace } from './utils/render.js';
 
 const EVENT_NUMBERS = 20;
 
 const events = generateEvents(EVENT_NUMBERS);
-const eventsSortedByStartDate = sortEventsByStartDateAscending(events);
+const eventsSortedByDate = sortEventsByStartDateAscending(events);
 
 const filtersElement = document.querySelector('.trip-controls__filters');
 const tripInfoElement = document.querySelector('.trip-main__trip-info');
@@ -23,51 +24,45 @@ const eventListElement = document.querySelector('.trip-events__list');
 const renderEvent = (parentElement, eventItem) => {
   const eventComponent = new EventItemView(eventItem);
   const eventEditFormComponent = new AddAndEditFormView(eventItem);
-
-  const replaceEventWithEditForm = () => {
-    parentElement.replaceChild(eventEditFormComponent.getElement(), eventComponent.getElement());
-  };
-
-  const replaceEditFormWithEvent = () => {
-    parentElement.replaceChild(eventComponent.getElement(), eventEditFormComponent.getElement());
-  };
+  const eventElement = eventComponent.getElement();
+  const eventEditFormElement = eventEditFormComponent.getElement();
 
   const onEscKeydown = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
-      replaceEditFormWithEvent();
+      replace(eventElement, eventEditFormElement);
     }
   };
 
   eventComponent.setArrowClickHandler(() => {
-    replaceEventWithEditForm();
+    replace(eventEditFormElement, eventElement);
     document.addEventListener('keydown', onEscKeydown);
   });
 
   eventEditFormComponent.setArrowClickHandler(() => {
-    replaceEditFormWithEvent();
+    replace(eventElement, eventEditFormElement);
     document.removeEventListener('keydown', onEscKeydown);
   });
 
   eventEditFormComponent.setSubmitHandler(() => {
-    replaceEditFormWithEvent();
+    replace(eventElement, eventEditFormElement);
     document.removeEventListener('keydown', onEscKeydown);
   });
 
-  render(parentElement, eventComponent.getElement(), 'beforeend');
+  render(parentElement, eventComponent, 'beforeend');
 };
 
 const renderAllEvents = (events) => {
   if (Object.keys(events).length === 0) {
-    render(eventListElement, new EmptyListPlaceholderView().getElement(), 'beforebegin');
+    render(eventListElement, new EmptyListPlaceholderView(), 'beforebegin');
     return;
   }
-  render(tripInfoElement, new TripInfoView(events).getElement(), 'afterbegin');
-  render(tripInfoElement, new TripCostView(events).getElement(), 'beforeend');
-  render(sortingElement, new SortingPanelView().getElement(), 'afterbegin');
-  eventsSortedByStartDate.forEach((eventItem) => renderEvent(eventListElement,eventItem));
+  render(tripInfoElement, new TripInfoView(events), 'afterbegin');
+  render(tripInfoElement, new TripCostView(events), 'beforeend');
+  render(sortingElement, new SortingPanelView(), 'afterbegin');
+  eventsSortedByDate.forEach((eventItem) => renderEvent(eventListElement,eventItem));
 };
 
-render(menuElement, new SiteMenuView().getElement(), 'beforeend');
-render(filtersElement, new FiltersPanelView().getElement(), 'beforeend');
+render(menuElement, new SiteMenuView(), 'beforeend');
+render(filtersElement, new FiltersPanelView(), 'beforeend');
 renderAllEvents(events);

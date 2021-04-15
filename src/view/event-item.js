@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
-import { defineDateTimeFormats } from '../utils.js';
+import { defineDateTimeFormats } from '../utils/events.js';
 dayjs.extend(duration);
 import AbstractView from './abstract.js';
 

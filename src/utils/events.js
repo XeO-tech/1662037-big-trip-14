@@ -1,7 +1,3 @@
-export const getRandomArrayElement = (array) => array[Math.floor(Math.random() * array.length)];
-
-export const getRandomIntFromRange = (min, max) => Math.round(Math.random() * Math.abs(max - min) + ((min < max) ? min : max));
-
 export const defineDateTimeFormats = (eventDuration) => {
   switch (true) {
     case eventDuration.days() > 0:
@@ -19,26 +15,6 @@ export const defineDateTimeFormats = (eventDuration) => {
         durationFormat: 'mm[M]',
         dateTimeFormat: 'HH:mm',
       };
-  }
-};
-
-export const createElement = (template) => {
-  const newElement = document.createElement('div');
-  newElement.innerHTML = template;
-  return newElement.firstChild;
-};
-
-export const render = (container, element, position) => {
-  switch (position) {
-    case 'beforebegin':
-      container.parentNode.append(element);
-      break;
-    case 'afterbegin':
-      container.prepend(element);
-      break;
-    case 'beforeend':
-      container.append(element);
-      break;
   }
 };
 

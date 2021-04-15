@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { sortEventsByStartDateAscending, sortByDateAscending, sortByDateDescending} from '../utils.js';
+import { sortEventsByStartDateAscending, sortByDateAscending, sortByDateDescending} from '../utils/events.js';
 import AbstractView from './abstract.js';
 
 const generateTripRoute = (events) => {

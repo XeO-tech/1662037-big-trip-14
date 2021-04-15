@@ -1,4 +1,4 @@
-import { getRandomIntFromRange, getRandomArrayElement } from '../utils.js';
+import { getRandomIntFromRange, getRandomArrayElement } from '../utils/common.js';
 import dayjs from 'dayjs';
 import { eventTypes, cities } from '../consts.js';
 
