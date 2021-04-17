@@ -12,8 +12,8 @@ const eventsSortedByDate = sortEventsByStartDateAscending(events);
 
 const filtersElement = document.querySelector('.trip-controls__filters');
 const menuElement = document.querySelector('.trip-main__trip-controls');
-const TripPresenter = new TripPesenter();
+const tripPresenter = new TripPesenter();
 
 render(menuElement, new SiteMenuView(), 'beforeend');
 render(filtersElement, new FiltersPanelView(), 'beforeend');
-TripPresenter.init(eventsSortedByDate);
+tripPresenter.init(eventsSortedByDate);
