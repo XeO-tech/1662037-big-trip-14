@@ -30,6 +30,8 @@ export default class TripPresenter {
   _renderEvent(eventItem) {
     const eventPresenter = new EventPresenter();
     eventPresenter.init(eventItem);
+    eventPresenter.init({...eventItem, base_price: 111});
+
   }
 
   _renderEvents() {
