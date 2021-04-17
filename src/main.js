@@ -17,3 +17,4 @@ const tripPresenter = new TripPesenter();
 render(menuElement, new SiteMenuView(), 'beforeend');
 render(filtersElement, new FiltersPanelView(), 'beforeend');
 tripPresenter.init(eventsSortedByDate);
+

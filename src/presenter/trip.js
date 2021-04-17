@@ -3,6 +3,7 @@ import TripCostView from '../view/trip-cost.js';
 import SortingPanelView from '../view/sorting-panel.js';
 import EmptyListPlaceholderView  from '../view/no-events.js';
 import { render } from '../utils/render.js';
+import { updateItem } from '../utils/common.js';
 import EventPresenter from './event.js';
 
 const tripInfoElement = document.querySelector('.trip-main__trip-info');
@@ -11,8 +12,10 @@ const eventListElement = document.querySelector('.trip-events__list');
 
 export default class TripPresenter {
   constructor() {
+    this._eventPresenter = {};
     this._sortingPanelComponent = new SortingPanelView();
     this._EmptyListPlaceholderComponent = new EmptyListPlaceholderView();
+    this._handleEventChange = this._handleEventChange.bind(this);
   }
 
   init(events) {
@@ -30,8 +33,7 @@ export default class TripPresenter {
   _renderEvent(eventItem) {
     const eventPresenter = new EventPresenter();
     eventPresenter.init(eventItem);
-    eventPresenter.init({...eventItem, base_price: 111});
-
+    this._eventPresenter[eventItem.id] = eventPresenter;
   }
 
   _renderEvents() {
@@ -52,5 +54,17 @@ export default class TripPresenter {
 
   _renderTripCost() {
     render(tripInfoElement, this._tripCostComponent, 'beforeend');
+  }
+
+  _handleEventChange(updatedEvent) {
+    this._events = updateItem(this._events, updatedEvent);
+    this.EventPresenter[updatedEvent.id].init(updatedEvent);
+  }
+
+  _clearEventList() {
+    Object
+      .values(this._eventPresenter)
+      .forEach((presenter) => presenter.destroy());
+    this._eventPresenter = {};
   }
 }

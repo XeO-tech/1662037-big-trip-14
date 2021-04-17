@@ -1,6 +1,7 @@
 import { getRandomIntFromRange, getRandomArrayElement } from '../utils/common.js';
 import dayjs from 'dayjs';
 import { eventTypes, cities } from '../consts.js';
+import { nanoid } from 'nanoid';
 
 const MAX_DESCRIPTION_LENGTH = 5;
 const MAX_PHOTOS = 2;
@@ -67,6 +68,7 @@ const generateOneEvent = () => {
   const endDateTime = generateEndDateTime(startDateTime);
 
   return {
+    id: nanoid(),
     base_price: generatePrice(),
     date_from: startDateTime,
     date_to: endDateTime,
