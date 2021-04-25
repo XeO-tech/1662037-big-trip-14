@@ -12,7 +12,7 @@ const eventListElement = document.querySelector('.trip-events__list');
 
 export default class TripPresenter {
   constructor() {
-    this._eventPresenter = {};
+    this._eventPresenters = {};
     this._sortingPanelComponent = new SortingPanelView();
     this._EmptyListPlaceholderComponent = new EmptyListPlaceholderView();
     this._handleEventChange = this._handleEventChange.bind(this);
@@ -33,7 +33,7 @@ export default class TripPresenter {
   _renderEvent(eventItem) {
     const eventPresenter = new EventPresenter(this._handleEventChange);
     eventPresenter.init(eventItem);
-    this._eventPresenter[eventItem.id] = eventPresenter;
+    this._eventPresenters[eventItem.id] = eventPresenter;
   }
 
   _renderEvents() {
@@ -58,13 +58,13 @@ export default class TripPresenter {
 
   _handleEventChange(updatedEvent) {
     this._events = updateItem(this._events, updatedEvent);
-    this._eventPresenter[updatedEvent.id].init(updatedEvent);
+    this._eventPresenters[updatedEvent.id].init(updatedEvent);
   }
 
   _clearEventList() {
     Object
-      .values(this._eventPresenter)
+      .values(this._eventPresenters)
       .forEach((presenter) => presenter.destroy());
-    this._eventPresenter = {};
+    this._eventPresenters = {};
   }
 }

@@ -36,11 +36,11 @@ export default class EventPresenter {
     if (this._eventListElement.contains(prevEventComponent.getElement())) {
       replace(this._eventComponent, prevEventComponent);
     }
+    if (this._eventListElement.contains(prevEventEditFormComponent.getElement())) {
+      replace(this._eventEditFormComponent, prevEventEditFormComponent);
+    }
     remove(prevEventComponent);
     remove(prevEventEditFormComponent);
-    // if (this._eventListElement.contains(prevEventEditFormComponent.getElement())) {
-    //   replace(this._eventEditFormComponent, prevEventEditFormComponent);
-    // }
   }
 
   destroy() {
@@ -66,7 +66,8 @@ export default class EventPresenter {
     this._replaceEditFormWitnEvent();
   }
 
-  _handleFormSubmit() {
+  _handleFormSubmit(eventItem) {
+    this._changeEvent(eventItem);
     this._replaceEditFormWitnEvent();
   }
 
@@ -80,7 +81,6 @@ export default class EventPresenter {
         },
       ),
     );
-
   }
 
   _escKeydownHandler(evt) {
