@@ -2,12 +2,19 @@ import { render, replace, remove } from '../utils/render.js';
 import EventItemView from '../view/event-item.js';
 import AddAndEditFormView from '../view/form-add-and-edit-event.js';
 
+const Mode = {
+  DEFAULT: 'DEFALT',
+  EDITING: 'EDITING',
+};
+
 export default class EventPresenter {
-  constructor(changeEvent) {
+  constructor(changeEvent, changeMode) {
     this._eventComponent = null;
     this._eventEditFormComponent = null;
     this._eventListElement = document.querySelector('.trip-events__list');
     this._changeEvent = changeEvent;
+    this._changeMode = changeMode;
+    this._mode = Mode.DEFAULT;
 
     this._handleDownArrowClick = this._handleDownArrowClick.bind(this);
     this._handleUpArrowClick = this._handleUpArrowClick.bind(this);
@@ -33,10 +40,10 @@ export default class EventPresenter {
       render(this._eventListElement, this._eventComponent, 'beforeend');
       return;
     }
-    if (this._eventListElement.contains(prevEventComponent.getElement())) {
+    if (this._mode === Mode.DEFAULT) {
       replace(this._eventComponent, prevEventComponent);
     }
-    if (this._eventListElement.contains(prevEventEditFormComponent.getElement())) {
+    if (this._mode === Mode.EDITING) {
       replace(this._eventEditFormComponent, prevEventEditFormComponent);
     }
     remove(prevEventComponent);
@@ -48,14 +55,23 @@ export default class EventPresenter {
     remove(this._eventEditFormComponent);
   }
 
+  resetView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._replaceEditFormWitnEvent();
+    }
+  }
+
   _replaceEventWithEditForm() {
     replace(this._eventEditFormComponent, this._eventComponent);
     document.addEventListener('keydown', this._escKeydownHandler);
+    this._changeMode();
+    this._mode = Mode.EDITING;
   }
 
   _replaceEditFormWitnEvent() {
     replace(this._eventComponent, this._eventEditFormComponent);
     document.removeEventListener('keydown', this._escKeydownHandler);
+    this._mode = Mode.DEFAULT;
   }
 
   _handleDownArrowClick() {
