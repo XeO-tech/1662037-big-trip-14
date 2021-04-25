@@ -51,7 +51,7 @@ export default class TripPresenter {
   _sortTasks(sortType) {
     switch (sortType) {
       case SortTypes.DEFAULT:
-        this._events = this._defaultSortedEvents;
+        this._events = [...this._defaultSortedEvents];
         break;
       case SortTypes.TIME:
         this._events.sort(sortByTime);
