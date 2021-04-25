@@ -3,15 +3,17 @@ import EventItemView from '../view/event-item.js';
 import AddAndEditFormView from '../view/form-add-and-edit-event.js';
 
 export default class EventPresenter {
-  constructor() {
+  constructor(changeEvent) {
     this._eventComponent = null;
     this._eventEditFormComponent = null;
     this._eventListElement = document.querySelector('.trip-events__list');
+    this._changeEvent = changeEvent;
 
     this._handleDownArrowClick = this._handleDownArrowClick.bind(this);
     this._handleUpArrowClick = this._handleUpArrowClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._escKeydownHandler = this._escKeydownHandler.bind(this);
+    this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
   }
 
   init(eventItem) {
@@ -25,6 +27,7 @@ export default class EventPresenter {
     this._eventComponent.setArrowClickHandler(this._handleDownArrowClick);
     this._eventEditFormComponent.setArrowClickHandler(this._handleUpArrowClick);
     this._eventEditFormComponent.setSubmitHandler(this._handleFormSubmit);
+    this._eventComponent.setFavoriteClickHandler(this._handleFavoriteClick);
 
     if (prevEventComponent === null || prevEventEditFormComponent === null) {
       render(this._eventListElement, this._eventComponent, 'beforeend');
@@ -65,6 +68,19 @@ export default class EventPresenter {
 
   _handleFormSubmit() {
     this._replaceEditFormWitnEvent();
+  }
+
+  _handleFavoriteClick() {
+    this._changeEvent(
+      Object.assign(
+        {},
+        this._data,
+        {
+          is_favorite: !this._data.is_favorite,
+        },
+      ),
+    );
+
   }
 
   _escKeydownHandler(evt) {
