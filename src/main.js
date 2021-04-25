@@ -5,7 +5,7 @@ import { sortEventsByStartDateAscending } from './utils/events.js';
 import { render } from './utils/render.js';
 import TripPesenter from './presenter/trip.js';
 
-const EVENT_NUMBERS = 3;
+const EVENT_NUMBERS = 20;
 
 const events = generateEvents(EVENT_NUMBERS);
 const eventsSortedByDate = sortEventsByStartDateAscending(events);
