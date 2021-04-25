@@ -30,7 +30,23 @@ const createSortingPanelTemplate = () => {
 };
 
 export default class SortingPanel extends AbstractView {
+  constructor() {
+    super();
+    this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
+  }
   getTemplate() {
     return createSortingPanelTemplate();
+  }
+  _sortTypeChangeHandler(evt) {
+    if (evt.target.tagName !== 'LABEL') {
+      return;
+    }
+    evt.preventDefault();
+    this._callback.sortTypeChange(evt.target.control.id);
+  }
+
+  setSortTypeChangeHandler(callback) {
+    this._callback.sortTypeChange = callback;
+    this.getElement().addEventListener('click', this._sortTypeChangeHandler);
   }
 }

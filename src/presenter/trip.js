@@ -2,9 +2,11 @@ import TripInfoView from '../view/trip-info.js';
 import TripCostView from '../view/trip-cost.js';
 import SortingPanelView from '../view/sorting-panel.js';
 import EmptyListPlaceholderView  from '../view/no-events.js';
+import EventPresenter from './event.js';
 import { render } from '../utils/render.js';
 import { updateItem } from '../utils/common.js';
-import EventPresenter from './event.js';
+import { sortByPrice, sortByTime } from '../utils/events.js';
+import { SortTypes } from '../consts.js';
 
 const tripInfoElement = document.querySelector('.trip-main__trip-info');
 const sortingElement = document.querySelector('.trip-events');
@@ -15,13 +17,17 @@ export default class TripPresenter {
     this._eventPresenters = {};
     this._sortingPanelComponent = new SortingPanelView();
     this._EmptyListPlaceholderComponent = new EmptyListPlaceholderView();
+    this._currentSortType = SortTypes.DEFAULT;
+
     this._handleEventChange = this._handleEventChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
   }
 
   init(events) {
     this._events = [...events];
+    this._defaultSortedEvents = [...events];
     this._tripInfoComponent = new TripInfoView(events);
     this._tripCostComponent = new TripCostView(events);
 
@@ -42,12 +48,28 @@ export default class TripPresenter {
     this._events.forEach((eventItem) => this._renderEvent(eventItem));
   }
 
+  _sortTasks(sortType) {
+    switch (sortType) {
+      case SortTypes.DEFAULT:
+        this._events = this._defaultSortedEvents;
+        break;
+      case SortTypes.TIME:
+        this._events.sort(sortByTime);
+        break;
+      case SortTypes.PRICE:
+        this._events.sort(sortByPrice);
+        break;
+    }
+    this._currentSortType = sortType;
+  }
+
   _renderEmptyList() {
     render(eventListElement, this._EmptyListPlaceholderComponent, 'beforebegin');
   }
 
   _renderSort() {
     render(sortingElement, this._sortingPanelComponent, 'afterbegin');
+    this._sortingPanelComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
   _renderTripInfo() {
@@ -60,6 +82,7 @@ export default class TripPresenter {
 
   _handleEventChange(updatedEvent) {
     this._events = updateItem(this._events, updatedEvent);
+    this._defaultSortedEvents = updateItem(this._defaultSortedEvents, updatedEvent);
     this._eventPresenters[updatedEvent.id].init(updatedEvent);
   }
 
@@ -67,6 +90,15 @@ export default class TripPresenter {
     Object
       .values(this._eventPresenters)
       .forEach((presenter) => presenter.resetView());
+  }
+
+  _handleSortTypeChange(sortType) {
+    if (this._currentSortType === sortType) {
+      return;
+    }
+    this._sortTasks(sortType);
+    this._clearEventList();
+    this._renderEvents();
   }
 
   _clearEventList() {
