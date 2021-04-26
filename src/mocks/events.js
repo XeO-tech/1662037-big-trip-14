@@ -36,14 +36,6 @@ const generatePhotos = () => {
   });
 };
 
-const generateDestination = () => {
-  return {
-    description: generateDescription(),
-    name: getRandomArrayElement(cities),
-    pictures: generatePhotos(),
-  };
-};
-
 const generateOffers = () => {
   return eventTypes.map((type) => {
     return {
@@ -59,7 +51,18 @@ const generateOffers = () => {
   });
 };
 
+const generateDestinations = () => {
+  return cities.map((city) => {
+    return {
+      description: generateDescription(),
+      name: city,
+      pictures: generatePhotos(),
+    };
+  });
+};
+
 const offersFullList = generateOffers();
+const destinationsFullList = generateDestinations();
 
 const generateOneEvent = () => {
   const type = getRandomArrayElement(eventTypes);
@@ -72,7 +75,7 @@ const generateOneEvent = () => {
     base_price: generatePrice(),
     date_from: startDateTime,
     date_to: endDateTime,
-    destination: generateDestination(),
+    destination: getRandomArrayElement(destinationsFullList),
     is_favorite: Boolean(getRandomIntFromRange(0,1)),
     offers,
     type,
@@ -80,4 +83,3 @@ const generateOneEvent = () => {
 };
 
 export const generateEvents = (eventNumbers) => new Array(eventNumbers).fill().map(() => generateOneEvent());
-
