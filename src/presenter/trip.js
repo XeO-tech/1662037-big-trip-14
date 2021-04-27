@@ -42,7 +42,7 @@ export default class TripPresenter {
 
   _renderEvent(eventItem) {
     const eventPresenter = new EventPresenter(this._handleEventChange, this._handleModeChange);
-    eventPresenter.init(eventItem);
+    eventPresenter.init(eventItem, this._offersFullList, this._destinationsFullList);
     this._eventPresenters[eventItem.id] = eventPresenter;
   }
 

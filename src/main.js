@@ -17,4 +17,3 @@ render(menuElement, new SiteMenuView(), 'beforeend');
 render(filtersElement, new FiltersPanelView(), 'beforeend');
 tripPresenter.init(events, offersFullList, destinationsFullList);
 
-

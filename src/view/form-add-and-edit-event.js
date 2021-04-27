@@ -21,6 +21,9 @@ const renderDestinationsOptions = () => {
 };
 
 const renderOffers = (offers) => {
+  if (offers.length === 0) {
+    return '';
+  }
   let counter = 0;
   return offers
     .map((offer) => {
@@ -39,6 +42,9 @@ const renderOffers = (offers) => {
 };
 
 const renderPhotos = (pictures) => {
+  if (pictures.length === 0) {
+    return '';
+  }
   return pictures
     .map((picture) => {
       return `<img class="event__photo" src="${picture.src}" alt="Event photo">`;
@@ -58,8 +64,10 @@ const createAddAndEditFormTemplate = (eventInfo = {}) => {
   } = eventInfo;
   const startDateTimeFormatted = startDateTime === null ? '' : dayjs(startDateTime).format('DD/MM/YY HH:mm');
   const endDateTimeFormatted = endDateTime === null ? '' : dayjs(endDateTime).format('DD/MM/YY HH:mm');
+
   const offersClassName = offers === null || offers.length === 0 ? 'visually-hidden' : '';
-  const destinationClassName = isAddNewEventForm || Object.keys(destination).length === 0 ? 'visually-hidden' : '';
+
+  const destinationClassName = isAddNewEventForm || (destination.description.length === 0 && destination.pictures.length === 0) ? 'visually-hidden' : '';
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -128,26 +136,89 @@ const createAddAndEditFormTemplate = (eventInfo = {}) => {
 };
 
 export default class AddAndEditForm extends AbstractView {
-  constructor(eventInfo) {
+  constructor(eventInfo, offersFullList, destinationFullList) {
     super();
     this._eventInfo = eventInfo;
+    this._offersFullList = offersFullList;
+    this._destinationsFullList = destinationFullList;
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._arrowClickHandler = this._arrowClickHandler.bind(this);
+    this._typeChangeHandler = this._typeChangeHandler.bind(this);
+    this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
+
+    this.getElement()
+      .querySelector('.event__type-group')
+      .addEventListener('change', this._typeChangeHandler);
+
+    this.getElement()
+      .querySelector('.event__input--destination')
+      .addEventListener('change', this._destinationChangeHandler);
   }
+
   getTemplate() {
     return createAddAndEditFormTemplate(this._eventInfo);
   }
+
+  updateElement() {
+    const prevElement = this.getElement();
+    const parentElement = prevElement.parentElement;
+    this.removeElement();
+    const newElement = this.getElement();
+
+    parentElement.replaceChild(newElement, prevElement);
+  }
+
+  updateData(updatedInfo) {
+    if (!updatedInfo) {
+      return;
+    }
+
+    this._eventInfo = Object.assign({}, this._eventInfo, updatedInfo);
+
+    this.updateElement();
+  }
+
   _formSubmitHandler(evt) {
     evt.preventDefault();
     this._callback.submit(this._eventInfo);
   }
+
   _arrowClickHandler() {
     this._callback.arrowClick();
   }
+
+  _typeChangeHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      offers: this._offersFullList.find((element) => element.type === evt.target.value).offers,
+    });
+  }
+
+  _destinationChangeHandler(evt) {
+    evt.preventDefault();
+    let newData;
+    const newDestination = this._destinationsFullList.find((element) => element.name === evt.target.value);
+
+    newDestination === undefined ?
+      newData = {
+        destination: {
+          name: evt.target.value,
+          description: '',
+          pictures: [],
+        },
+      } :
+      newData = {
+        destination: newDestination,
+      };
+
+    this.updateData(newData);
+  }
+
   setSubmitHandler(callback) {
     this._callback.submit = callback;
     this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
   }
+
   setArrowClickHandler(callback) {
     this._callback.arrowClick = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._arrowClickHandler);
