@@ -56,6 +56,7 @@ export default class EventPresenter {
 
   resetView() {
     if (this._mode !== Mode.DEFAULT) {
+      this._eventEditFormComponent.reset(this._data);
       this._replaceEditFormWitnEvent();
     }
   }
@@ -78,6 +79,7 @@ export default class EventPresenter {
   }
 
   _handleUpArrowClick() {
+    this._eventEditFormComponent.reset(this._data);
     this._replaceEditFormWitnEvent();
   }
 
@@ -101,6 +103,7 @@ export default class EventPresenter {
   _escKeydownHandler(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
+      this._eventEditFormComponent.reset(this._data);
       this._replaceEditFormWitnEvent();
     }
   }
