@@ -61,8 +61,8 @@ const generateDestinations = () => {
   });
 };
 
-const offersFullList = generateOffers();
-const destinationsFullList = generateDestinations();
+export const offersFullList = generateOffers();
+export const destinationsFullList = generateDestinations();
 
 const generateOneEvent = () => {
   const type = getRandomArrayElement(eventTypes);

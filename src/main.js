@@ -1,6 +1,6 @@
 import FiltersPanelView from './view/filters.js';
 import SiteMenuView from './view/site-menu.js';
-import { generateEvents } from './mocks/events.js';
+import { generateEvents, offersFullList, destinationsFullList } from './mocks/events.js';
 import { render } from './utils/render.js';
 import TripPesenter from './presenter/trip.js';
 
@@ -15,5 +15,6 @@ const tripPresenter = new TripPesenter();
 
 render(menuElement, new SiteMenuView(), 'beforeend');
 render(filtersElement, new FiltersPanelView(), 'beforeend');
-tripPresenter.init(events);
+tripPresenter.init(events, offersFullList, destinationsFullList);
+
 

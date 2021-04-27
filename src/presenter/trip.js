@@ -25,9 +25,11 @@ export default class TripPresenter {
 
   }
 
-  init(events) {
+  init(events, offersFullList, destinationsFullList) {
     this._events = [...events];
     this._defaultSortedEvents = [...events];
+    this._offersFullList = [...offersFullList];
+    this._destinationsFullList = [...destinationsFullList];
     this._tripInfoComponent = new TripInfoView(events);
     this._tripCostComponent = new TripCostView(events);
 
