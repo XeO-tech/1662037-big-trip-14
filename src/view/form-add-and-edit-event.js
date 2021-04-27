@@ -17,7 +17,7 @@ const renderTypesMenu = (currentType) => {
 const renderDestinationsOptions = () => {
   return cities
     .map((city) => `<option value="${city}"></option>`)
-    .join();
+    .join('');
 };
 
 const renderOffers = (offers) => {
@@ -141,18 +141,13 @@ export default class AddAndEditForm extends AbstractView {
     this._eventInfo = eventInfo;
     this._offersFullList = offersFullList;
     this._destinationsFullList = destinationFullList;
+
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._arrowClickHandler = this._arrowClickHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
 
-    this.getElement()
-      .querySelector('.event__type-group')
-      .addEventListener('change', this._typeChangeHandler);
-
-    this.getElement()
-      .querySelector('.event__input--destination')
-      .addEventListener('change', this._destinationChangeHandler);
+    this._setInnerHandlers();
   }
 
   getTemplate() {
@@ -166,6 +161,7 @@ export default class AddAndEditForm extends AbstractView {
     const newElement = this.getElement();
 
     parentElement.replaceChild(newElement, prevElement);
+    this.restoreHandlers();
   }
 
   updateData(updatedInfo) {
@@ -190,6 +186,7 @@ export default class AddAndEditForm extends AbstractView {
   _typeChangeHandler(evt) {
     evt.preventDefault();
     this.updateData({
+      type: evt.target.value,
       offers: this._offersFullList.find((element) => element.type === evt.target.value).offers,
     });
   }
@@ -214,6 +211,16 @@ export default class AddAndEditForm extends AbstractView {
     this.updateData(newData);
   }
 
+  _setInnerHandlers() {
+    this.getElement()
+      .querySelector('.event__type-group')
+      .addEventListener('change', this._typeChangeHandler);
+
+    this.getElement()
+      .querySelector('.event__input--destination')
+      .addEventListener('change', this._destinationChangeHandler);
+  }
+
   setSubmitHandler(callback) {
     this._callback.submit = callback;
     this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
@@ -222,6 +229,12 @@ export default class AddAndEditForm extends AbstractView {
   setArrowClickHandler(callback) {
     this._callback.arrowClick = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._arrowClickHandler);
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setSubmitHandler(this._callback.submit);
+    this.setArrowClickHandler(this._callback.arrowClick);
   }
 }
 
