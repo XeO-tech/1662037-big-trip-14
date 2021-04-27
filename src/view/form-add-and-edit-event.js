@@ -1,4 +1,4 @@
-import AbstractView from './abstract.js';
+import SmartView from './smart.js';
 import { eventTypes, cities } from '../consts.js';
 import dayjs from 'dayjs';
 
@@ -30,7 +30,7 @@ const renderOffers = (offers) => {
       const offerShortCut = offer.title.toLowerCase().replace(/\s+/g, '_');
       counter++;
       return `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerShortCut}-${counter}" type="checkbox" name="event-offer-${offerShortCut}" checked>
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerShortCut}-${counter}" type="checkbox" name="event-offer-${offerShortCut}">
       <label class="event__offer-label" for="event-offer-${offerShortCut}-${counter}">
         <span class="event__offer-title">${offer.title}</span>
         &plus;&euro;&nbsp;
@@ -135,10 +135,10 @@ const createAddAndEditFormTemplate = (eventInfo = {}) => {
 </li>`;
 };
 
-export default class AddAndEditForm extends AbstractView {
+export default class AddAndEditForm extends SmartView {
   constructor(eventInfo, offersFullList, destinationFullList) {
     super();
-    this._eventInfo = eventInfo;
+    this._data = eventInfo;
     this._offersFullList = offersFullList;
     this._destinationsFullList = destinationFullList;
 
@@ -151,32 +151,12 @@ export default class AddAndEditForm extends AbstractView {
   }
 
   getTemplate() {
-    return createAddAndEditFormTemplate(this._eventInfo);
-  }
-
-  updateElement() {
-    const prevElement = this.getElement();
-    const parentElement = prevElement.parentElement;
-    this.removeElement();
-    const newElement = this.getElement();
-
-    parentElement.replaceChild(newElement, prevElement);
-    this.restoreHandlers();
-  }
-
-  updateData(updatedInfo) {
-    if (!updatedInfo) {
-      return;
-    }
-
-    this._eventInfo = Object.assign({}, this._eventInfo, updatedInfo);
-
-    this.updateElement();
+    return createAddAndEditFormTemplate(this._data);
   }
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.submit(this._eventInfo);
+    this._callback.submit(this._data);
   }
 
   _arrowClickHandler() {
