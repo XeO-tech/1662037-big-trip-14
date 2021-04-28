@@ -20,7 +20,7 @@ const renderDestinationsOptions = () => {
     .join('');
 };
 
-const renderOffers = (offers) => {
+const renderOffers = (offers, areOffersChecked) => {
   if (offers.length === 0) {
     return '';
   }
@@ -30,7 +30,7 @@ const renderOffers = (offers) => {
       const offerShortCut = offer.title.toLowerCase().replace(/\s+/g, '_');
       counter++;
       return `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerShortCut}-${counter}" type="checkbox" name="event-offer-${offerShortCut}">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerShortCut}-${counter}" type="checkbox" name="event-offer-${offerShortCut}" ${areOffersChecked ? 'checked': ''}>
       <label class="event__offer-label" for="event-offer-${offerShortCut}-${counter}">
         <span class="event__offer-title">${offer.title}</span>
         &plus;&euro;&nbsp;
@@ -53,7 +53,6 @@ const renderPhotos = (pictures) => {
 };
 
 const createAddAndEditFormTemplate = (eventInfo = {}) => {
-  const isAddNewEventForm = Object.keys(eventInfo).length === 0;
   const {
     type = 'flight',
     destination,
@@ -61,6 +60,8 @@ const createAddAndEditFormTemplate = (eventInfo = {}) => {
     date_to: endDateTime = null,
     base_price: basePrice = '',
     offers = null,
+    areOffersChecked,
+    isAddNewEventForm,
   } = eventInfo;
   const startDateTimeFormatted = startDateTime === null ? '' : dayjs(startDateTime).format('DD/MM/YY HH:mm');
   const endDateTimeFormatted = endDateTime === null ? '' : dayjs(endDateTime).format('DD/MM/YY HH:mm');
@@ -118,7 +119,7 @@ const createAddAndEditFormTemplate = (eventInfo = {}) => {
       <section class="event__section  event__section--offers ${offersClassName}">
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
         <div class="event__available-offers">
-          ${isAddNewEventForm ? '' : renderOffers(offers)}
+          ${isAddNewEventForm ? '' : renderOffers(offers, areOffersChecked)}
         </div>
       </section>
       <section class="event__section  event__section--destination ${destinationClassName}">
@@ -138,7 +139,7 @@ const createAddAndEditFormTemplate = (eventInfo = {}) => {
 export default class AddAndEditForm extends SmartView {
   constructor(eventInfo, offersFullList, destinationFullList) {
     super();
-    this._data = eventInfo;
+    this._data = this.parseEventInfoToData(eventInfo);
     this._offersFullList = offersFullList;
     this._destinationsFullList = destinationFullList;
 
@@ -168,6 +169,7 @@ export default class AddAndEditForm extends SmartView {
     this.updateData({
       type: evt.target.value,
       offers: this._offersFullList.find((element) => element.type === evt.target.value).offers,
+      areOffersChecked: false,
     });
   }
 
@@ -218,7 +220,31 @@ export default class AddAndEditForm extends SmartView {
   }
 
   reset(eventInfo) {
-    this.updateData(eventInfo);
+    this.updateData(this.parseEventInfoToData(eventInfo));
+  }
+
+  parseEventInfoToData(eventInfo) {
+    return Object.assign(
+      {},
+      eventInfo,
+      {
+        areOffersChecked: true,
+        isAddNewEventForm: Object.keys(eventInfo).length === 0,
+        // areOffersAvaliable,
+        // isDescriptionAvaliable,
+        // arePicturesAvaliable,
+      });
+  }
+
+  parseDataToEventInfo(data) {
+    data = Object.assign(
+      {},
+      this._data,
+    );
+    delete data.areOffersChecked;
+    delete data.isAddNewEventForm;
+
+    return data;
   }
 }
 
