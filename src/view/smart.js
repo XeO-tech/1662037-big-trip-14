@@ -10,14 +10,15 @@ export default class Smart extends Abstract {
     throw new Error('Abstract method not implemented: restoreHandlers');
   }
 
-  updateData(updatedInfo) {
+  updateData(updatedInfo, rerenderFlag) {
     if (!updatedInfo) {
       return;
     }
 
     this._data = Object.assign({}, this._data, updatedInfo);
-
-    this.updateElement();
+    if (rerenderFlag) {
+      this.updateElement();
+    }
   }
 
   updateElement() {
