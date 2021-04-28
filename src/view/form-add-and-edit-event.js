@@ -282,9 +282,6 @@ export default class AddAndEditForm extends SmartView {
         avaliableDestinations: this._destinationNames,
         areOffersChecked: true,
         isAddNewEventForm: Object.keys(eventInfo).length === 0,
-        // areOffersAvaliable,
-        // isDescriptionAvaliable,
-        // arePicturesAvaliable,
       });
   }
 
