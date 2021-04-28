@@ -174,7 +174,7 @@ export default class AddAndEditForm extends SmartView {
       type: evt.target.value,
       offers: this._offersFullList.find((element) => element.type === evt.target.value).offers,
       areOffersChecked: false,
-    });
+    }, true);
   }
 
   _destinationChangeHandler(evt) {
@@ -194,7 +194,7 @@ export default class AddAndEditForm extends SmartView {
         destination: newDestination,
       };
 
-    this.updateData(newData);
+    this.updateData(newData, true);
   }
 
   _setInnerHandlers() {
