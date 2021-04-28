@@ -30,6 +30,9 @@ export default class TripPresenter {
     this._defaultSortedEvents = [...events];
     this._offersFullList = [...offersFullList];
     this._destinationsFullList = [...destinationsFullList];
+    this._destinationNames = [];
+    this._destinationsFullList.forEach((destination) => this._destinationNames.push(destination.name));
+
     this._tripInfoComponent = new TripInfoView(events);
     this._tripCostComponent = new TripCostView(events);
 
@@ -42,7 +45,7 @@ export default class TripPresenter {
 
   _renderEvent(eventItem) {
     const eventPresenter = new EventPresenter(this._handleEventChange, this._handleModeChange);
-    eventPresenter.init(eventItem, this._offersFullList, this._destinationsFullList);
+    eventPresenter.init(eventItem, this._offersFullList, this._destinationsFullList, this._destinationNames);
     this._eventPresenters[eventItem.id] = eventPresenter;
   }
 

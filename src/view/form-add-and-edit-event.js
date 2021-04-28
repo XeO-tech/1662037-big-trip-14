@@ -1,5 +1,5 @@
 import SmartView from './smart.js';
-import { eventTypes, cities } from '../consts.js';
+import { eventTypes } from '../consts.js';
 import dayjs from 'dayjs';
 
 const renderTypesMenu = (currentType) => {
@@ -14,9 +14,9 @@ const renderTypesMenu = (currentType) => {
     .join('');
 };
 
-const renderDestinationsOptions = () => {
-  return cities
-    .map((city) => `<option value="${city}"></option>`)
+const renderDestinationsOptions = (avaliableDestinations) => {
+  return avaliableDestinations
+    .map((destination) => `<option value="${destination}"></option>`)
     .join('');
 };
 
@@ -60,9 +60,12 @@ const createAddAndEditFormTemplate = (eventInfo = {}) => {
     date_to: endDateTime = null,
     base_price: basePrice = '',
     offers = null,
+    avaliableDestinations,
     areOffersChecked,
     isAddNewEventForm,
   } = eventInfo;
+  // console.log(avaliableDestinations);
+
   const startDateTimeFormatted = startDateTime === null ? '' : dayjs(startDateTime).format('DD/MM/YY HH:mm');
   const endDateTimeFormatted = endDateTime === null ? '' : dayjs(endDateTime).format('DD/MM/YY HH:mm');
 
@@ -92,7 +95,7 @@ const createAddAndEditFormTemplate = (eventInfo = {}) => {
         </label>
         <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${isAddNewEventForm ? '' : destination.name}" list="destination-list-1">
         <datalist id="destination-list-1">
-          ${renderDestinationsOptions()}
+          ${renderDestinationsOptions(avaliableDestinations)}
         </datalist>
       </div>
       <div class="event__field-group  event__field-group--time">
@@ -137,11 +140,12 @@ const createAddAndEditFormTemplate = (eventInfo = {}) => {
 };
 
 export default class AddAndEditForm extends SmartView {
-  constructor(eventInfo, offersFullList, destinationFullList) {
+  constructor(eventInfo, offersFullList, destinationFullList, destinationNames) {
     super();
-    this._data = this.parseEventInfoToData(eventInfo);
     this._offersFullList = offersFullList;
     this._destinationsFullList = destinationFullList;
+    this._destinationNames = destinationNames;
+    this._data = this.parseEventInfoToData(eventInfo);
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._arrowClickHandler = this._arrowClickHandler.bind(this);
@@ -228,6 +232,7 @@ export default class AddAndEditForm extends SmartView {
       {},
       eventInfo,
       {
+        avaliableDestinations: this._destinationNames,
         areOffersChecked: true,
         isAddNewEventForm: Object.keys(eventInfo).length === 0,
         // areOffersAvaliable,
@@ -243,6 +248,7 @@ export default class AddAndEditForm extends SmartView {
     );
     delete data.areOffersChecked;
     delete data.isAddNewEventForm;
+    delete data.avaliableDestinations;
 
     return data;
   }

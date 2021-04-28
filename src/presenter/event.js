@@ -23,12 +23,12 @@ export default class EventPresenter {
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
   }
 
-  init(eventItem, offersFullList, destinationFullList) {
+  init(eventItem, offersFullList, destinationFullList, destinationNames) {
     this._data = eventItem;
     const prevEventComponent = this._eventComponent;
     const prevEventEditFormComponent = this._eventEditFormComponent;
     this._eventComponent = new EventItemView(eventItem);
-    this._eventEditFormComponent = new AddAndEditFormView(eventItem, offersFullList, destinationFullList);
+    this._eventEditFormComponent = new AddAndEditFormView(eventItem, offersFullList, destinationFullList, destinationNames);
 
     this._eventComponent.setArrowClickHandler(this._handleDownArrowClick);
     this._eventEditFormComponent.setArrowClickHandler(this._handleUpArrowClick);
