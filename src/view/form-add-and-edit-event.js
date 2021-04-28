@@ -1,6 +1,8 @@
 import SmartView from './smart.js';
 import { eventTypes } from '../consts.js';
 import dayjs from 'dayjs';
+import flatpickr from 'flatpickr';
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const renderTypesMenu = (currentType) => {
   return eventTypes
@@ -145,14 +147,19 @@ export default class AddAndEditForm extends SmartView {
     this._offersFullList = offersFullList;
     this._destinationsFullList = destinationFullList;
     this._destinationNames = destinationNames;
+    this._startDatePicker = null;
+    this._endDatePicker = null;
     this._data = this.parseEventInfoToData(eventInfo);
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._arrowClickHandler = this._arrowClickHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
+    this._startDateChangeHandler = this._startDateChangeHandler.bind(this);
+    this._endDateChangeHandler = this._endDateChangeHandler.bind(this);
 
     this._setInnerHandlers();
+    this._setDatePicker();
   }
 
   getTemplate() {
@@ -197,6 +204,14 @@ export default class AddAndEditForm extends SmartView {
     this.updateData(newData);
   }
 
+  _startDateChangeHandler([userDate]) {
+    this.updateData({date_from: userDate});
+  }
+
+  _endDateChangeHandler([userDate]) {
+    this.updateData({date_to: userDate});
+  }
+
   _setInnerHandlers() {
     this.getElement()
       .querySelector('.event__type-group')
@@ -205,6 +220,38 @@ export default class AddAndEditForm extends SmartView {
     this.getElement()
       .querySelector('.event__input--destination')
       .addEventListener('change', this._destinationChangeHandler);
+  }
+
+  _setDatePicker() {
+    if (this._startDatePicker) {
+      this._startDatePicker.destroy();
+      this._startDatePicker = null;
+    }
+
+    if (this._endDatePicker) {
+      this._endDatePicker.destroy();
+      this._endDatePicker = null;
+    }
+
+    this._startDatePicker = flatpickr(
+      this.getElement().querySelector('#event-start-time-1'),
+      {
+        dateFormat: 'j/m/y H:i',
+        defaultDate: this._data.date_from,
+        onChange: this._startDateChangeHandler,
+        enableTime: true,
+      },
+    );
+
+    this._endDatePicker = flatpickr(
+      this.getElement().querySelector('#event-end-time-1'),
+      {
+        dateFormat: 'j/m/y H:i',
+        defaultDate: this._data.date_to,
+        onChange: this._endDateChangeHandler,
+        enableTime: true,
+      },
+    );
   }
 
   setSubmitHandler(callback) {
@@ -219,6 +266,7 @@ export default class AddAndEditForm extends SmartView {
 
   restoreHandlers() {
     this._setInnerHandlers();
+    this._setDatePicker();
     this.setSubmitHandler(this._callback.submit);
     this.setArrowClickHandler(this._callback.arrowClick);
   }

@@ -11,13 +11,13 @@ const generateStartDateTime = () => dayjs()
   .subtract(getRandomIntFromRange(0, 7), 'day')
   .subtract(getRandomIntFromRange(0, 1), 'hour')
   .subtract(getRandomIntFromRange(0, 1) * 10, 'minute')
-  .format();
+  .toDate();
 
 const generateEndDateTime = (startDateTime) => dayjs(startDateTime)
   .add(getRandomIntFromRange(0, 2), 'day')
   .add(getRandomIntFromRange(0, 1), 'hour')
   .add(getRandomIntFromRange(1, 2) * 10, 'minute')
-  .format();
+  .toDate();
 
 const generatePrice = () => Math.floor(Math.random() * getRandomIntFromRange(1, 100)) * 10;
 
