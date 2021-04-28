@@ -66,7 +66,6 @@ const createAddAndEditFormTemplate = (eventInfo = {}) => {
     areOffersChecked,
     isAddNewEventForm,
   } = eventInfo;
-  // console.log(avaliableDestinations);
 
   const startDateTimeFormatted = startDateTime === null ? '' : dayjs(startDateTime).format('DD/MM/YY HH:mm');
   const endDateTimeFormatted = endDateTime === null ? '' : dayjs(endDateTime).format('DD/MM/YY HH:mm');
