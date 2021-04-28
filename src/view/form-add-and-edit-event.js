@@ -271,7 +271,7 @@ export default class AddAndEditForm extends SmartView {
   }
 
   reset(eventInfo) {
-    this.updateData(this.parseEventInfoToData(eventInfo));
+    this.updateData(this.parseEventInfoToData(eventInfo), true);
   }
 
   parseEventInfoToData(eventInfo) {
