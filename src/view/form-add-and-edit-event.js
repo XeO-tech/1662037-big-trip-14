@@ -204,11 +204,11 @@ export default class AddAndEditForm extends SmartView {
   }
 
   _startDateChangeHandler([userDate]) {
-    this.updateData({date_from: userDate});
+    this.updateData({date_from: userDate}, false);
   }
 
   _endDateChangeHandler([userDate]) {
-    this.updateData({date_to: userDate});
+    this.updateData({date_to: userDate}, false);
   }
 
   _setInnerHandlers() {
