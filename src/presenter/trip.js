@@ -19,7 +19,8 @@ export default class TripPresenter {
     this._EmptyListPlaceholderComponent = new EmptyListPlaceholderView();
     this._currentSortType = SortTypes.DEFAULT;
 
-    this._handleEventChange = this._handleEventChange.bind(this);
+    this._handleViewAction = this._handleViewAction.bind(this);
+    this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
