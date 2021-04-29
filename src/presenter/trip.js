@@ -41,7 +41,7 @@ export default class TripPresenter {
   }
 
   _renderEvent(eventItem) {
-    const eventPresenter = new EventPresenter(this._handleEventChange, this._handleModeChange);
+    const eventPresenter = new EventPresenter(this._handleViewAction, this._handleModeChange);
     eventPresenter.init(eventItem, this._offersFullList, this._destinationsFullList, this._destinationNames);
     this._eventPresenters[eventItem.id] = eventPresenter;
   }
@@ -77,15 +77,26 @@ export default class TripPresenter {
     render(tripInfoElement, this._tripCostComponent, 'beforeend');
   }
 
-  _handleEventChange(updatedEvent) {
-    // Здесь будет вызываться обновление модели
-    this._eventPresenters[updatedEvent.id].init(updatedEvent);
-  }
-
   _handleModeChange() {
     Object
       .values(this._eventPresenters)
       .forEach((presenter) => presenter.resetView());
+  }
+
+  _handleViewAction(userAction, updateType, update) {
+    console.log(userAction, updateType, update);
+    // Здесь будем вызывать обновление модели.
+    // userAction - действие пользователя, нужно чтобы понять, какой метод модели вызвать
+    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
+    // update - обновленные данные
+  }
+
+  _handleModelEvent(updateType, data) {
+    console.log(updateType, data);
+    // В зависимости от типа изменений решаем, что делать:
+    // - обновить часть списка (например, когда поменялось описание)
+    // - обновить список (например, когда задача ушла в архив)
+    // - обновить всю доску (например, при переключении фильтра)
   }
 
   _handleSortTypeChange(sortType) {
@@ -104,4 +115,3 @@ export default class TripPresenter {
     this._eventPresenters = {};
   }
 }
-// test
