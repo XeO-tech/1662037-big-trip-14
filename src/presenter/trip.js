@@ -4,7 +4,6 @@ import SortingPanelView from '../view/sorting-panel.js';
 import EmptyListPlaceholderView  from '../view/no-events.js';
 import EventPresenter from './event.js';
 import { render } from '../utils/render.js';
-import { updateItem } from '../utils/common.js';
 import { sortByPrice, sortByTime } from '../utils/events.js';
 import { SortTypes } from '../consts.js';
 
@@ -13,8 +12,9 @@ const sortingElement = document.querySelector('.trip-events');
 const eventListElement = document.querySelector('.trip-events__list');
 
 export default class TripPresenter {
-  constructor() {
+  constructor(eventsModel) {
     this._eventPresenters = {};
+    this._eventsModel = eventsModel;
     this._sortingPanelComponent = new SortingPanelView();
     this._EmptyListPlaceholderComponent = new EmptyListPlaceholderView();
     this._currentSortType = SortTypes.DEFAULT;
@@ -22,25 +22,22 @@ export default class TripPresenter {
     this._handleEventChange = this._handleEventChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
-
   }
 
-  init(events, offersFullList, destinationsFullList) {
-    this._events = [...events];
-    this._defaultSortedEvents = [...events];
+  init(offersFullList, destinationsFullList) {
     this._offersFullList = [...offersFullList];
     this._destinationsFullList = [...destinationsFullList];
     this._destinationNames = [];
     this._destinationsFullList.forEach((destination) => this._destinationNames.push(destination.name));
 
-    this._tripInfoComponent = new TripInfoView(events);
-    this._tripCostComponent = new TripCostView(events);
+    this._tripInfoComponent = new TripInfoView(this._getEvents());
+    this._tripCostComponent = new TripCostView(this._getEvents());
 
     this._renderSort();
     this._renderTripInfo();
     this._renderTripCost();
 
-    (Object.keys(this._events).length === 0) ? this._renderEmptyList() : this._renderEvents();
+    (Object.keys(this._getEvents()).length === 0) ? this._renderEmptyList() : this._renderEvents();
   }
 
   _renderEvent(eventItem) {
@@ -50,22 +47,17 @@ export default class TripPresenter {
   }
 
   _renderEvents() {
-    this._events.forEach((eventItem) => this._renderEvent(eventItem));
+    this._getEvents().forEach((eventItem) => this._renderEvent(eventItem));
   }
 
-  _sortTasks(sortType) {
-    switch (sortType) {
-      case SortTypes.DEFAULT:
-        this._events = [...this._defaultSortedEvents];
-        break;
+  _getEvents() {
+    switch (this._currentSortType) {
       case SortTypes.TIME:
-        this._events.sort(sortByTime);
-        break;
+        return this._eventsModel.getEvents().slice().sort(sortByTime);
       case SortTypes.PRICE:
-        this._events.sort(sortByPrice);
-        break;
+        return this._eventsModel.getEvents().slice().sort(sortByPrice);
     }
-    this._currentSortType = sortType;
+    return this._eventsModel.getEvents();
   }
 
   _renderEmptyList() {
@@ -86,8 +78,7 @@ export default class TripPresenter {
   }
 
   _handleEventChange(updatedEvent) {
-    this._events = updateItem(this._events, updatedEvent);
-    this._defaultSortedEvents = updateItem(this._defaultSortedEvents, updatedEvent);
+    // Здесь будет вызываться обновление модели
     this._eventPresenters[updatedEvent.id].init(updatedEvent);
   }
 
@@ -101,7 +92,7 @@ export default class TripPresenter {
     if (this._currentSortType === sortType) {
       return;
     }
-    this._sortTasks(sortType);
+    this._currentSortType = sortType;
     this._clearEventList();
     this._renderEvents();
   }
