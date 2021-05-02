@@ -30,6 +30,8 @@ export const sortByTime = (a, b) => {
   return bEventDuration.asMilliseconds() - aEventDuration.asMilliseconds();
 };
 
+export const sortByStartDate = (a, b) => a.date_from - b.date_from;
+
 export const sortByDateAscending = (a, b) => new Date(a) - new Date(b);
 
 export const sortByDateDescending = (a, b) => new Date(b) - new Date(a);

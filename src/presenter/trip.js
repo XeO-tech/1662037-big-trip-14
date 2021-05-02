@@ -4,7 +4,7 @@ import SortingPanelView from '../view/sorting-panel.js';
 import EmptyListPlaceholderView  from '../view/no-events.js';
 import EventPresenter from './event.js';
 import { remove, render } from '../utils/render.js';
-import { sortByPrice, sortByTime } from '../utils/events.js';
+import { sortByPrice, sortByTime, sortByStartDate } from '../utils/events.js';
 import { SortTypes, UserAction, UpdateType } from '../consts.js';
 
 const tripInfoElement = document.querySelector('.trip-main__trip-info');
@@ -68,7 +68,7 @@ export default class TripPresenter {
       case SortTypes.PRICE:
         return this._eventsModel.getEvents().slice().sort(sortByPrice);
     }
-    return this._eventsModel.getEvents();
+    return this._eventsModel.getEvents().slice().sort(sortByStartDate);
   }
 
   _renderEmptyList() {
