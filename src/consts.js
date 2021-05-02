@@ -8,14 +8,20 @@ export const SortTypes = {
   PRICE: 'sort-price',
 };
 
-export const UserAction = {
+export const UserActions = {
   UPDATE_EVENT: 'UPDATE_EVENT',
   ADD_EVENT: 'ADD_EVENT',
   DELETE_EVENT: 'DELETE_EVENT',
 };
 
-export const UpdateType = {
+export const UpdateTypes = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+};
+
+export const FilterTypes = {
+  ALL: 'all',
+  FUTURE: 'future',
+  PAST: 'past',
 };

@@ -5,7 +5,7 @@ import EmptyListPlaceholderView  from '../view/no-events.js';
 import EventPresenter from './event.js';
 import { remove, render } from '../utils/render.js';
 import { sortByPrice, sortByTime, sortByStartDate } from '../utils/events.js';
-import { SortTypes, UserAction, UpdateType } from '../consts.js';
+import { SortTypes, UserActions, UpdateTypes } from '../consts.js';
 
 const tripInfoElement = document.querySelector('.trip-main__trip-info');
 const sortingElement = document.querySelector('.trip-events');
@@ -116,13 +116,13 @@ export default class TripPresenter {
 
   _handleViewAction(userAction, updateType, update) {
     switch (userAction) {
-      case UserAction.UPDATE_EVENT:
+      case UserActions.UPDATE_EVENT:
         this._eventsModel.updateEvent(updateType, update);
         break;
-      case UserAction.ADD_EVENT:
+      case UserActions.ADD_EVENT:
         this._eventsModel.addEvent(updateType, update);
         break;
-      case UserAction.DELETE_EVENT:
+      case UserActions.DELETE_EVENT:
         this._eventsModel.deleteEvent(updateType, update);
         break;
     }
@@ -130,16 +130,16 @@ export default class TripPresenter {
 
   _handleModelEvent(updateType, data) {
     switch (updateType) {
-      case UpdateType.PATCH:
+      case UpdateTypes.PATCH:
         this._eventPresenters[data.id].init(data);
         break;
       // При смене фильтра или переключении с экрана со списком точек маршрута на экран статистики и обратно сортировка сбрасывается на состояние «Day». Информация о поездке не перерисовывается
-      case UpdateType.MINOR:
+      case UpdateTypes.MINOR:
         this._clearBoard({resetSortType: true}, {resetTripInfo: false});
         this._renderBoard({resetTripInfo: false});
         break;
       // При добавлении, изменении, удалеении события перерисовываем всю доску и информацию о поездке
-      case UpdateType.MAJOR:
+      case UpdateTypes.MAJOR:
         this._clearBoard();
         this._renderBoard();
         break;
