@@ -4,6 +4,7 @@ import { generateEvents, offersFullList, destinationsFullList } from './mocks/ev
 import { render } from './utils/render.js';
 import TripPesenter from './presenter/trip.js';
 import EventsModel from './model/events.js';
+import FilterModel from './model/filters.js';
 
 const EVENT_NUMBERS = 20;
 
@@ -14,6 +15,8 @@ const menuElement = document.querySelector('.trip-main__trip-controls');
 
 const eventsModel = new EventsModel();
 eventsModel.setEvents(events);
+
+const filterModel = new FilterModel();
 
 const tripPresenter = new TripPesenter(eventsModel);
 
