@@ -5,7 +5,7 @@ import { render } from './utils/render.js';
 import TripPesenter from './presenter/trip.js';
 import EventsModel from './model/events.js';
 
-const EVENT_NUMBERS = 2;
+const EVENT_NUMBERS = 20;
 
 const events = generateEvents(EVENT_NUMBERS);
 

@@ -279,6 +279,7 @@ export default class AddAndEditForm extends SmartView {
     this._setDatePicker();
     this.setSubmitHandler(this._callback.submit);
     this.setArrowClickHandler(this._callback.arrowClick);
+    this.setDeleteClickHandler(this._callback.delete);
   }
 
   reset(eventInfo) {
