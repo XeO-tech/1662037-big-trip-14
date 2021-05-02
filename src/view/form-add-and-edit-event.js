@@ -151,6 +151,7 @@ export default class AddAndEditForm extends SmartView {
     this._data = this.parseEventInfoToData(eventInfo);
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._deleteClickHandler = this._deleteClickHandler.bind(this);
     this._arrowClickHandler = this._arrowClickHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
@@ -168,6 +169,11 @@ export default class AddAndEditForm extends SmartView {
   _formSubmitHandler(evt) {
     evt.preventDefault();
     this._callback.submit(this._data);
+  }
+
+  _deleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.delete(this.parseDataToEventInfo(this._data));
   }
 
   _arrowClickHandler() {
@@ -253,14 +259,19 @@ export default class AddAndEditForm extends SmartView {
     );
   }
 
+  setArrowClickHandler(callback) {
+    this._callback.arrowClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._arrowClickHandler);
+  }
+
   setSubmitHandler(callback) {
     this._callback.submit = callback;
     this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
   }
 
-  setArrowClickHandler(callback) {
-    this._callback.arrowClick = callback;
-    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._arrowClickHandler);
+  setDeleteClickHandler(callback) {
+    this._callback.delete = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._deleteClickHandler);
   }
 
   restoreHandlers() {
@@ -272,6 +283,19 @@ export default class AddAndEditForm extends SmartView {
 
   reset(eventInfo) {
     this.updateData(this.parseEventInfoToData(eventInfo), true);
+  }
+
+  removeElement() {
+    super.removeElement();
+
+    if (this._startDatePicker) {
+      this._startDatePicker.destroy();
+      this._startDatePicker = null;
+    }
+    if (this._endDatePicker) {
+      this._endDatePicker.destroy();
+      this._endDatePicker = null;
+    }
   }
 
   parseEventInfoToData(eventInfo) {

@@ -22,6 +22,7 @@ export default class EventPresenter {
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._escKeydownHandler = this._escKeydownHandler.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
 
   init(eventItem, offersFullList, destinationFullList, destinationNames) {
@@ -32,9 +33,10 @@ export default class EventPresenter {
     this._eventEditFormComponent = new AddAndEditFormView(eventItem, offersFullList, destinationFullList, destinationNames);
 
     this._eventComponent.setArrowClickHandler(this._handleDownArrowClick);
+    this._eventComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._eventEditFormComponent.setArrowClickHandler(this._handleUpArrowClick);
     this._eventEditFormComponent.setSubmitHandler(this._handleFormSubmit);
-    this._eventComponent.setFavoriteClickHandler(this._handleFavoriteClick);
+    this._eventEditFormComponent.setDeleteClickHandler(this._handleDeleteClick);
 
     if (prevEventComponent === null || prevEventEditFormComponent === null) {
       render(this._eventListElement, this._eventComponent, 'beforeend');
@@ -87,6 +89,17 @@ export default class EventPresenter {
   _handleFormSubmit(eventItem) {
     this._changeEvent(UserAction.UPDATE_EVENT, UpdateType.MINOR, eventItem);
     this._replaceEditFormWitnEvent();
+  }
+
+  _handleDeleteClick() {
+    this._changeEvent(
+      UserAction.DELETE_EVENT,
+      UpdateType.MAJOR,
+      Object.assign(
+        {},
+        this._data,
+      ),
+    );
   }
 
   _handleFavoriteClick() {

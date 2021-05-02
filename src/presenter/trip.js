@@ -25,6 +25,8 @@ export default class TripPresenter {
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+
+    this._eventsModel.addObserver(this._handleModelEvent);
   }
 
   init(offersFullList, destinationsFullList) {
@@ -151,13 +153,6 @@ export default class TripPresenter {
     this._currentSortType = sortType;
     this._clearBoard();
     this._renderBoard();
-  }
-
-  _clearEventList() {
-    Object
-      .values(this._eventPresenters)
-      .forEach((presenter) => presenter.destroy());
-    this._eventPresenters = {};
   }
 
   _clearBoard({resetSortType = false, resetTripInfo = true} = {}) {
