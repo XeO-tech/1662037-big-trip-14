@@ -1,7 +1,7 @@
 import { render, replace, remove } from '../utils/render.js';
 import EventItemView from '../view/event-item.js';
 import AddAndEditFormView from '../view/form-add-and-edit-event.js';
-import { UserAction, UpdateType} from '../consts.js';
+import { UserAction, UpdateType } from '../consts.js';
 
 const Mode = {
   DEFAULT: 'DEFALT',

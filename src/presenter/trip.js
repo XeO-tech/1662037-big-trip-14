@@ -3,9 +3,9 @@ import TripCostView from '../view/trip-cost.js';
 import SortingPanelView from '../view/sorting-panel.js';
 import EmptyListPlaceholderView  from '../view/no-events.js';
 import EventPresenter from './event.js';
-import { render } from '../utils/render.js';
+import { remove, render } from '../utils/render.js';
 import { sortByPrice, sortByTime } from '../utils/events.js';
-import { SortTypes } from '../consts.js';
+import { SortTypes, UserAction, UpdateType } from '../consts.js';
 
 const tripInfoElement = document.querySelector('.trip-main__trip-info');
 const sortingElement = document.querySelector('.trip-events');
@@ -15,8 +15,10 @@ export default class TripPresenter {
   constructor(eventsModel) {
     this._eventPresenters = {};
     this._eventsModel = eventsModel;
-    this._sortingPanelComponent = new SortingPanelView();
+    this._sortingPanelComponent = null;
+    this._EmptyListPlaceholderComponent = null;
     this._EmptyListPlaceholderComponent = new EmptyListPlaceholderView();
+
     this._currentSortType = SortTypes.DEFAULT;
 
     this._handleViewAction = this._handleViewAction.bind(this);
@@ -31,14 +33,7 @@ export default class TripPresenter {
     this._destinationNames = [];
     this._destinationsFullList.forEach((destination) => this._destinationNames.push(destination.name));
 
-    this._tripInfoComponent = new TripInfoView(this._getEvents());
-    this._tripCostComponent = new TripCostView(this._getEvents());
-
-    this._renderSort();
-    this._renderTripInfo();
-    this._renderTripCost();
-
-    (Object.keys(this._getEvents()).length === 0) ? this._renderEmptyList() : this._renderEvents();
+    this._renderBoard();
   }
 
   _renderEvent(eventItem) {
@@ -49,6 +44,21 @@ export default class TripPresenter {
 
   _renderEvents() {
     this._getEvents().forEach((eventItem) => this._renderEvent(eventItem));
+  }
+
+  _renderBoard({resetTripInfo = true} = {}) {
+    if (Object.keys(this._getEvents()).length === 0) {
+      this._renderEmptyList();
+      return;
+    }
+
+    this._renderSort();
+    this._renderEvents();
+
+    if (resetTripInfo) {
+      this._renderTripInfo();
+      this._renderTripCost();
+    }
   }
 
   _getEvents() {
@@ -66,15 +76,33 @@ export default class TripPresenter {
   }
 
   _renderSort() {
-    render(sortingElement, this._sortingPanelComponent, 'afterbegin');
+    if (this._sortingPanelComponent !== null) {
+      this._sortingPanelComponent = null;
+    }
+
+    this._sortingPanelComponent = new SortingPanelView(this._currentSortType);
+
     this._sortingPanelComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
+    render(sortingElement, this._sortingPanelComponent, 'afterbegin');
   }
 
   _renderTripInfo() {
+    if (this._tripInfoComponent !== null) {
+      this._tripInfoComponent = null;
+    }
+
+    this._tripInfoComponent = new TripInfoView(this._getEvents());
+
     render(tripInfoElement, this._tripInfoComponent, 'afterbegin');
   }
 
   _renderTripCost() {
+    if (this._tripCostComponent !== null) {
+      this._tripCostComponent = null;
+    }
+
+    this._tripCostComponent = new TripCostView(this._getEvents());
+
     render(tripInfoElement, this._tripCostComponent, 'beforeend');
   }
 
@@ -85,19 +113,35 @@ export default class TripPresenter {
   }
 
   _handleViewAction(userAction, updateType, update) {
-    console.log(userAction, updateType, update);
-    // Здесь будем вызывать обновление модели.
-    // userAction - действие пользователя, нужно чтобы понять, какой метод модели вызвать
-    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
-    // update - обновленные данные
+    switch (userAction) {
+      case UserAction.UPDATE_EVENT:
+        this._eventsModel.updateEvent(updateType, update);
+        break;
+      case UserAction.ADD_EVENT:
+        this._eventsModel.addEvent(updateType, update);
+        break;
+      case UserAction.DELETE_EVENT:
+        this._eventsModel.deleteEvent(updateType, update);
+        break;
+    }
   }
 
   _handleModelEvent(updateType, data) {
-    console.log(updateType, data);
-    // В зависимости от типа изменений решаем, что делать:
-    // - обновить часть списка (например, когда поменялось описание)
-    // - обновить список (например, когда задача ушла в архив)
-    // - обновить всю доску (например, при переключении фильтра)
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this._eventPresenters[data.id].init(data);
+        break;
+      // При смене фильтра или переключении с экрана со списком точек маршрута на экран статистики и обратно сортировка сбрасывается на состояние «Day». Информация о поездке не перерисовывается
+      case UpdateType.MINOR:
+        this._clearBoard({resetSortType: true}, {resetTripInfo: false});
+        this._renderBoard({resetTripInfo: false});
+        break;
+      // При добавлении, изменении, удалеении события перерисовываем всю доску и информацию о поездке
+      case UpdateType.MAJOR:
+        this._clearBoard();
+        this._renderBoard();
+        break;
+    }
   }
 
   _handleSortTypeChange(sortType) {
@@ -105,8 +149,8 @@ export default class TripPresenter {
       return;
     }
     this._currentSortType = sortType;
-    this._clearEventList();
-    this._renderEvents();
+    this._clearBoard();
+    this._renderBoard();
   }
 
   _clearEventList() {
@@ -114,5 +158,23 @@ export default class TripPresenter {
       .values(this._eventPresenters)
       .forEach((presenter) => presenter.destroy());
     this._eventPresenters = {};
+  }
+
+  _clearBoard({resetSortType = false, resetTripInfo = true} = {}) {
+    Object
+      .values(this._eventPresenters)
+      .forEach((presenter) => presenter.destroy());
+    this._eventPresenters = {};
+    remove(this._sortingPanelComponent);
+    remove(this._EmptyListPlaceholderComponent);
+
+    if (resetTripInfo) {
+      remove(this._tripCostComponent);
+      remove(this._tripInfoComponent);
+    }
+
+    if (resetSortType) {
+      this._currentSortType = SortTypes.DEFAULT;
+    }
   }
 }
