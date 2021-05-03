@@ -21,7 +21,7 @@ export const UpdateTypes = {
 };
 
 export const FilterTypes = {
-  ALL: 'all',
+  ALL: 'everything',
   FUTURE: 'future',
   PAST: 'past',
 };

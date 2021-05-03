@@ -24,7 +24,8 @@ export default class FiltersPanel extends AbstractView {
   constructor(filters, currentFilterType) {
     super();
     this._filters = filters;
-    this._currentFlterType = currentFilterType;
+    this._currentFilterType = currentFilterType;
+
     this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
   }
 

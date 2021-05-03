@@ -6,15 +6,17 @@ import EventPresenter from './event.js';
 import { remove, render } from '../utils/render.js';
 import { sortByPrice, sortByTime, sortByStartDate } from '../utils/events.js';
 import { SortTypes, UserActions, UpdateTypes } from '../consts.js';
+import { filters } from '../utils/filters.js';
 
 const tripInfoElement = document.querySelector('.trip-main__trip-info');
 const sortingElement = document.querySelector('.trip-events');
 const eventListElement = document.querySelector('.trip-events__list');
 
 export default class TripPresenter {
-  constructor(eventsModel) {
+  constructor(eventsModel, filtersModel) {
     this._eventPresenters = {};
     this._eventsModel = eventsModel;
+    this._filtersModel = filtersModel;
     this._sortingPanelComponent = null;
     this._EmptyListPlaceholderComponent = null;
     this._EmptyListPlaceholderComponent = new EmptyListPlaceholderView();
@@ -27,6 +29,7 @@ export default class TripPresenter {
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
     this._eventsModel.addObserver(this._handleModelEvent);
+    this._filtersModel.addObserver(this._handleModelEvent);
   }
 
   init(offersFullList, destinationsFullList) {
@@ -64,13 +67,18 @@ export default class TripPresenter {
   }
 
   _getEvents() {
+    const filterType = this._filtersModel.getFilter();
+    const events = this._eventsModel.getEvents();
+
+    const filteredEvents = filters[filterType](events);
+
     switch (this._currentSortType) {
       case SortTypes.TIME:
-        return this._eventsModel.getEvents().slice().sort(sortByTime);
+        return filteredEvents.sort(sortByTime);
       case SortTypes.PRICE:
-        return this._eventsModel.getEvents().slice().sort(sortByPrice);
+        return filteredEvents.sort(sortByPrice);
     }
-    return this._eventsModel.getEvents().slice().sort(sortByStartDate);
+    return filteredEvents.sort(sortByStartDate);
   }
 
   _renderEmptyList() {

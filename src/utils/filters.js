@@ -4,6 +4,7 @@ import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 dayjs.extend(isSameOrAfter);
 
 export const filters = {
+  [FilterTypes.ALL]: (events) => events.slice(),
   [FilterTypes.FUTURE]: (events) => {
     return events.filter((eventInfo) => {
       const currentDate = dayjs(new Date());

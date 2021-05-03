@@ -4,7 +4,7 @@ import { render } from './utils/render.js';
 import TripPesenter from './presenter/trip.js';
 import FiltersPresenter from './presenter/filters.js';
 import EventsModel from './model/events.js';
-import FilterModel from './model/filters.js';
+import FiltersModel from './model/filters.js';
 
 const EVENT_NUMBERS = 20;
 
@@ -16,10 +16,10 @@ const menuElement = document.querySelector('.trip-main__trip-controls');
 const eventsModel = new EventsModel();
 eventsModel.setEvents(events);
 
-const filterModel = new FilterModel();
+const filtersModel = new FiltersModel();
 
-const tripPresenter = new TripPesenter(eventsModel);
-const filtersPresenter = new FiltersPresenter(filtersElement, filterModel, eventsModel);
+const tripPresenter = new TripPesenter(eventsModel, filtersModel);
+const filtersPresenter = new FiltersPresenter(filtersElement, filtersModel, eventsModel);
 
 render(menuElement, new SiteMenuView(), 'beforeend');
 tripPresenter.init(offersFullList, destinationsFullList);
