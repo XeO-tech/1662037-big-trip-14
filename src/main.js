@@ -1,8 +1,8 @@
-import FiltersPanelView from './view/filters.js';
 import SiteMenuView from './view/site-menu.js';
 import { generateEvents, offersFullList, destinationsFullList } from './mocks/events.js';
 import { render } from './utils/render.js';
 import TripPesenter from './presenter/trip.js';
+import FiltersPresenter from './presenter/filters.js';
 import EventsModel from './model/events.js';
 import FilterModel from './model/filters.js';
 
@@ -19,8 +19,9 @@ eventsModel.setEvents(events);
 const filterModel = new FilterModel();
 
 const tripPresenter = new TripPesenter(eventsModel);
+const filtersPresenter = new FiltersPresenter(filtersElement, filterModel, eventsModel);
 
 render(menuElement, new SiteMenuView(), 'beforeend');
-render(filtersElement, new FiltersPanelView(), 'beforeend');
 tripPresenter.init(offersFullList, destinationsFullList);
+filtersPresenter.init();
 
