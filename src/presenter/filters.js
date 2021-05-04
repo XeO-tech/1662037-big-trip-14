@@ -43,7 +43,7 @@ export default class Filters {
       return;
     }
 
-    this._filtersModel.setFilter(UpdateTypes.MAJOR, filterType);
+    this._filtersModel.setFilter(UpdateTypes.MINOR, filterType);
   }
 
   _getFilters() {

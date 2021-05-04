@@ -143,7 +143,7 @@ export default class TripPresenter {
         break;
       // При смене фильтра или переключении с экрана со списком точек маршрута на экран статистики и обратно сортировка сбрасывается на состояние «Day». Информация о поездке не перерисовывается
       case UpdateTypes.MINOR:
-        this._clearBoard({resetSortType: true}, {resetTripInfo: false});
+        this._clearBoard({resetSortType: true, resetTripInfo: false});
         this._renderBoard({resetTripInfo: false});
         break;
       // При добавлении, изменении, удалеении события перерисовываем всю доску и информацию о поездке
@@ -159,8 +159,8 @@ export default class TripPresenter {
       return;
     }
     this._currentSortType = sortType;
-    this._clearBoard();
-    this._renderBoard();
+    this._clearBoard({resetTripInfo: false});
+    this._renderBoard({resetTripInfo: false});
   }
 
   _clearBoard({resetSortType = false, resetTripInfo = true} = {}) {
