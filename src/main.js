@@ -25,3 +25,8 @@ render(menuElement, new SiteMenuView(), 'beforeend');
 tripPresenter.init(offersFullList, destinationsFullList);
 filtersPresenter.init();
 
+document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
+  evt.preventDefault();
+  tripPresenter.createEvent();
+});
+

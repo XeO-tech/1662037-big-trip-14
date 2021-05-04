@@ -3,9 +3,10 @@ import TripCostView from '../view/trip-cost.js';
 import SortingPanelView from '../view/sorting-panel.js';
 import EmptyListPlaceholderView  from '../view/no-events.js';
 import EventPresenter from './event.js';
+import NewEventPresenter from './event-new.js';
 import { remove, render } from '../utils/render.js';
 import { sortByPrice, sortByTime, sortByStartDate } from '../utils/events.js';
-import { SortTypes, UserActions, UpdateTypes } from '../consts.js';
+import { SortTypes, UserActions, UpdateTypes, FilterTypes } from '../consts.js';
 import { filters } from '../utils/filters.js';
 
 const tripInfoElement = document.querySelector('.trip-main__trip-info');
@@ -30,6 +31,8 @@ export default class TripPresenter {
 
     this._eventsModel.addObserver(this._handleModelEvent);
     this._filtersModel.addObserver(this._handleModelEvent);
+
+    this._newEventPresenter = new NewEventPresenter(this._handleViewAction);
   }
 
   init(offersFullList, destinationsFullList) {
@@ -117,6 +120,7 @@ export default class TripPresenter {
   }
 
   _handleModeChange() {
+    this._newEventPresenter.destroy();
     Object
       .values(this._eventPresenters)
       .forEach((presenter) => presenter.resetView());
@@ -164,6 +168,7 @@ export default class TripPresenter {
   }
 
   _clearBoard({resetSortType = false, resetTripInfo = true} = {}) {
+    this._newEventPresenter.destroy();
     Object
       .values(this._eventPresenters)
       .forEach((presenter) => presenter.destroy());
@@ -179,5 +184,10 @@ export default class TripPresenter {
     if (resetSortType) {
       this._currentSortType = SortTypes.DEFAULT;
     }
+  }
+
+  createEvent() {
+    this._filtersModel.setFilter(UpdateTypes.MINOR, FilterTypes.ALL);
+    this._newEventPresenter.init(this._offersFullList, this._destinationsFullList, this._destinationNames);
   }
 }

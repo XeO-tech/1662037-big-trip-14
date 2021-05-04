@@ -57,7 +57,7 @@ const renderPhotos = (pictures) => {
 const createAddAndEditFormTemplate = (eventInfo = {}) => {
   const {
     type = 'flight',
-    destination,
+    destination = null,
     date_from: startDateTime = null,
     date_to: endDateTime = null,
     base_price: basePrice = '',
@@ -72,7 +72,7 @@ const createAddAndEditFormTemplate = (eventInfo = {}) => {
 
   const offersClassName = offers === null || offers.length === 0 ? 'visually-hidden' : '';
 
-  const destinationClassName = isAddNewEventForm || (destination.description.length === 0 && destination.pictures.length === 0) ? 'visually-hidden' : '';
+  const destinationClassName = destination === null ||(destination.description.length === 0 && destination.pictures.length === 0) ? 'visually-hidden' : '';
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -94,7 +94,7 @@ const createAddAndEditFormTemplate = (eventInfo = {}) => {
         <label class="event__label  event__type-output" for="event-destination-1">
           ${type}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${isAddNewEventForm ? '' : destination.name}" list="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination === null ? '' : destination.name}" list="destination-list-1">
         <datalist id="destination-list-1">
           ${renderDestinationsOptions(avaliableDestinations)}
         </datalist>
@@ -123,15 +123,15 @@ const createAddAndEditFormTemplate = (eventInfo = {}) => {
       <section class="event__section  event__section--offers ${offersClassName}">
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
         <div class="event__available-offers">
-          ${isAddNewEventForm ? '' : renderOffers(offers, areOffersChecked)}
+          ${offers === null || offers.length === 0 ? '' : renderOffers(offers, areOffersChecked)}
         </div>
       </section>
       <section class="event__section  event__section--destination ${destinationClassName}">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${isAddNewEventForm ? '' : destination.description}</p>
+        <p class="event__destination-description">${destination === null || destination.description.length === 0 ? '' : destination.description}</p>
         <div class="event__photos-container">
                       <div class="event__photos-tape">
-                       ${isAddNewEventForm ? '': renderPhotos(destination.pictures)}
+                       ${destination === null || destination.pictures.length === 0 ? '': renderPhotos(destination.pictures)}
                       </div>
                     </div>
       </section>
@@ -182,6 +182,7 @@ export default class AddAndEditForm extends SmartView {
 
   _typeChangeHandler(evt) {
     evt.preventDefault();
+
     this.updateData({
       type: evt.target.value,
       offers: this._offersFullList.find((element) => element.type === evt.target.value).offers,
@@ -260,6 +261,9 @@ export default class AddAndEditForm extends SmartView {
   }
 
   setArrowClickHandler(callback) {
+    if (this.getElement().querySelector('.event__rollup-btn') === null) {
+      return;
+    }
     this._callback.arrowClick = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._arrowClickHandler);
   }
@@ -300,13 +304,23 @@ export default class AddAndEditForm extends SmartView {
   }
 
   parseEventInfoToData(eventInfo) {
+    const  isAddNewEventForm = Object.keys(eventInfo).length === 0;
+    if (isAddNewEventForm) {
+      return {
+        type: 'flight',
+        offers: this._offersFullList.find((element) => element.type === 'flight').offers,
+        avaliableDestinations: this._destinationNames,
+        areOffersChecked: false,
+        isAddNewEventForm,
+      };
+    }
     return Object.assign(
       {},
       eventInfo,
       {
         avaliableDestinations: this._destinationNames,
         areOffersChecked: true,
-        isAddNewEventForm: Object.keys(eventInfo).length === 0,
+        isAddNewEventForm,
       });
   }
 
