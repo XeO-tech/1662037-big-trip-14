@@ -227,22 +227,18 @@ export default class AddAndEditForm extends SmartView {
 
   _destinationChangeHandler(evt) {
     evt.preventDefault();
-    let newData;
-    const newDestination = this._destinationsFullList.find((element) => element.name === evt.target.value);
 
-    newDestination === undefined ?
-      newData = {
-        destination: {
-          name: evt.target.value,
-          description: '',
-          pictures: [],
-        },
-      } :
-      newData = {
-        destination: newDestination,
-      };
+    const newDestinationData = this._destinationsFullList.find((element) => element.name === evt.target.value);
 
-    this.updateData(newData, true);
+    if (newDestinationData === undefined) {
+      evt.target.setCustomValidity('Please use destinations from the list');
+      evt.target.reportValidity();
+      return;
+    }
+    evt.target.setCustomValidity('');
+    evt.target.reportValidity();
+
+    this.updateData({destination: newDestinationData}, true);
   }
 
   _startDateChangeHandler([userDate]) {
