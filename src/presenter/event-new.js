@@ -21,9 +21,12 @@ export default class EventNewPresenter {
     }
     const eventItem = {};
     this._eventEditFormComponent = new AddAndEditFormView( eventItem, offersFullList, destinationFullList, destinationNames);
+    this._newEventButon = document.querySelector('.trip-main__event-add-btn');
 
     this._eventEditFormComponent.setSubmitHandler(this._handleFormSubmit);
     this._eventEditFormComponent.setDeleteClickHandler(this._handleDeleteClick);
+
+    this._newEventButon.disabled = true;
 
     render(this._eventListElement, this._eventEditFormComponent, 'afterbegin');
 
@@ -35,7 +38,9 @@ export default class EventNewPresenter {
       return;
     }
     remove(this._eventEditFormComponent);
+
     this._eventEditFormComponent = null;
+    this._newEventButon.disabled = false;
 
     document.removeEventListener('keydown', this._escKeydownHandler);
   }
