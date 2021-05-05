@@ -143,7 +143,7 @@ export default class TripPresenter {
   _handleModelEvent(updateType, data) {
     switch (updateType) {
       case UpdateTypes.PATCH:
-        this._eventPresenters[data.id].init(data);
+        this._eventPresenters[data.id].init(data, this._offersFullList, this._destinationsFullList, this._destinationNames);
         break;
       // При смене фильтра или переключении с экрана со списком точек маршрута на экран статистики и обратно сортировка сбрасывается на состояние «Day». Информация о поездке не перерисовывается
       case UpdateTypes.MINOR:
