@@ -221,12 +221,38 @@ export default class AddAndEditForm extends SmartView {
     this.updateData({destination: newDestinationData}, true);
   }
 
-  _startDateChangeHandler([userDate]) {
-    this.updateData({date_from: userDate}, false);
+  _startDateChangeHandler() {
+    const selectedDate = arguments[0];
+    const dateInput = arguments[2].altInput;
+
+    if (this._data.date_to !== undefined
+      && dayjs(selectedDate).isAfter(dayjs(this._data.date_to)))
+    {
+      dateInput.setCustomValidity('Start date should be prior to or the same as end date');
+      dateInput.reportValidity();
+      return;
+    }
+    dateInput.setCustomValidity('');
+    dateInput.reportValidity();
+
+    this.updateData({date_from: selectedDate}, false);
   }
 
-  _endDateChangeHandler([userDate]) {
-    this.updateData({date_to: userDate}, false);
+  _endDateChangeHandler() {
+    const selectedDate = arguments[0];
+    const dateInput = arguments[2].altInput;
+
+    if (this._data.date_from !== undefined
+      && dayjs(this._data.date_from).isAfter(dayjs(selectedDate)))
+    {
+      dateInput.setCustomValidity('End date should be after or the same as start date');
+      dateInput.reportValidity();
+      return;
+    }
+    dateInput.setCustomValidity('');
+    dateInput.reportValidity();
+
+    this.updateData({date_to: selectedDate}, false);
   }
 
   _priceChangeHandler(evt) {
@@ -265,25 +291,29 @@ export default class AddAndEditForm extends SmartView {
       this._endDatePicker = null;
     }
 
+    const flatpickrBaseSettings = {
+      altInput: true,
+      altFormat: 'j/m/y H:i',
+      allowInput: true,
+      dateFormat: 'j/m/y H:i',
+      enableTime: true,
+    };
+
     this._startDatePicker = flatpickr(
       this.getElement().querySelector('#event-start-time-1'),
-      {
-        dateFormat: 'j/m/y H:i',
+      Object.assign({}, flatpickrBaseSettings, {
         defaultDate: this._data.date_from,
         onChange: this._startDateChangeHandler,
-        enableTime: true,
-      },
-    );
+      }));
+    this._startDatePicker._input.onkeydown = () => false;
 
     this._endDatePicker = flatpickr(
       this.getElement().querySelector('#event-end-time-1'),
-      {
-        dateFormat: 'j/m/y H:i',
+      Object.assign({}, flatpickrBaseSettings, {
         defaultDate: this._data.date_to,
         onChange: this._endDateChangeHandler,
-        enableTime: true,
-      },
-    );
+      }));
+    this._endDatePicker._input.onkeydown = () => false;
   }
 
   setArrowClickHandler(callback) {
