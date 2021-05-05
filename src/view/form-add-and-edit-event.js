@@ -23,16 +23,13 @@ const renderDestinationsOptions = (avaliableDestinations) => {
 };
 
 const renderOffers = (offers, areOffersChecked) => {
-  if (offers.length === 0) {
-    return '';
-  }
   let counter = 0;
   return offers
     .map((offer) => {
       const offerShortCut = offer.title.toLowerCase().replace(/\s+/g, '_');
       counter++;
       return `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerShortCut}-${counter}" type="checkbox" name="event-offer-${offerShortCut}" ${areOffersChecked ? 'checked': ''}>
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerShortCut}-${counter}" type="checkbox" name="${offer.title}" ${areOffersChecked ? 'checked': ''}>
       <label class="event__offer-label" for="event-offer-${offerShortCut}-${counter}">
         <span class="event__offer-title">${offer.title}</span>
         &plus;&euro;&nbsp;
@@ -168,8 +165,46 @@ export default class AddAndEditForm extends SmartView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.submit(this._data);
+
+    const selectedOffersElements = [...document.querySelectorAll('.event__offer-selector input[type=\'checkbox\']:checked')].map((element) => element.name);
+
+    const selectedOffersData = [];
+    this._data.offers.forEach((offer, ind) => {
+      selectedOffersElements.forEach((selectedOffer) => {
+        if (selectedOffer === offer.title) {
+          selectedOffersData.push(this._data.offers[ind]);
+        }
+      });
+    });
+
+    const newData = Object.assign(
+      {},
+      this._data,
+      {
+        base_price: evt.target['event-price'].value,
+        offers: selectedOffersData,
+      });
+
+
+    this._callback.submit(this.parseDataToEventInfo(newData));
   }
+  // {event-type: "flight", event-destination: "Las Vegas", event-start-time: "2/05/21 12:00", event-end-time: "3/05/21 12:00", event-price: "111", …}
+  // event-destination: "Las Vegas"
+  // event-end-time: "3/05/21 12:00"
+  // event-offer-flight_offer_72: "on"
+  // event-price: "111"
+  // event-start-time: "2/05/21 12:00"
+  // event-type: "flight"
+
+  //   {type: "flight", offers: Array(1), avaliableDestinations: Array(3), areOffersChecked: false, isAddNewEventForm: true}
+  // areOffersChecked: false
+  // avaliableDestinations: (3) ["Los Angeles", "San Francisco", "Las Vegas"]
+  // isAddNewEventForm: true
+  // offers: Array(1)
+  // 0: {title: "flight offer 93", price: 30}
+  // length: 1
+  // type: "flight"
+
 
   _deleteClickHandler(evt) {
     evt.preventDefault();
@@ -325,10 +360,8 @@ export default class AddAndEditForm extends SmartView {
   }
 
   parseDataToEventInfo(data) {
-    data = Object.assign(
-      {},
-      this._data,
-    );
+    data = Object.assign({}, data);
+
     delete data.areOffersChecked;
     delete data.isAddNewEventForm;
     delete data.avaliableDestinations;
