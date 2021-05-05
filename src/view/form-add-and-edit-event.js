@@ -91,24 +91,24 @@ const createAddAndEditFormTemplate = (eventInfo = {}) => {
         <label class="event__label  event__type-output" for="event-destination-1">
           ${type}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination === null ? '' : destination.name}" list="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination === null ? '' : destination.name}" list="destination-list-1" required>
         <datalist id="destination-list-1">
           ${renderDestinationsOptions(avaliableDestinations)}
         </datalist>
       </div>
       <div class="event__field-group  event__field-group--time">
         <label class="visually-hidden" for="event-start-time-1">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startDateTimeFormatted}">
+        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startDateTimeFormatted}" required>
         &mdash;
         <label class="visually-hidden" for="event-end-time-1">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${endDateTimeFormatted}">
+        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${endDateTimeFormatted}" required>
       </div>
       <div class="event__field-group  event__field-group--price">
         <label class="event__label" for="event-price-1">
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}" required>
       </div>
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
       <button class="event__reset-btn" type="reset">${isAddNewEventForm ? 'Cancel' : 'Delete'}</button>
@@ -177,34 +177,13 @@ export default class AddAndEditForm extends SmartView {
       });
     });
 
-    const newData = Object.assign(
-      {},
-      this._data,
-      {
-        base_price: parseInt(evt.target['event-price'].value),
-        offers: selectedOffersData,
-      });
+    this.updateData({
+      base_price: parseInt(evt.target['event-price'].value),
+      offers: selectedOffersData,
+    }, false);
 
-
-    this._callback.submit(this.parseDataToEventInfo(newData));
+    this._callback.submit(this.parseDataToEventInfo(this._data));
   }
-  // {event-type: "flight", event-destination: "Las Vegas", event-start-time: "2/05/21 12:00", event-end-time: "3/05/21 12:00", event-price: "111", …}
-  // event-destination: "Las Vegas"
-  // event-end-time: "3/05/21 12:00"
-  // event-offer-flight_offer_72: "on"
-  // event-price: "111"
-  // event-start-time: "2/05/21 12:00"
-  // event-type: "flight"
-
-  //   {type: "flight", offers: Array(1), avaliableDestinations: Array(3), areOffersChecked: false, isAddNewEventForm: true}
-  // areOffersChecked: false
-  // avaliableDestinations: (3) ["Los Angeles", "San Francisco", "Las Vegas"]
-  // isAddNewEventForm: true
-  // offers: Array(1)
-  // 0: {title: "flight offer 93", price: 30}
-  // length: 1
-  // type: "flight"
-
 
   _deleteClickHandler(evt) {
     evt.preventDefault();
@@ -235,6 +214,7 @@ export default class AddAndEditForm extends SmartView {
       evt.target.reportValidity();
       return;
     }
+
     evt.target.setCustomValidity('');
     evt.target.reportValidity();
 
