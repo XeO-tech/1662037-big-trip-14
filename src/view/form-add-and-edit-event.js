@@ -22,14 +22,19 @@ const renderDestinationsOptions = (avaliableDestinations) => {
     .join('');
 };
 
-const renderOffers = (offers, areOffersChecked) => {
+const renderOffers = (offers, offersFullList, isAddNewEventForm, type) => {
   let counter = 0;
-  return offers
+
+  const checkedOffersTitles = offers.map((offer) => offer.title);
+  const allOffersForSelectedType = offersFullList.find((element) => element.type === type).offers;
+  console.log(allOffersForSelectedType);
+
+  return allOffersForSelectedType
     .map((offer) => {
       const offerShortCut = offer.title.toLowerCase().replace(/\s+/g, '_');
       counter++;
       return `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerShortCut}-${counter}" type="checkbox" name="${offer.title}" ${areOffersChecked ? 'checked': ''}>
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerShortCut}-${counter}" type="checkbox" name="${offer.title}" ${isAddNewEventForm ? '' : checkedOffersTitles.some((title) => title === offer.title) ? 'checked' : ''}>
       <label class="event__offer-label" for="event-offer-${offerShortCut}-${counter}">
         <span class="event__offer-title">${offer.title}</span>
         &plus;&euro;&nbsp;
@@ -51,7 +56,7 @@ const renderPhotos = (pictures) => {
     .join('');
 };
 
-const createAddAndEditFormTemplate = (eventInfo = {}) => {
+const createAddAndEditFormTemplate = (eventInfo = {}, offersFullList) => {
   const {
     type = 'flight',
     destination = null,
@@ -60,7 +65,6 @@ const createAddAndEditFormTemplate = (eventInfo = {}) => {
     base_price: basePrice = '',
     offers = null,
     avaliableDestinations,
-    areOffersChecked,
     isAddNewEventForm,
   } = eventInfo;
 
@@ -120,7 +124,7 @@ const createAddAndEditFormTemplate = (eventInfo = {}) => {
       <section class="event__section  event__section--offers ${offersClassName}">
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
         <div class="event__available-offers">
-          ${offers === null || offers.length === 0 ? '' : renderOffers(offers, areOffersChecked)}
+          ${renderOffers(offers, offersFullList,isAddNewEventForm, type)}
         </div>
       </section>
       <section class="event__section  event__section--destination ${destinationClassName}">
@@ -160,19 +164,21 @@ export default class AddAndEditForm extends SmartView {
   }
 
   getTemplate() {
-    return createAddAndEditFormTemplate(this._data);
+    return createAddAndEditFormTemplate(this._data, this._offersFullList);
   }
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-
-    const selectedOffersElements = [...document.querySelectorAll('.event__offer-selector input[type=\'checkbox\']:checked')].map((element) => element.name);
-
     const selectedOffersData = [];
-    this._data.offers.forEach((offer, ind) => {
-      selectedOffersElements.forEach((selectedOffer) => {
-        if (selectedOffer === offer.title) {
-          selectedOffersData.push(this._data.offers[ind]);
+
+    const selectedOffersTitles = [...document.querySelectorAll('.event__offer-selector input[type=\'checkbox\']:checked')].map((element) => element.name);
+
+    const allOffersForSelectedType = this._offersFullList.find((element) => element.type === this._data.type).offers;
+
+    allOffersForSelectedType.forEach((offer, ind) => {
+      selectedOffersTitles.forEach((selectedOfferTitle) => {
+        if (selectedOfferTitle === offer.title) {
+          selectedOffersData.push(allOffersForSelectedType[ind]);
         }
       });
     });
@@ -366,7 +372,6 @@ export default class AddAndEditForm extends SmartView {
         type: 'flight',
         offers: this._offersFullList.find((element) => element.type === 'flight').offers,
         avaliableDestinations: this._destinationNames,
-        areOffersChecked: false,
         isAddNewEventForm,
       };
     }
@@ -375,7 +380,6 @@ export default class AddAndEditForm extends SmartView {
       eventInfo,
       {
         avaliableDestinations: this._destinationNames,
-        areOffersChecked: true,
         isAddNewEventForm,
       });
   }
