@@ -26,8 +26,8 @@ const renderOffers = (offers, offersFullList, isAddNewEventForm, type) => {
   let counter = 0;
 
   const checkedOffersTitles = offers.map((offer) => offer.title);
+
   const allOffersForSelectedType = offersFullList.find((element) => element.type === type).offers;
-  console.log(allOffersForSelectedType);
 
   return allOffersForSelectedType
     .map((offer) => {
@@ -71,7 +71,7 @@ const createAddAndEditFormTemplate = (eventInfo = {}, offersFullList) => {
   const startDateTimeFormatted = startDateTime === null ? '' : dayjs(startDateTime).format('DD/MM/YY HH:mm');
   const endDateTimeFormatted = endDateTime === null ? '' : dayjs(endDateTime).format('DD/MM/YY HH:mm');
 
-  const offersClassName = offers === null || offers.length === 0 ? 'visually-hidden' : '';
+  const offersClassName = offersFullList.find((element) => element.type === type).offers.length === 0 ? 'visually-hidden' : '';
 
   const destinationClassName = destination === null ||(destination.description.length === 0 && destination.pictures.length === 0) ? 'visually-hidden' : '';
 
