@@ -58,12 +58,12 @@ const renderPhotos = (pictures) => {
 
 const createAddAndEditFormTemplate = (eventInfo = {}, offersFullList) => {
   const {
-    type = 'flight',
-    destination = null,
-    date_from: startDateTime = null,
-    date_to: endDateTime = null,
-    base_price: basePrice = '',
-    offers = null,
+    type,
+    destination,
+    date_from: startDateTime,
+    date_to: endDateTime,
+    base_price: basePrice,
+    offers,
     avaliableDestinations,
     isAddNewEventForm,
   } = eventInfo;
@@ -371,6 +371,10 @@ export default class AddAndEditForm extends SmartView {
       return {
         type: 'flight',
         offers: this._offersFullList.find((element) => element.type === 'flight').offers,
+        destination: null,
+        base_price: '',
+        date_from: null,
+        date_to: null,
         avaliableDestinations: this._destinationNames,
         isAddNewEventForm,
       };
