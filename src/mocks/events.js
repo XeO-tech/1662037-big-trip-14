@@ -1,6 +1,6 @@
 import { getRandomIntFromRange, getRandomArrayElement } from '../utils/common.js';
 import dayjs from 'dayjs';
-import { eventTypes, cities } from '../consts.js';
+import { EventTypes, cities } from '../consts.js';
 import { nanoid } from 'nanoid';
 
 const MAX_DESCRIPTION_LENGTH = 5;
@@ -37,7 +37,7 @@ const generatePhotos = () => {
 };
 
 const generateOffers = () => {
-  return eventTypes.map((type) => {
+  return EventTypes.map((type) => {
     return {
       type,
       offers: new Array(getRandomIntFromRange(0, MAX_OFFERS)).fill()
@@ -65,7 +65,7 @@ export const offersFullList = generateOffers();
 export const destinationsFullList = generateDestinations();
 
 const generateOneEvent = () => {
-  const type = getRandomArrayElement(eventTypes);
+  const type = getRandomArrayElement(EventTypes);
   const offers = offersFullList.find((element) => element.type === type).offers;
   const startDateTime = generateStartDateTime();
   const endDateTime = generateEndDateTime(startDateTime);

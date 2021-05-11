@@ -21,7 +21,7 @@ const eventsModel = new EventsModel();
 const destinationsModel = new DestinationsModel();
 const filtersModel = new FiltersModel();
 const siteMenuView = new SiteMenuView();
-const statisticsView = new StatisticsView();
+const statisticsView = new StatisticsView(events);
 const tripPresenter = new TripPesenter(eventsModel, destinationsModel, filtersModel);
 const filtersPresenter = new FiltersPresenter(filtersContainerElement, filtersModel, eventsModel);
 
@@ -29,9 +29,9 @@ const filtersPresenter = new FiltersPresenter(filtersContainerElement, filtersMo
 const handleMenuClick = (target) => {
   switch (target) {
     case MenuItems.TABLE:
+      filtersModel.setFilter(UpdateTypes.MINOR, FilterTypes.ALL);
       statisticsView.hideElement();
       tripPresenter.showElement();
-      filtersModel.setFilter(UpdateTypes.MINOR, FilterTypes.ALL);
       break;
     case MenuItems.STATS:
       tripPresenter.hideElement();

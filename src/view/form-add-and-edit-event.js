@@ -1,11 +1,11 @@
 import SmartView from './smart.js';
-import { eventTypes } from '../consts.js';
+import { EventTypes } from '../consts.js';
 import dayjs from 'dayjs';
 import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const renderTypesMenu = (currentType) => {
-  return eventTypes
+  return EventTypes
     .map((type) => {
       const typeFormatted = type.charAt(0).toUpperCase() + type.slice(1);
       return `<div class="event__type-item">
