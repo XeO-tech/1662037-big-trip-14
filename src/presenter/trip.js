@@ -9,9 +9,9 @@ import { sortByPrice, sortByTime, sortByStartDate } from '../utils/events.js';
 import { SortTypes, UserActions, UpdateTypes, FilterTypes } from '../consts.js';
 import { filters } from '../utils/filters.js';
 
-const tripInfoElement = document.querySelector('.trip-main__trip-info');
-const sortingElement = document.querySelector('.trip-events');
-const eventListElement = document.querySelector('.trip-events__list');
+const tripInfoContainerElement = document.querySelector('.trip-main__trip-info');
+const sortingContainerElement = document.querySelector('.trip-events');
+const eventListContainerElement = document.querySelector('.trip-events__list');
 
 export default class TripPresenter {
   constructor(eventsModel, destinationsModel, filtersModel) {
@@ -86,7 +86,7 @@ export default class TripPresenter {
   }
 
   _renderEmptyList() {
-    render(eventListElement, this._EmptyListPlaceholderComponent, 'beforebegin');
+    render(eventListContainerElement, this._EmptyListPlaceholderComponent, 'beforebegin');
   }
 
   _renderSort() {
@@ -97,7 +97,7 @@ export default class TripPresenter {
     this._sortingPanelComponent = new SortingPanelView(this._currentSortType);
 
     this._sortingPanelComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
-    render(sortingElement, this._sortingPanelComponent, 'afterbegin');
+    render(sortingContainerElement, this._sortingPanelComponent, 'afterbegin');
   }
 
   _renderTripInfo() {
@@ -107,7 +107,7 @@ export default class TripPresenter {
 
     this._tripInfoComponent = new TripInfoView(this._getEvents());
 
-    render(tripInfoElement, this._tripInfoComponent, 'afterbegin');
+    render(tripInfoContainerElement, this._tripInfoComponent, 'afterbegin');
   }
 
   _renderTripCost() {
@@ -117,7 +117,7 @@ export default class TripPresenter {
 
     this._tripCostComponent = new TripCostView(this._getEvents());
 
-    render(tripInfoElement, this._tripCostComponent, 'beforeend');
+    render(tripInfoContainerElement, this._tripCostComponent, 'beforeend');
   }
 
   _handleModeChange() {
@@ -190,5 +190,13 @@ export default class TripPresenter {
   createEvent() {
     this._filtersModel.setFilter(UpdateTypes.MINOR, FilterTypes.ALL);
     this._newEventPresenter.init(this._offersFullList, this._destinationsFullList, this._destinationNames);
+  }
+
+  hideElement() {
+    eventListContainerElement.classList.add('visually-hidden');
+  }
+
+  showElement() {
+    eventListContainerElement.classList.remove('visually-hidden');
   }
 }

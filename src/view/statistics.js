@@ -1,11 +1,12 @@
 import AbstractView from './abstract.js';
 
 const createStatisticsTemplate = () => {
-  return `<section class="statistics">
+  return `<section class="statistics visually-hidden">
   <h2 class="visually-hidden">Trip statistics</h2>
 
   <div class="statistics__item statistics__item--money">
     <canvas class="statistics__chart  statistics__chart--money" width="900"></canvas>
+    TEST
   </div>
 
   <div class="statistics__item statistics__item--transport">

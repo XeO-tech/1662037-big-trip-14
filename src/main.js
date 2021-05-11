@@ -13,8 +13,9 @@ const EVENT_NUMBERS = 20;
 
 const events = generateEvents(EVENT_NUMBERS);
 
-const filtersElement = document.querySelector('.trip-controls__filters');
-const menuElement = document.querySelector('.trip-main__trip-controls');
+const filtersContainerElement = document.querySelector('.trip-controls__filters');
+const menuContainerElement = document.querySelector('.trip-main__trip-controls');
+const statisticsContainerElement = document.querySelector('.trip-events');
 
 const eventsModel = new EventsModel();
 const destinationsModel = new DestinationsModel();
@@ -22,17 +23,18 @@ const filtersModel = new FiltersModel();
 const siteMenuView = new SiteMenuView();
 const statisticsView = new StatisticsView();
 const tripPresenter = new TripPesenter(eventsModel, destinationsModel, filtersModel);
-const filtersPresenter = new FiltersPresenter(filtersElement, filtersModel, eventsModel);
-let eventsTableElement;
+const filtersPresenter = new FiltersPresenter(filtersContainerElement, filtersModel, eventsModel);
+
 
 const handleMenuClick = (target) => {
   switch (target) {
     case MenuItems.TABLE:
-      replace(eventsTableElement, statisticsView);
+      statisticsView.hideElement();
+      tripPresenter.showElement();
       break;
     case MenuItems.STATS:
-      eventsTableElement = document.querySelector('.trip-events__list');
-      replace(statisticsView, eventsTableElement);
+      tripPresenter.hideElement();
+      statisticsView.showElement();
       break;
   }
 };
@@ -40,7 +42,9 @@ const handleMenuClick = (target) => {
 eventsModel.setEvents(events);
 destinationsModel.setDestinations(destinationsFullList);
 
-render(menuElement, siteMenuView, 'beforeend');
+render(menuContainerElement, siteMenuView, 'beforeend');
+render(statisticsContainerElement, statisticsView, 'afterbegin');
+
 siteMenuView.setMenuClickHandler(handleMenuClick);
 
 tripPresenter.init(offersFullList);
