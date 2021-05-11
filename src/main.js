@@ -1,10 +1,12 @@
-import SiteMenuView from './view/site-menu.js';
-import { generateEvents, offersFullList, destinationsFullList } from './mocks/events.js';
-import { render } from './utils/render.js';
-import TripPesenter from './presenter/trip.js';
-import FiltersPresenter from './presenter/filters.js';
 import EventsModel from './model/events.js';
 import FiltersModel from './model/filters.js';
+import SiteMenuView from './view/site-menu.js';
+import StatisticsView from './view/statistics.js';
+import TripPesenter from './presenter/trip.js';
+import FiltersPresenter from './presenter/filters.js';
+import { generateEvents, offersFullList, destinationsFullList } from './mocks/events.js';
+import { render, replace } from './utils/render.js';
+import { MenuItems } from './consts.js';
 
 const EVENT_NUMBERS = 20;
 
@@ -14,14 +16,30 @@ const filtersElement = document.querySelector('.trip-controls__filters');
 const menuElement = document.querySelector('.trip-main__trip-controls');
 
 const eventsModel = new EventsModel();
-eventsModel.setEvents(events);
-
 const filtersModel = new FiltersModel();
-
+const siteMenuView = new SiteMenuView();
+const statisticsView = new StatisticsView();
 const tripPresenter = new TripPesenter(eventsModel, filtersModel);
 const filtersPresenter = new FiltersPresenter(filtersElement, filtersModel, eventsModel);
+let eventsTableElement;
 
-render(menuElement, new SiteMenuView(), 'beforeend');
+const handleMenuClick = (target) => {
+  switch (target) {
+    case MenuItems.TABLE:
+      replace(eventsTableElement, statisticsView);
+      break;
+    case MenuItems.STATS:
+      eventsTableElement = document.querySelector('.trip-events__list');
+      replace(statisticsView, eventsTableElement);
+      break;
+  }
+};
+
+eventsModel.setEvents(events);
+
+render(menuElement, siteMenuView, 'beforeend');
+siteMenuView.setMenuClickHandler(handleMenuClick);
+
 tripPresenter.init(offersFullList, destinationsFullList);
 filtersPresenter.init();
 
