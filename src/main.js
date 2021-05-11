@@ -6,8 +6,8 @@ import StatisticsView from './view/statistics.js';
 import TripPesenter from './presenter/trip.js';
 import FiltersPresenter from './presenter/filters.js';
 import { generateEvents, offersFullList, destinationsFullList } from './mocks/events.js';
-import { render, replace } from './utils/render.js';
-import { MenuItems } from './consts.js';
+import { render } from './utils/render.js';
+import { MenuItems, UpdateTypes, FilterTypes } from './consts.js';
 
 const EVENT_NUMBERS = 20;
 
@@ -31,6 +31,7 @@ const handleMenuClick = (target) => {
     case MenuItems.TABLE:
       statisticsView.hideElement();
       tripPresenter.showElement();
+      filtersModel.setFilter(UpdateTypes.MINOR, FilterTypes.ALL);
       break;
     case MenuItems.STATS:
       tripPresenter.hideElement();
