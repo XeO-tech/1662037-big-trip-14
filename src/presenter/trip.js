@@ -14,9 +14,10 @@ const sortingElement = document.querySelector('.trip-events');
 const eventListElement = document.querySelector('.trip-events__list');
 
 export default class TripPresenter {
-  constructor(eventsModel, filtersModel) {
+  constructor(eventsModel, destinationsModel, filtersModel) {
     this._eventPresenters = {};
     this._eventsModel = eventsModel;
+    this._destinationsModel = destinationsModel;
     this._filtersModel = filtersModel;
     this._sortingPanelComponent = null;
     this._EmptyListPlaceholderComponent = null;
@@ -35,9 +36,9 @@ export default class TripPresenter {
     this._newEventPresenter = new NewEventPresenter(this._handleViewAction);
   }
 
-  init(offersFullList, destinationsFullList) {
+  init(offersFullList) {
     this._offersFullList = [...offersFullList];
-    this._destinationsFullList = [...destinationsFullList];
+    this._destinationsFullList = this._destinationsModel.getDestinations();
     this._destinationNames = [];
     this._destinationsFullList.forEach((destination) => this._destinationNames.push(destination.name));
 
