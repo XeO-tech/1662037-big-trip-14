@@ -30,13 +30,15 @@ const handleMenuClick = (target) => {
   switch (target) {
     case MenuItems.TABLE:
       filtersModel.setFilter(UpdateTypes.MINOR, FilterTypes.ALL);
-      tripPresenter.showElement();
       remove(statisticsView);
+      tripPresenter.showElement();
+      siteMenuView.setMenuItem(MenuItems.TABLE);
       break;
     case MenuItems.STATS:
       statisticsView = new StatisticsView(eventsModel.getEvents());
       tripPresenter.hideElement();
       render(statisticsContainerElement, statisticsView, 'beforeend');
+      siteMenuView.setMenuItem(MenuItems.STATS);
       break;
   }
 };
@@ -45,7 +47,6 @@ eventsModel.setEvents(events);
 destinationsModel.setDestinations(destinationsFullList);
 
 render(menuContainerElement, siteMenuView, 'beforeend');
-
 siteMenuView.setMenuClickHandler(handleMenuClick);
 
 tripPresenter.init(offersFullList);

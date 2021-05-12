@@ -253,7 +253,6 @@ const renderTimeSpentChart = (timeSpentChartContainerElement, events) => {
   });
 };
 
-
 const createStatisticsTemplate = () => {
   return `<section class="statistics">
   <h2 class="visually-hidden">Trip statistics</h2>
