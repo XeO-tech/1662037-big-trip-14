@@ -9,8 +9,6 @@ dayjs.extend(duration);
 const BAR_HEIGHT = 55;
 
 const renderMoneyChart = (moneyChartContainerElement, events) => {
-  const labels = EventTypes.map((type) => type.toUpperCase());
-
   const data = EventTypes.map((type) => {
     const eventsForType = events.filter((eventInfo) => eventInfo.type === type);
 
@@ -21,14 +19,31 @@ const renderMoneyChart = (moneyChartContainerElement, events) => {
     return eventsForType.reduce((accumulator, currentEvent) => accumulator + currentEvent.base_price, 0);
   });
 
+  const sortedDataWithLabels = EventTypes
+    .map((label, index) => {
+      return {
+        label: label.toUpperCase(),
+        data: data[index],
+      };
+    })
+    .sort((a, b) => b.data - a.data);
+
+  console.log(sortedDataWithLabels);
+
+  const sortedData = sortedDataWithLabels.map((dataAndLabel) => dataAndLabel.data);
+
+  const sortedLabels = sortedDataWithLabels.map((dataAndLabel) => dataAndLabel.label);
+
+  console.log(sortedData, sortedLabels);
+
 
   return new Chart(moneyChartContainerElement, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
-      labels,
+      labels: sortedLabels,
       datasets: [{
-        data,
+        data: sortedData,
         backgroundColor: '#ffffff',
         hoverBackgroundColor: '#ffffff',
         anchor: 'start',
