@@ -6,7 +6,7 @@ import StatisticsView from './view/statistics.js';
 import TripPesenter from './presenter/trip.js';
 import FiltersPresenter from './presenter/filters.js';
 import { generateEvents, offersFullList, destinationsFullList } from './mocks/events.js';
-import { render } from './utils/render.js';
+import { render, remove } from './utils/render.js';
 import { MenuItems, UpdateTypes, FilterTypes } from './consts.js';
 
 const EVENT_NUMBERS = 20;
@@ -21,21 +21,22 @@ const eventsModel = new EventsModel();
 const destinationsModel = new DestinationsModel();
 const filtersModel = new FiltersModel();
 const siteMenuView = new SiteMenuView();
-const statisticsView = new StatisticsView(events);
 const tripPresenter = new TripPesenter(eventsModel, destinationsModel, filtersModel);
 const filtersPresenter = new FiltersPresenter(filtersContainerElement, filtersModel, eventsModel);
 
+let statisticsView = null;
 
 const handleMenuClick = (target) => {
   switch (target) {
     case MenuItems.TABLE:
       filtersModel.setFilter(UpdateTypes.MINOR, FilterTypes.ALL);
-      statisticsView.hideElement();
       tripPresenter.showElement();
+      remove(statisticsView);
       break;
     case MenuItems.STATS:
+      statisticsView = new StatisticsView(eventsModel.getEvents());
       tripPresenter.hideElement();
-      statisticsView.showElement();
+      render(statisticsContainerElement, statisticsView, 'beforeend');
       break;
   }
 };
@@ -44,7 +45,6 @@ eventsModel.setEvents(events);
 destinationsModel.setDestinations(destinationsFullList);
 
 render(menuContainerElement, siteMenuView, 'beforeend');
-render(statisticsContainerElement, statisticsView, 'afterbegin');
 
 siteMenuView.setMenuClickHandler(handleMenuClick);
 
