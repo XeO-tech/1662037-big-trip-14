@@ -10,7 +10,6 @@ const EVENT_NUMBERS = 20;
 
 const events = generateEvents(EVENT_NUMBERS);
 
-
 const filtersElement = document.querySelector('.trip-controls__filters');
 const menuElement = document.querySelector('.trip-main__trip-controls');
 
