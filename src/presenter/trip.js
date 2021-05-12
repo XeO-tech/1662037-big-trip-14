@@ -36,7 +36,11 @@ export default class TripPresenter {
   }
 
   init(offersFullList, destinationsFullList) {
+    // this._events = [...events];
+    // this._defaultSortedEvents = [...events];
     this._offersFullList = [...offersFullList];
+    console.log(destinationsFullList);
+
     this._destinationsFullList = [...destinationsFullList];
     this._destinationNames = [];
     this._destinationsFullList.forEach((destination) => this._destinationNames.push(destination.name));
@@ -51,7 +55,7 @@ export default class TripPresenter {
   }
 
   _renderEvents() {
-    this._getEvents().forEach((eventItem) => this._renderEvent(eventItem));
+    this._events.forEach((eventItem) => this._renderEvent(eventItem));
   }
 
   _renderBoard({resetTripInfo = true} = {}) {
