@@ -195,10 +195,22 @@ export default class TripPresenter {
   hideElement() {
     this.eventListContainerElement.classList.add('visually-hidden');
     this._sortingPanelComponent.getElement().classList.add('visually-hidden');
+
+    const elementsWithLine = [...document.querySelectorAll('.page-body__container')];
+    elementsWithLine.forEach((element) => {
+      element.classList.add('page-body__container-no-after');
+      element.classList.remove('page-body__container');
+    });
   }
 
   showElement() {
     this.eventListContainerElement.classList.remove('visually-hidden');
     this._sortingPanelComponent.getElement().classList.remove('visually-hidden');
+
+    const elementsWithoutLine = [...document.querySelectorAll('.page-body__container-no-after')];
+    elementsWithoutLine.forEach((element) => {
+      element.classList.add('page-body__container');
+      element.classList.remove('page-body__container-no-after');
+    });
   }
 }
