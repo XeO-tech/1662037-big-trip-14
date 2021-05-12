@@ -4,7 +4,6 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import { EventTypes } from '../consts.js';
-import { defineDateTimeFormats } from '../utils/events.js';
 dayjs.extend(duration);
 
 const BAR_HEIGHT = 55;
@@ -43,7 +42,8 @@ const renderMoneyChart = (moneyChartContainerElement, events) => {
           },
           color: '#000000',
           anchor: 'end',
-          align: 'end',
+          align: 'start',
+          clip: true,
           formatter: (val) => `€ ${val}`,
         },
       },
@@ -116,7 +116,8 @@ const renderTypeChart = (typeChartContainerElement, events) => {
           },
           color: '#000000',
           anchor: 'end',
-          align: 'end',
+          align: 'start',
+          clip: true,
           formatter: (val) => `${val}x`,
         },
       },
@@ -173,7 +174,7 @@ const renderTimeSpentChart = (timeSpentChartContainerElement, events) => {
     }
 
     if (eventsForType.length === 1) {
-      return dayjs.duration(dayjs(eventsForType[0].date_to).diff(dayjs(eventsForType[0].date_from))).asMinutes();
+      return dayjs.duration(dayjs(eventsForType[0].date_to).diff(dayjs(eventsForType[0].date_from))).asMilliseconds();
     }
 
     return eventsForType.reduce((a, b) => {
@@ -181,11 +182,10 @@ const renderTimeSpentChart = (timeSpentChartContainerElement, events) => {
 
       const currentDurationB = dayjs.duration(dayjs(b.date_to).diff(dayjs(b.date_from)));
 
-      return currentDurationA.add(currentDurationB).asMinutes();
+      return currentDurationA.add(currentDurationB).asMilliseconds();
     });
 
   });
-  console.log(data);
 
   return new Chart(timeSpentChartContainerElement, {
     plugins: [ChartDataLabels],
@@ -208,11 +208,12 @@ const renderTimeSpentChart = (timeSpentChartContainerElement, events) => {
           color: '#000000',
           anchor: 'end',
           align: 'start',
+          clip: true,
           formatter: (val) => {
             if (val === 0) {
               return '';
             }
-            return `${dayjs.(val).format('DD[D] HH[H] mm[M]')}`;
+            return `${dayjs.duration(val).format('DD[D] HH[H] mm[M]')}`;
           },
         },
       },
