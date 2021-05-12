@@ -9,10 +9,6 @@ import { sortByPrice, sortByTime, sortByStartDate } from '../utils/events.js';
 import { SortTypes, UserActions, UpdateTypes, FilterTypes } from '../consts.js';
 import { filters } from '../utils/filters.js';
 
-const tripInfoContainerElement = document.querySelector('.trip-main__trip-info');
-const sortingContainerElement = document.querySelector('.trip-events');
-const eventListContainerElement = document.querySelector('.trip-events__list');
-
 export default class TripPresenter {
   constructor(eventsModel, destinationsModel, filtersModel) {
     this._eventPresenters = {};
@@ -22,6 +18,10 @@ export default class TripPresenter {
     this._sortingPanelComponent = null;
     this._EmptyListPlaceholderComponent = null;
     this._EmptyListPlaceholderComponent = new EmptyListPlaceholderView();
+
+    this.tripInfoContainerElement = document.querySelector('.trip-main__trip-info');
+    this.sortingContainerElement = document.querySelector('.trip-events');
+    this.eventListContainerElement = document.querySelector('.trip-events__list');
 
     this._currentSortType = SortTypes.DEFAULT;
 
@@ -86,7 +86,7 @@ export default class TripPresenter {
   }
 
   _renderEmptyList() {
-    render(eventListContainerElement, this._EmptyListPlaceholderComponent, 'beforebegin');
+    render(this.eventListContainerElement, this._EmptyListPlaceholderComponent, 'beforebegin');
   }
 
   _renderSort() {
@@ -97,7 +97,7 @@ export default class TripPresenter {
     this._sortingPanelComponent = new SortingPanelView(this._currentSortType);
 
     this._sortingPanelComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
-    render(sortingContainerElement, this._sortingPanelComponent, 'afterbegin');
+    render(this.sortingContainerElement, this._sortingPanelComponent, 'afterbegin');
   }
 
   _renderTripInfo() {
@@ -107,7 +107,7 @@ export default class TripPresenter {
 
     this._tripInfoComponent = new TripInfoView(this._getEvents());
 
-    render(tripInfoContainerElement, this._tripInfoComponent, 'afterbegin');
+    render(this.tripInfoContainerElement, this._tripInfoComponent, 'afterbegin');
   }
 
   _renderTripCost() {
@@ -117,7 +117,7 @@ export default class TripPresenter {
 
     this._tripCostComponent = new TripCostView(this._getEvents());
 
-    render(tripInfoContainerElement, this._tripCostComponent, 'beforeend');
+    render(this.tripInfoContainerElement, this._tripCostComponent, 'beforeend');
   }
 
   _handleModeChange() {
@@ -193,10 +193,12 @@ export default class TripPresenter {
   }
 
   hideElement() {
-    eventListContainerElement.classList.add('visually-hidden');
+    this.eventListContainerElement.classList.add('visually-hidden');
+    this._sortingPanelComponent.getElement().classList.add('visually-hidden');
   }
 
   showElement() {
-    eventListContainerElement.classList.remove('visually-hidden');
+    this.eventListContainerElement.classList.remove('visually-hidden');
+    this._sortingPanelComponent.getElement().classList.remove('visually-hidden');
   }
 }

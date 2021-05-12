@@ -4,9 +4,9 @@ import { FilterTypes, UpdateTypes } from '../consts.js';
 import { filters } from '../utils/filters.js';
 
 export default class Filters {
-  constructor(filtersContainer, filtersModel, eventsModel) {
+  constructor(filtersModel, eventsModel) {
     this._filtersModel = filtersModel;
-    this._filtersContainer = filtersContainer;
+    this._filtersContainerElement = document.querySelector('.trip-controls__filters');
     this._eventsModel = eventsModel;
 
     this._filtersComponent = null;
@@ -26,7 +26,7 @@ export default class Filters {
     this._filtersComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
 
     if (prevFiltersComponent === null) {
-      render(this._filtersContainer, this._filtersComponent, 'beforeend');
+      render(this._filtersContainerElement, this._filtersComponent, 'beforeend');
       return;
     }
 

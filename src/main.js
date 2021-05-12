@@ -13,7 +13,7 @@ const EVENT_NUMBERS = 20;
 
 const events = generateEvents(EVENT_NUMBERS);
 
-const filtersContainerElement = document.querySelector('.trip-controls__filters');
+
 const menuContainerElement = document.querySelector('.trip-main__trip-controls');
 const statisticsContainerElement = document.querySelector('.trip-events');
 
@@ -22,7 +22,7 @@ const destinationsModel = new DestinationsModel();
 const filtersModel = new FiltersModel();
 const siteMenuView = new SiteMenuView();
 const tripPresenter = new TripPesenter(eventsModel, destinationsModel, filtersModel);
-const filtersPresenter = new FiltersPresenter(filtersContainerElement, filtersModel, eventsModel);
+const filtersPresenter = new FiltersPresenter(filtersModel, eventsModel);
 
 let statisticsView = null;
 
@@ -32,13 +32,11 @@ const handleMenuClick = (target) => {
       filtersModel.setFilter(UpdateTypes.MINOR, FilterTypes.ALL);
       remove(statisticsView);
       tripPresenter.showElement();
-      siteMenuView.setMenuItem(MenuItems.TABLE);
       break;
     case MenuItems.STATS:
       statisticsView = new StatisticsView(eventsModel.getEvents());
       tripPresenter.hideElement();
       render(statisticsContainerElement, statisticsView, 'beforeend');
-      siteMenuView.setMenuItem(MenuItems.STATS);
       break;
   }
 };
