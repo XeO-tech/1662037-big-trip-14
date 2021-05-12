@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { EventTypes } from '../consts.js';
 
 export const defineDateTimeFormats = (eventDuration) => {
   switch (true) {
@@ -37,3 +38,31 @@ export const sortByDateAscending = (a, b) => new Date(a) - new Date(b);
 export const sortByDateDescending = (a, b) => new Date(b) - new Date(a);
 
 export const sortEventsByStartDateAscending = (events) => [...events].sort((a, b) => sortByDateAscending(a.date_from, b.date_from));
+
+export const sortDataAndLabels = (events, calculateData) => {
+  const sortedData = [], sortedLabels = [];
+
+  const data = EventTypes.map((type) => {
+    const eventsForType = events.filter((eventInfo) => eventInfo.type === type);
+    return calculateData(eventsForType);
+  });
+
+  const sortedDataWithLabels = EventTypes
+    .map((label, index) => {
+      return {
+        label: label.toUpperCase(),
+        data: data[index],
+      };
+    })
+    .sort((a, b) => b.data - a.data);
+
+  sortedDataWithLabels.forEach((dataAndLabel) => {
+    sortedData.push(dataAndLabel.data);
+    sortedLabels.push(dataAndLabel.label);
+  });
+
+  return {
+    sortedData,
+    sortedLabels,
+  };
+};

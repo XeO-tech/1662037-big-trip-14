@@ -3,47 +3,30 @@ import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
-import { EventTypes } from '../consts.js';
+import { sortDataAndLabels } from '../utils/events.js';
 dayjs.extend(duration);
 
 const BAR_HEIGHT = 55;
 
 const renderMoneyChart = (moneyChartContainerElement, events) => {
-  const data = EventTypes.map((type) => {
-    const eventsForType = events.filter((eventInfo) => eventInfo.type === type);
 
+  const calculateDataForEvents = (eventsForType) => {
     if (eventsForType.length === 0) {
       return 0;
     }
 
     return eventsForType.reduce((accumulator, currentEvent) => accumulator + currentEvent.base_price, 0);
-  });
+  };
 
-  const sortedDataWithLabels = EventTypes
-    .map((label, index) => {
-      return {
-        label: label.toUpperCase(),
-        data: data[index],
-      };
-    })
-    .sort((a, b) => b.data - a.data);
-
-  console.log(sortedDataWithLabels);
-
-  const sortedData = sortedDataWithLabels.map((dataAndLabel) => dataAndLabel.data);
-
-  const sortedLabels = sortedDataWithLabels.map((dataAndLabel) => dataAndLabel.label);
-
-  console.log(sortedData, sortedLabels);
-
+  const sortedDataAndLabels = sortDataAndLabels(events, calculateDataForEvents);
 
   return new Chart(moneyChartContainerElement, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
-      labels: sortedLabels,
+      labels: sortedDataAndLabels.sortedLabels,
       datasets: [{
-        data: sortedData,
+        data: sortedDataAndLabels.sortedData,
         backgroundColor: '#ffffff',
         hoverBackgroundColor: '#ffffff',
         anchor: 'start',
@@ -105,19 +88,17 @@ const renderMoneyChart = (moneyChartContainerElement, events) => {
 };
 
 const renderTypeChart = (typeChartContainerElement, events) => {
-  const labels = EventTypes.map((type) => type.toUpperCase());
+  const calculateDataForEvents = (eventsForType) => eventsForType.length;
 
-  const data = EventTypes.map((type) => {
-    return events.filter((eventInfo) => eventInfo.type === type).length;
-  });
+  const sortedDataAndLabels = sortDataAndLabels(events, calculateDataForEvents);
 
   return new Chart(typeChartContainerElement, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
-      labels,
+      labels: sortedDataAndLabels.sortedLabels,
       datasets: [{
-        data,
+        data: sortedDataAndLabels.sortedData,
         backgroundColor: '#ffffff',
         hoverBackgroundColor: '#ffffff',
         anchor: 'start',
@@ -179,11 +160,8 @@ const renderTypeChart = (typeChartContainerElement, events) => {
 };
 
 const renderTimeSpentChart = (timeSpentChartContainerElement, events) => {
-  const labels = EventTypes.map((type) => type.toUpperCase());
 
-  const data = EventTypes.map((type) => {
-    const eventsForType = events.filter((eventInfo) => eventInfo.type === type);
-
+  const calculateDataForEvents = (eventsForType) => {
     if (eventsForType.length === 0) {
       return 0;
     }
@@ -199,16 +177,17 @@ const renderTimeSpentChart = (timeSpentChartContainerElement, events) => {
 
       return currentDurationA.add(currentDurationB).asMilliseconds();
     });
+  };
 
-  });
+  const sortedDataAndLabels = sortDataAndLabels(events, calculateDataForEvents);
 
   return new Chart(timeSpentChartContainerElement, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
-      labels,
+      labels: sortedDataAndLabels.sortedLabels,
       datasets: [{
-        data,
+        data: sortedDataAndLabels.sortedData,
         backgroundColor: '#ffffff',
         hoverBackgroundColor: '#ffffff',
         anchor: 'start',
