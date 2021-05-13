@@ -22,7 +22,7 @@ const renderDestinationsOptions = (avaliableDestinations) => {
     .join('');
 };
 
-const renderOffers = (offers, offersFullList, isAddNewEventForm, type) => {
+const renderOffers = (offers, offersFullList, type) => {
   let counter = 0;
 
   const checkedOffersTitles = offers.map((offer) => offer.title);
@@ -34,7 +34,7 @@ const renderOffers = (offers, offersFullList, isAddNewEventForm, type) => {
       const offerShortCut = offer.title.toLowerCase().replace(/\s+/g, '_');
       counter++;
       return `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerShortCut}-${counter}" type="checkbox" name="${offer.title}" ${isAddNewEventForm || offers.length === 0 ? '' : checkedOffersTitles.some((title) => title === offer.title) ? 'checked' : ''}>
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerShortCut}-${counter}" type="checkbox" name="${offer.title}" ${offers.length === 0 ? '' : checkedOffersTitles.some((title) => title === offer.title) ? 'checked' : ''}>
       <label class="event__offer-label" for="event-offer-${offerShortCut}-${counter}">
         <span class="event__offer-title">${offer.title}</span>
         &plus;&euro;&nbsp;
@@ -124,7 +124,7 @@ const createAddAndEditFormTemplate = (eventInfo = {}, offersFullList) => {
       <section class="event__section  event__section--offers ${offersClassName}">
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
         <div class="event__available-offers">
-          ${renderOffers(offers, offersFullList,isAddNewEventForm, type)}
+          ${renderOffers(offers, offersFullList, type)}
         </div>
       </section>
       <section class="event__section  event__section--destination ${destinationClassName}">
@@ -210,8 +210,7 @@ export default class AddAndEditForm extends SmartView {
 
     this.updateData({
       type: evt.target.value,
-      offers: this._offersFullList.find((element) => element.type === evt.target.value).offers,
-      areOffersChecked: false,
+      offers: [],
     }, true);
   }
 
@@ -379,7 +378,7 @@ export default class AddAndEditForm extends SmartView {
     if (isAddNewEventForm) {
       return {
         type: 'flight',
-        offers: this._offersFullList.find((element) => element.type === 'flight').offers,
+        offers: [],
         destination: null,
         base_price: '',
         date_from: null,
@@ -400,7 +399,6 @@ export default class AddAndEditForm extends SmartView {
   parseDataToEventInfo(data) {
     data = Object.assign({}, data);
 
-    delete data.areOffersChecked;
     delete data.isAddNewEventForm;
     delete data.avaliableDestinations;
 
