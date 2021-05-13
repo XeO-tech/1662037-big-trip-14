@@ -1,5 +1,6 @@
 import EventsModel from './model/events.js';
 import DestinationsModel from './model/destinations.js';
+import OffersModel from './model/offers.js';
 import FiltersModel from './model/filters.js';
 import SiteMenuView from './view/site-menu.js';
 import StatisticsView from './view/statistics.js';
@@ -19,9 +20,10 @@ const statisticsContainerElement = document.querySelector('.trip-events');
 
 const eventsModel = new EventsModel();
 const destinationsModel = new DestinationsModel();
+const offersModel = new OffersModel();
 const filtersModel = new FiltersModel();
 const siteMenuView = new SiteMenuView();
-const tripPresenter = new TripPesenter(eventsModel, destinationsModel, filtersModel);
+const tripPresenter = new TripPesenter(eventsModel, destinationsModel, offersModel, filtersModel);
 const filtersPresenter = new FiltersPresenter(filtersModel, eventsModel);
 
 let statisticsView = null;
@@ -43,11 +45,12 @@ const handleMenuClick = (target) => {
 
 eventsModel.setEvents(events);
 destinationsModel.setDestinations(destinationsFullList);
+offersModel.setOffers(offersFullList);
 
 render(menuContainerElement, siteMenuView, 'beforeend');
 siteMenuView.setMenuClickHandler(handleMenuClick);
 
-tripPresenter.init(offersFullList);
+tripPresenter.init();
 filtersPresenter.init();
 
 document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {

@@ -10,10 +10,11 @@ import { SortTypes, UserActions, UpdateTypes, FilterTypes } from '../consts.js';
 import { filters } from '../utils/filters.js';
 
 export default class TripPresenter {
-  constructor(eventsModel, destinationsModel, filtersModel) {
+  constructor(eventsModel, destinationsModel, offersModel, filtersModel) {
     this._eventPresenters = {};
     this._eventsModel = eventsModel;
     this._destinationsModel = destinationsModel;
+    this._offersModel = offersModel;
     this._filtersModel = filtersModel;
     this._sortingPanelComponent = null;
     this._EmptyListPlaceholderComponent = null;
@@ -36,9 +37,9 @@ export default class TripPresenter {
     this._newEventPresenter = new NewEventPresenter(this._handleViewAction);
   }
 
-  init(offersFullList) {
-    this._offersFullList = [...offersFullList];
+  init() {
     this._destinationsFullList = this._destinationsModel.getDestinations();
+    this._offersFullList = this._offersModel.getOffers();
     this._destinationNames = [];
     this._destinationsFullList.forEach((destination) => this._destinationNames.push(destination.name));
 
