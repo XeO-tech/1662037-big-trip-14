@@ -156,6 +156,7 @@ export default class AddAndEditForm extends SmartView {
     this._arrowClickHandler = this._arrowClickHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
+    this._priceChangeHandler = this._priceChangeHandler.bind(this);
     this._startDateChangeHandler = this._startDateChangeHandler.bind(this);
     this._endDateChangeHandler = this._endDateChangeHandler.bind(this);
 
@@ -184,7 +185,6 @@ export default class AddAndEditForm extends SmartView {
     });
 
     this.updateData({
-      base_price: parseInt(evt.target['event-price'].value),
       offers: selectedOffersData,
     }, false);
 
@@ -270,6 +270,10 @@ export default class AddAndEditForm extends SmartView {
       evt.target.setCustomValidity('Please, use integer number value');
     }
     evt.target.reportValidity();
+
+    if (evt.target.validity.valid === true) {
+      this.updateData({base_price: parseInt(evt.target.value)}, false);
+    }
   }
 
   _setInnerHandlers() {
@@ -283,7 +287,7 @@ export default class AddAndEditForm extends SmartView {
 
     this.getElement()
       .querySelector('.event__input--price')
-      .addEventListener('input', this._priceChangeHandler);
+      .addEventListener('change', this._priceChangeHandler);
   }
 
   _setDatePicker() {
