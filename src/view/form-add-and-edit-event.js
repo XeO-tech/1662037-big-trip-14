@@ -34,7 +34,7 @@ const renderOffers = (offers, offersFullList, isAddNewEventForm, type) => {
       const offerShortCut = offer.title.toLowerCase().replace(/\s+/g, '_');
       counter++;
       return `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerShortCut}-${counter}" type="checkbox" name="${offer.title}" ${isAddNewEventForm ? '' : checkedOffersTitles.some((title) => title === offer.title) ? 'checked' : ''}>
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerShortCut}-${counter}" type="checkbox" name="${offer.title}" ${isAddNewEventForm || offers.length === 0 ? '' : checkedOffersTitles.some((title) => title === offer.title) ? 'checked' : ''}>
       <label class="event__offer-label" for="event-offer-${offerShortCut}-${counter}">
         <span class="event__offer-title">${offer.title}</span>
         &plus;&euro;&nbsp;
@@ -168,8 +168,7 @@ export default class AddAndEditForm extends SmartView {
     return createAddAndEditFormTemplate(this._data, this._offersFullList);
   }
 
-  _formSubmitHandler(evt) {
-    evt.preventDefault();
+  _getSelectedOffers() {
     const selectedOffersData = [];
 
     const selectedOffersTitles = [...document.querySelectorAll('.event__offer-selector input[type=\'checkbox\']:checked')].map((element) => element.name);
@@ -184,8 +183,14 @@ export default class AddAndEditForm extends SmartView {
       });
     });
 
+    return selectedOffersData;
+  }
+
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+
     this.updateData({
-      offers: selectedOffersData,
+      offers: this._getSelectedOffers(),
     }, false);
 
     this._callback.submit(this.parseDataToEventInfo(this._data));
@@ -224,7 +229,7 @@ export default class AddAndEditForm extends SmartView {
     evt.target.setCustomValidity('');
     evt.target.reportValidity();
 
-    this.updateData({destination: newDestinationData}, true);
+    this.updateData({destination: newDestinationData, offers: this._getSelectedOffers()}, true);
   }
 
   _startDateChangeHandler() {

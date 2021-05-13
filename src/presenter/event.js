@@ -87,7 +87,7 @@ export default class EventPresenter {
   }
 
   _handleFormSubmit(eventItem) {
-    this._changeEvent(UserActions.UPDATE_EVENT, UpdateTypes.MINOR, eventItem);
+    this._changeEvent(UserActions.UPDATE_EVENT, UpdateTypes.MAJOR, eventItem);
     this._replaceEditFormWitnEvent();
   }
 
