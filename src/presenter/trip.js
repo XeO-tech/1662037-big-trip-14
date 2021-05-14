@@ -43,10 +43,6 @@ export default class TripPresenter {
   }
 
   init() {
-    this._destinationsFullList = this._destinationsModel.getDestinations();
-    this._offersFullList = this._offersModel.getOffers();
-    this._destinationNames = this._destinationsFullList.map((destination) => destination.name);
-
     this._renderBoard();
   }
 
@@ -69,6 +65,10 @@ export default class TripPresenter {
       this._renderLoading();
       return;
     }
+
+    this._destinationsFullList = this._destinationsModel.getDestinations();
+    this._offersFullList = this._offersModel.getOffers();
+    this._destinationNames = this._destinationsFullList.map((destination) => destination.name);
 
     if (Object.keys(this._getEvents()).length === 0) {
       this._renderEmptyList();

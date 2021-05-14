@@ -45,17 +45,28 @@ const handleMenuClick = (target) => {
 
 siteMenuView.setMenuClickHandler(handleMenuClick);
 
-render(menuContainerElement, siteMenuView, 'beforeend');
+tripPresenter.init();
 
-api.getDestinations()
+api
+  .getDestinations()
   .then((destinations) => destinationsModel.setDestinations(destinations))
   .then(() => api.getOffers())
   .then((offers) => offersModel.setOffers(offers))
   .then(() => api.getEvents())
   .then((events) => {
-    tripPresenter.init();
-    filtersPresenter.init();
     eventsModel.setEvents(UpdateTypes.INIT, events);
+    filtersPresenter.init();
+    render(menuContainerElement, siteMenuView, 'beforeend');
+
+    document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
+      evt.preventDefault();
+      tripPresenter.createEvent();
+    });
+  })
+  .catch(() => {
+    eventsModel.setEvents(UpdateTypes.INIT, []);
+    filtersPresenter.init();
+    render(menuContainerElement, siteMenuView, 'beforeend');
 
     document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
       evt.preventDefault();
