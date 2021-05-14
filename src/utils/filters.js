@@ -8,13 +8,13 @@ export const filters = {
   [FilterTypes.FUTURE]: (events) => {
     return events.filter((eventInfo) => {
       const currentDate = dayjs(new Date());
-      return dayjs(eventInfo.date_from).isSameOrAfter(currentDate, 'day');
+      return dayjs(eventInfo.dateFrom).isSameOrAfter(currentDate, 'day');
     });
   },
   [FilterTypes.PAST]: (events) => {
     return events.filter((eventInfo) => {
       const currentDate = new dayjs(new Date());
-      return dayjs(eventInfo.date_to).isBefore(currentDate, 'day');
+      return dayjs(eventInfo.dateTo).isBefore(currentDate, 'day');
     });
   },
 };

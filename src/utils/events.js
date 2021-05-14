@@ -21,23 +21,23 @@ export const defineDateTimeFormats = (eventDuration) => {
   }
 };
 
-export const sortByPrice = (a, b) => b.base_price - a.base_price;
+export const sortByPrice = (a, b) => b.basePrice - a.basePrice;
 
 export const sortByTime = (a, b) => {
-  const aEventDuration = dayjs.duration(dayjs(a.date_to).diff(dayjs(a.date_from)));
+  const aEventDuration = dayjs.duration(dayjs(a.dateTo).diff(dayjs(a.dateFrom)));
 
-  const bEventDuration = dayjs.duration(dayjs(b.date_to).diff(dayjs(b.date_from)));
+  const bEventDuration = dayjs.duration(dayjs(b.dateTo).diff(dayjs(b.dateFrom)));
 
   return bEventDuration.asMilliseconds() - aEventDuration.asMilliseconds();
 };
 
-export const sortByStartDate = (a, b) => a.date_from - b.date_from;
+export const sortByStartDate = (a, b) => a.dateFrom - b.dateFrom;
 
 export const sortByDateAscending = (a, b) => new Date(a) - new Date(b);
 
 export const sortByDateDescending = (a, b) => new Date(b) - new Date(a);
 
-export const sortEventsByStartDateAscending = (events) => [...events].sort((a, b) => sortByDateAscending(a.date_from, b.date_from));
+export const sortEventsByStartDateAscending = (events) => [...events].sort((a, b) => sortByDateAscending(a.dateFrom, b.dateFrom));
 
 export const sortDataAndLabels = (events, calculateData) => {
   const sortedData = [], sortedLabels = [];

@@ -110,7 +110,7 @@ export default class EventPresenter {
         {},
         this._data,
         {
-          is_favorite: !this._data.is_favorite,
+          isFavorite: !this._data.isFavorite,
         },
       ),
     );

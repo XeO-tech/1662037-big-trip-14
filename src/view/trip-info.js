@@ -21,8 +21,8 @@ const generateTripRoute = (events) => {
 };
 
 const generateTripDates = (events) => {
-  const startDate = events.map((element) => element.date_from).sort(sortByDateAscending)[0];
-  const endDate =  events.map((element) => element.date_to).sort(sortByDateDescending)[0];
+  const startDate = events.map((element) => element.dateFrom).sort(sortByDateAscending)[0];
+  const endDate =  events.map((element) => element.dateTo).sort(sortByDateDescending)[0];
   const endDateFormat = dayjs(startDate).month() === dayjs(endDate).month() ? 'DD' : 'MMM DD';
 
   return `${dayjs(startDate).format('MMM DD')}&nbsp;&mdash;&nbsp;${dayjs(endDate).format(endDateFormat)}`;

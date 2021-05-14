@@ -15,7 +15,7 @@ const renderMoneyChart = (moneyChartContainerElement, events) => {
       return 0;
     }
 
-    return eventsForType.reduce((accumulator, currentEvent) => accumulator + currentEvent.base_price, 0);
+    return eventsForType.reduce((accumulator, currentEvent) => accumulator + currentEvent.basePrice, 0);
   };
 
   const sortedDataAndLabels = sortDataAndLabels(events, calculateDataForEvents);
@@ -167,13 +167,13 @@ const renderTimeSpentChart = (timeSpentChartContainerElement, events) => {
     }
 
     if (eventsForType.length === 1) {
-      return dayjs.duration(dayjs(eventsForType[0].date_to).diff(dayjs(eventsForType[0].date_from))).asMilliseconds();
+      return dayjs.duration(dayjs(eventsForType[0].dateTo).diff(dayjs(eventsForType[0].dateFrom))).asMilliseconds();
     }
 
     return eventsForType.reduce((a, b) => {
-      const currentDurationA = dayjs.duration(dayjs(a.date_to).diff(dayjs(a.date_from)));
+      const currentDurationA = dayjs.duration(dayjs(a.dateTo).diff(dayjs(a.dateFrom)));
 
-      const currentDurationB = dayjs.duration(dayjs(b.date_to).diff(dayjs(b.date_from)));
+      const currentDurationB = dayjs.duration(dayjs(b.dateTo).diff(dayjs(b.dateFrom)));
 
       return currentDurationA.add(currentDurationB).asMilliseconds();
     });

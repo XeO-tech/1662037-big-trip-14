@@ -19,11 +19,11 @@ const createEventItemTemplate = (event) => {
   const {
     type,
     destination,
-    date_from: startDateTime,
-    date_to: endDateTime,
-    base_price: basePrice,
+    dateFrom: startDateTime,
+    dateTo: endDateTime,
+    basePrice: basePrice,
     offers,
-    is_favorite: isFavorite,
+    isFavorite: isFavorite,
   } = event;
   const eventDuration = dayjs.duration(dayjs(endDateTime).diff(dayjs(startDateTime)));
   const { durationFormat, dateTimeFormat } = defineDateTimeFormats(eventDuration);

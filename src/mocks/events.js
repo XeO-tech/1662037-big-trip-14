@@ -72,11 +72,11 @@ const generateOneEvent = () => {
 
   return {
     id: nanoid(),
-    base_price: generatePrice(),
-    date_from: startDateTime,
-    date_to: endDateTime,
+    basePrice: generatePrice(),
+    dateFrom: startDateTime,
+    dateTo: endDateTime,
     destination: getRandomArrayElement(destinationsFullList),
-    is_favorite: Boolean(getRandomIntFromRange(0,1)),
+    isFavorite: Boolean(getRandomIntFromRange(0,1)),
     offers,
     type,
   };

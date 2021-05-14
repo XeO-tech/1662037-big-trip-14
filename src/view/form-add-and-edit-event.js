@@ -60,9 +60,9 @@ const createAddAndEditFormTemplate = (eventInfo = {}, offersFullList) => {
   const {
     type,
     destination,
-    date_from: startDateTime,
-    date_to: endDateTime,
-    base_price: basePrice,
+    dateFrom: startDateTime,
+    dateTo: endDateTime,
+    basePrice: basePrice,
     offers,
     avaliableDestinations,
     isAddNewEventForm,
@@ -235,8 +235,8 @@ export default class AddAndEditForm extends SmartView {
     const selectedDate = arguments[0];
     const dateInput = arguments[2].altInput;
 
-    if (this._data.date_to !== undefined
-      && dayjs(selectedDate).isAfter(dayjs(this._data.date_to)))
+    if (this._data.dateTo !== undefined
+      && dayjs(selectedDate).isAfter(dayjs(this._data.dateTo)))
     {
       dateInput.setCustomValidity('Start date should be prior to or the same as end date');
       dateInput.reportValidity();
@@ -245,15 +245,15 @@ export default class AddAndEditForm extends SmartView {
     dateInput.setCustomValidity('');
     dateInput.reportValidity();
 
-    this.updateData({date_from: selectedDate}, false);
+    this.updateData({dateFrom: selectedDate}, false);
   }
 
   _endDateChangeHandler() {
     const selectedDate = arguments[0];
     const dateInput = arguments[2].altInput;
 
-    if (this._data.date_from !== undefined
-      && dayjs(this._data.date_from).isAfter(dayjs(selectedDate)))
+    if (this._data.dateFrom !== undefined
+      && dayjs(this._data.dateFrom).isAfter(dayjs(selectedDate)))
     {
       dateInput.setCustomValidity('End date should be after or the same as start date');
       dateInput.reportValidity();
@@ -262,7 +262,7 @@ export default class AddAndEditForm extends SmartView {
     dateInput.setCustomValidity('');
     dateInput.reportValidity();
 
-    this.updateData({date_to: selectedDate}, false);
+    this.updateData({dateTo: selectedDate}, false);
   }
 
   _priceChangeHandler(evt) {
@@ -276,7 +276,7 @@ export default class AddAndEditForm extends SmartView {
     evt.target.reportValidity();
 
     if (evt.target.validity.valid === true) {
-      this.updateData({base_price: parseInt(evt.target.value)}, false);
+      this.updateData({basePrice: parseInt(evt.target.value)}, false);
     }
   }
 
@@ -316,7 +316,7 @@ export default class AddAndEditForm extends SmartView {
     this._startDatePicker = flatpickr(
       this.getElement().querySelector('#event-start-time-1'),
       Object.assign({}, flatpickrBaseSettings, {
-        defaultDate: this._data.date_from,
+        defaultDate: this._data.dateFrom,
         onChange: this._startDateChangeHandler,
       }));
     this._startDatePicker._input.onkeydown = () => false;
@@ -324,7 +324,7 @@ export default class AddAndEditForm extends SmartView {
     this._endDatePicker = flatpickr(
       this.getElement().querySelector('#event-end-time-1'),
       Object.assign({}, flatpickrBaseSettings, {
-        defaultDate: this._data.date_to,
+        defaultDate: this._data.dateTo,
         onChange: this._endDateChangeHandler,
       }));
     this._endDatePicker._input.onkeydown = () => false;
@@ -380,9 +380,9 @@ export default class AddAndEditForm extends SmartView {
         type: 'flight',
         offers: [],
         destination: null,
-        base_price: '',
-        date_from: null,
-        date_to: null,
+        basePrice: '',
+        dateFrom: null,
+        dateTo: null,
         avaliableDestinations: this._destinationNames,
         isAddNewEventForm,
       };
