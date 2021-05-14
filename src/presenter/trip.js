@@ -1,5 +1,6 @@
 import TripInfoView from '../view/trip-info.js';
 import TripCostView from '../view/trip-cost.js';
+import LoadingView from '../view/loading.js';
 import SortingPanelView from '../view/sorting-panel.js';
 import EmptyListPlaceholderView  from '../view/no-events.js';
 import EventPresenter from './event.js';
@@ -12,16 +13,20 @@ import { filters } from '../utils/filters.js';
 export default class TripPresenter {
   constructor(eventsModel, destinationsModel, offersModel, filtersModel) {
     this._eventPresenters = {};
+    this._isLoading = true;
+
     this._eventsModel = eventsModel;
     this._destinationsModel = destinationsModel;
     this._offersModel = offersModel;
     this._filtersModel = filtersModel;
+
     this._sortingPanelComponent = null;
-    this._EmptyListPlaceholderComponent = null;
-    this._EmptyListPlaceholderComponent = new EmptyListPlaceholderView();
+    this._emptyListPlaceholderComponent = new EmptyListPlaceholderView();
+    this._loadingComponent = new LoadingView();
+
 
     this.tripInfoContainerElement = document.querySelector('.trip-main__trip-info');
-    this.sortingContainerElement = document.querySelector('.trip-events');
+    this.mainContainerElement = document.querySelector('.trip-events');
     this.eventListContainerElement = document.querySelector('.trip-events__list');
 
     this._currentSortType = SortTypes.DEFAULT;
@@ -40,8 +45,7 @@ export default class TripPresenter {
   init() {
     this._destinationsFullList = this._destinationsModel.getDestinations();
     this._offersFullList = this._offersModel.getOffers();
-    this._destinationNames = [];
-    this._destinationsFullList.forEach((destination) => this._destinationNames.push(destination.name));
+    this._destinationNames = this._destinationsFullList.map((destination) => destination.name);
 
     this._renderBoard();
   }
@@ -56,7 +60,16 @@ export default class TripPresenter {
     this._getEvents().forEach((eventItem) => this._renderEvent(eventItem));
   }
 
+  _renderLoading() {
+    render(this.mainContainerElement, this._loadingComponent, 'afterbegin');
+  }
+
   _renderBoard({resetTripInfo = true} = {}) {
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
+
     if (Object.keys(this._getEvents()).length === 0) {
       this._renderEmptyList();
       return;
@@ -87,7 +100,7 @@ export default class TripPresenter {
   }
 
   _renderEmptyList() {
-    render(this.eventListContainerElement, this._EmptyListPlaceholderComponent, 'beforebegin');
+    render(this.eventListContainerElement, this._emptyListPlaceholderComponent, 'beforebegin');
   }
 
   _renderSort() {
@@ -98,7 +111,7 @@ export default class TripPresenter {
     this._sortingPanelComponent = new SortingPanelView(this._currentSortType);
 
     this._sortingPanelComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
-    render(this.sortingContainerElement, this._sortingPanelComponent, 'afterbegin');
+    render(this.mainContainerElement, this._sortingPanelComponent, 'afterbegin');
   }
 
   _renderTripInfo() {
@@ -157,6 +170,11 @@ export default class TripPresenter {
         this._clearBoard();
         this._renderBoard();
         break;
+      case UpdateTypes.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
+        this._renderBoard();
+        break;
     }
   }
 
@@ -176,7 +194,8 @@ export default class TripPresenter {
       .forEach((presenter) => presenter.destroy());
     this._eventPresenters = {};
     remove(this._sortingPanelComponent);
-    remove(this._EmptyListPlaceholderComponent);
+    remove(this._emptyListPlaceholderComponent);
+    remove(this._loadingComponent);
 
     if (resetTripInfo) {
       remove(this._tripCostComponent);
