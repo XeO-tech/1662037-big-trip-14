@@ -11,9 +11,10 @@ import { SortTypes, UserActions, UpdateTypes, FilterTypes } from '../consts.js';
 import { filters } from '../utils/filters.js';
 
 export default class TripPresenter {
-  constructor(eventsModel, destinationsModel, offersModel, filtersModel) {
+  constructor(eventsModel, destinationsModel, offersModel, filtersModel, api) {
     this._eventPresenters = {};
     this._isLoading = true;
+    this._api = api;
 
     this._eventsModel = eventsModel;
     this._destinationsModel = destinationsModel;
@@ -144,7 +145,9 @@ export default class TripPresenter {
   _handleViewAction(userAction, updateType, update) {
     switch (userAction) {
       case UserActions.UPDATE_EVENT:
-        this._eventsModel.updateEvent(updateType, update);
+        this._api.updateEvent(update).then((response) => {
+          this._eventsModel.updateEvent(updateType, response);
+        });
         break;
       case UserActions.ADD_EVENT:
         this._eventsModel.addEvent(updateType, update);

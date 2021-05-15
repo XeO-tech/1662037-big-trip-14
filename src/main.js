@@ -23,7 +23,7 @@ const destinationsModel = new DestinationsModel();
 const offersModel = new OffersModel();
 const filtersModel = new FiltersModel();
 const siteMenuView = new SiteMenuView();
-const tripPresenter = new TripPesenter(eventsModel, destinationsModel, offersModel, filtersModel);
+const tripPresenter = new TripPesenter(eventsModel, destinationsModel, offersModel, filtersModel, api);
 const filtersPresenter = new FiltersPresenter(filtersModel, eventsModel);
 
 let statisticsView = null;
@@ -43,6 +43,13 @@ const handleMenuClick = (target) => {
   }
 };
 
+const setNewEventButtonClickHandler = () => {
+  document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
+    evt.preventDefault();
+    tripPresenter.createEvent();
+  });
+};
+
 siteMenuView.setMenuClickHandler(handleMenuClick);
 
 tripPresenter.init();
@@ -58,19 +65,14 @@ api
     filtersPresenter.init();
     render(menuContainerElement, siteMenuView, 'beforeend');
 
-    document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
-      evt.preventDefault();
-      tripPresenter.createEvent();
-    });
+    setNewEventButtonClickHandler();
+
   })
   .catch(() => {
     eventsModel.setEvents(UpdateTypes.INIT, []);
     filtersPresenter.init();
     render(menuContainerElement, siteMenuView, 'beforeend');
 
-    document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
-      evt.preventDefault();
-      tripPresenter.createEvent();
-    });
+    setNewEventButtonClickHandler();
   });
 
