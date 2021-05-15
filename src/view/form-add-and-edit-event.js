@@ -60,16 +60,16 @@ const createAddAndEditFormTemplate = (eventInfo = {}, offersFullList) => {
   const {
     type,
     destination,
-    dateFrom: startDateTime,
-    date_to: endDateTime,
-    basePrice: basePrice,
+    dateFrom,
+    dateTo,
+    basePrice,
     offers,
     avaliableDestinations,
     isAddNewEventForm,
   } = eventInfo;
 
-  const startDateTimeFormatted = startDateTime === null ? '' : dayjs(startDateTime).format('DD/MM/YY HH:mm');
-  const endDateTimeFormatted = endDateTime === null ? '' : dayjs(endDateTime).format('DD/MM/YY HH:mm');
+  const dateFromFormatted = dateFrom === null ? '' : dayjs(dateFrom).format('DD/MM/YY HH:mm');
+  const dateToFormatted = dateTo === null ? '' : dayjs(dateTo).format('DD/MM/YY HH:mm');
 
   const offersClassName = offersFullList.find((element) => element.type === type).offers.length === 0 ? 'visually-hidden' : '';
 
@@ -102,10 +102,10 @@ const createAddAndEditFormTemplate = (eventInfo = {}, offersFullList) => {
       </div>
       <div class="event__field-group  event__field-group--time">
         <label class="visually-hidden" for="event-start-time-1">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startDateTimeFormatted}">
+        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dateFromFormatted}">
         &mdash;
         <label class="visually-hidden" for="event-end-time-1">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${endDateTimeFormatted}">
+        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateToFormatted}">
       </div>
       <div class="event__field-group  event__field-group--price">
         <label class="event__label" for="event-price-1">
@@ -232,11 +232,11 @@ export default class AddAndEditForm extends SmartView {
   }
 
   _startDateChangeHandler() {
-    const selectedDate = arguments[0];
+    const selectedDate = arguments[0][0];
     const dateInput = arguments[2].altInput;
 
-    if (this._data.date_to !== undefined
-      && dayjs(selectedDate).isAfter(dayjs(this._data.date_to)))
+    if (this._data.dateTo !== undefined
+      && dayjs(selectedDate).isAfter(dayjs(this._data.dateTo)))
     {
       dateInput.setCustomValidity('Start date should be prior to or the same as end date');
       dateInput.reportValidity();
@@ -249,7 +249,7 @@ export default class AddAndEditForm extends SmartView {
   }
 
   _endDateChangeHandler() {
-    const selectedDate = arguments[0];
+    const selectedDate = arguments[0][0];
     const dateInput = arguments[2].altInput;
 
     if (this._data.dateFrom !== undefined
@@ -262,7 +262,7 @@ export default class AddAndEditForm extends SmartView {
     dateInput.setCustomValidity('');
     dateInput.reportValidity();
 
-    this.updateData({date_to: selectedDate}, false);
+    this.updateData({dateTo: selectedDate}, false);
   }
 
   _priceChangeHandler(evt) {
@@ -324,7 +324,7 @@ export default class AddAndEditForm extends SmartView {
     this._endDatePicker = flatpickr(
       this.getElement().querySelector('#event-end-time-1'),
       Object.assign({}, flatpickrBaseSettings, {
-        defaultDate: this._data.date_to,
+        defaultDate: this._data.dateTo,
         onChange: this._endDateChangeHandler,
       }));
     this._endDatePicker._input.onkeydown = () => false;
@@ -382,7 +382,7 @@ export default class AddAndEditForm extends SmartView {
         destination: null,
         basePrice: '',
         dateFrom: null,
-        date_to: null,
+        dateTo: null,
         avaliableDestinations: this._destinationNames,
         isAddNewEventForm,
       };
@@ -398,6 +398,10 @@ export default class AddAndEditForm extends SmartView {
 
   parseDataToEventInfo(data) {
     data = Object.assign({}, data);
+
+    if (data.isAddNewEventForm) {
+      Object.assign(data, {isFavorite: false});
+    }
 
     delete data.isAddNewEventForm;
     delete data.avaliableDestinations;

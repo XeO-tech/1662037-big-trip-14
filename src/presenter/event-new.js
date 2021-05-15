@@ -1,8 +1,6 @@
 import { render, remove } from '../utils/render.js';
 import AddAndEditFormView from '../view/form-add-and-edit-event.js';
 import { UserActions, UpdateTypes } from '../consts.js';
-import { nanoid } from 'nanoid';
-
 
 export default class EventNewPresenter {
   constructor(changeEvent) {
@@ -46,7 +44,7 @@ export default class EventNewPresenter {
   }
 
   _handleFormSubmit(eventItem) {
-    this._changeEvent(UserActions.ADD_EVENT, UpdateTypes.MAJOR, Object.assign({id: nanoid()}, eventItem));
+    this._changeEvent(UserActions.ADD_EVENT, UpdateTypes.MAJOR, eventItem);
     this.destroy();
   }
 
