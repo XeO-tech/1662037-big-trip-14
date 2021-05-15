@@ -75,8 +75,8 @@ export default class TripPresenter {
     }
 
     this._destinationsFullList = this._destinationsModel.getDestinations();
+    this._destinationNames = this._destinationsModel.getCitiesNames();
     this._offersFullList = this._offersModel.getOffers();
-    this._destinationNames = this._destinationsFullList.map((destination) => destination.name);
 
     if (Object.keys(this._getEvents()).length === 0) {
       this._renderEmptyList();

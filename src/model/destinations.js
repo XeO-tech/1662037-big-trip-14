@@ -11,6 +11,10 @@ export default class Destinations {
     return this._destinations;
   }
 
+  getCitiesNames() {
+    return this._destinations.map((destination) => destination.name);
+  }
+
   updateDestination(newDestination) {
     const index = this._destinations.findIndex((destination) => destination.name === newDestination.name);
 
