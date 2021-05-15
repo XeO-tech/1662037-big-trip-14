@@ -53,14 +53,14 @@ const setNewEventButtonClickHandler = () => {
 
 const setupInterface = () => {
   filtersPresenter.init();
-  siteMenuView.setMenuClickHandler(handleMenuClick);
   render(menuContainerElement, siteMenuView, 'beforeend');
+  siteMenuView.setMenuClickHandler(handleMenuClick);
   newEventButtonElement.disabled = false;
   setNewEventButtonClickHandler();
 };
 
-tripPresenter.init();
 newEventButtonElement.disabled = true;
+tripPresenter.init();
 
 api
   .getDestinations()
