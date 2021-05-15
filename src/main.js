@@ -16,7 +16,8 @@ const END_POINT = 'https://14.ecmascript.pages.academy/big-trip';
 const api = new Api(END_POINT, AUTHORIZATION);
 
 const menuContainerElement = document.querySelector('.trip-main__trip-controls');
-const statisticsContainerElement = document.querySelector('.trip-events');
+const mainContainerElement = document.querySelector('.trip-events');
+const newEventButtonElement = document.querySelector('.trip-main__event-add-btn');
 
 const eventsModel = new EventsModel();
 const destinationsModel = new DestinationsModel();
@@ -38,21 +39,28 @@ const handleMenuClick = (target) => {
     case MenuItems.STATS:
       statisticsView = new StatisticsView(eventsModel.getEvents());
       tripPresenter.hideElement();
-      render(statisticsContainerElement, statisticsView, 'beforeend');
+      render(mainContainerElement, statisticsView, 'beforeend');
       break;
   }
 };
 
 const setNewEventButtonClickHandler = () => {
-  document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
+  newEventButtonElement.addEventListener('click', (evt) => {
     evt.preventDefault();
     tripPresenter.createEvent();
   });
 };
 
-siteMenuView.setMenuClickHandler(handleMenuClick);
+const setupInterface = () => {
+  filtersPresenter.init();
+  siteMenuView.setMenuClickHandler(handleMenuClick);
+  render(menuContainerElement, siteMenuView, 'beforeend');
+  newEventButtonElement.disabled = false;
+  setNewEventButtonClickHandler();
+};
 
 tripPresenter.init();
+newEventButtonElement.disabled = true;
 
 api
   .getDestinations()
@@ -62,17 +70,14 @@ api
   .then(() => api.getEvents())
   .then((events) => {
     eventsModel.setEvents(UpdateTypes.INIT, events);
-    filtersPresenter.init();
-    render(menuContainerElement, siteMenuView, 'beforeend');
-
-    setNewEventButtonClickHandler();
-
+    setupInterface();
   })
-  .catch(() => {
+  .catch((err) => {
+    if (err === 'offers' || err === 'destinations') {
+      tripPresenter.renderError();
+      return;
+    }
     eventsModel.setEvents(UpdateTypes.INIT, []);
-    filtersPresenter.init();
-    render(menuContainerElement, siteMenuView, 'beforeend');
-
-    setNewEventButtonClickHandler();
+    setupInterface();
   });
 

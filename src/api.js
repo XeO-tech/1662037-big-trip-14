@@ -56,7 +56,9 @@ export default class Api {
       {method, body, headers},
     )
       .then(Api.checkStatus)
-      .catch(Api.catchError);
+      .catch(() => {
+        throw url;
+      });
   }
 
   static checkStatus(response) {
@@ -64,17 +66,12 @@ export default class Api {
       response.status < SuccessHTTPStatusRange.MIN ||
       response.status > SuccessHTTPStatusRange.MAX
     ) {
-      throw new Error(`${response.status}: ${response.statusText}`);
+      throw response.url.slice(response.url.lastIndexOf('/') + 1);
     }
-
     return response;
   }
 
   static toJSON(response) {
     return response.json();
-  }
-
-  static catchError(err) {
-    throw err;
   }
 }
