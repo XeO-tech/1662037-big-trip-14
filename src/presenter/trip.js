@@ -153,7 +153,8 @@ export default class TripPresenter {
     switch (userAction) {
       case UserActions.UPDATE_EVENT:
         this._eventPresenters[update.id].setViewState(EventPresenterState.SAVING);
-        this._api.updateEvent(update)
+        this._api
+          .updateEvent(update)
           .then((response) => {
             this._eventsModel.updateEvent(updateType, response);
           })
@@ -161,7 +162,8 @@ export default class TripPresenter {
         break;
       case UserActions.ADD_EVENT:
         this._newEventPresenter.setSaving();
-        this._api.addEvent(update)
+        this._api
+          .addEvent(update)
           .then((response) => {
             this._eventsModel.addEvent(updateType, response);
           })
@@ -169,7 +171,8 @@ export default class TripPresenter {
         break;
       case UserActions.DELETE_EVENT:
         this._eventPresenters[update.id].setViewState(EventPresenterState.DELETING);
-        this._api.deleteEvent(update)
+        this._api
+          .deleteEvent(update)
           .then(() => {
             this._eventsModel.deleteEvent(updateType, update);
           })
@@ -188,7 +191,7 @@ export default class TripPresenter {
         this._clearBoard({resetSortType: true, resetTripInfo: false});
         this._renderBoard({resetTripInfo: false});
         break;
-      // При добавлении, изменении, удалеении события перерисовываем всю доску и информацию о поездке
+      // При добавлении, изменении, удалении события перерисовываем всю доску и информацию о поездке
       case UpdateTypes.MAJOR:
         this._clearBoard();
         this._renderBoard();

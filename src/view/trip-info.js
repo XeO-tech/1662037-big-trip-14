@@ -1,23 +1,19 @@
 import dayjs from 'dayjs';
-import { sortEventsByStartDateAscending, sortByDateAscending, sortByDateDescending} from '../utils/events.js';
+import { sortEventsByStartDateAscending, sortByDateAscending, sortByDateDescending } from '../utils/events.js';
 import AbstractView from './abstract.js';
 
 const generateTripRoute = (events) => {
   const eventsSortedByStartDate = sortEventsByStartDateAscending(events);
-  const uniqueDestinations = new Set (eventsSortedByStartDate.map((element) => element.destination.name));
 
-  return Array.from(uniqueDestinations).join(' &mdash; ');
+  const uniqueDestinations = Array.from(new Set (eventsSortedByStartDate.map((element) => element.destination.name)));
 
-  // Код выше выводит уникальные пункты назначения из всего массива, отсортированние в порядке посещени. Он не учитывает случаи, когда в место возвращаются после посещения другого. Нижестоящий код учитывает это, но плохо подходит для тестовых данных, так как они хаотичны и в итоге приводят к длинному маршруту. Когда перейдем на использование серверных данных и сможем добавлять свои точки, тогда перейду на ниженаписанный код.
+  if (uniqueDestinations.length > 3) {
+    const finalDestinationsList = [uniqueDestinations[0], ' ... ', uniqueDestinations[uniqueDestinations.length - 1]];
 
-  // const destinationsSortedByDate = eventsSortedByStartDate.map((element) => element.destination.name);
-  // const uniqueDestinations = [];
-  // for (let i = 0; i < destinationsSortedByDate.length; i++) {
-  //   if (destinationsSortedByDate[i] !== destinationsSortedByDate[i + 1]) {
-  //     uniqueDestinations.push(destinationsSortedByDate[i]);
-  //   }
-  // }
-  // return uniqueDestinations.join(' &mdash; ');
+    return finalDestinationsList.join(' &mdash; ');
+  }
+
+  return uniqueDestinations.join(' &mdash; ');
 };
 
 const generateTripDates = (events) => {
