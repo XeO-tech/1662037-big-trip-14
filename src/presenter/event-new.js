@@ -10,7 +10,7 @@ export default class EventNewPresenter {
 
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._escKeydownHandler = this._escKeydownHandler.bind(this);
-    this._handleDeleteClick = this._handleCancelClick.bind(this);
+    this._handleCancelClick = this._handleCancelClick.bind(this);
   }
 
   init(offersFullList, destinationFullList, destinationNames) {

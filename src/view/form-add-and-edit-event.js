@@ -155,6 +155,7 @@ export default class AddAndEditForm extends SmartView {
     this._data = this.parseEventInfoToData(eventInfo);
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._cancelClickHandler = this._cancelClickHandler.bind(this);
     this._deleteClickHandler = this._deleteClickHandler.bind(this);
     this._arrowClickHandler = this._arrowClickHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
@@ -206,6 +207,7 @@ export default class AddAndEditForm extends SmartView {
 
   _cancelClickHandler(evt) {
     evt.preventDefault();
+
     this._callback.cancel(this.parseDataToEventInfo(this._data));
   }
 
