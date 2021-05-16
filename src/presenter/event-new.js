@@ -1,4 +1,4 @@
-import { render, remove } from '../utils/render.js';
+import { render, remove, RenderPosition } from '../utils/render.js';
 import AddAndEditFormView from '../view/form-add-and-edit-event.js';
 import { UserActions, UpdateTypes } from '../consts.js';
 
@@ -26,7 +26,7 @@ export default class EventNewPresenter {
 
     this._newEventButon.disabled = true;
 
-    render(this._eventListElement, this._eventEditFormComponent, 'afterbegin');
+    render(this._eventListElement, this._eventEditFormComponent, RenderPosition.AFTERBEGIN);
 
     document.addEventListener('keydown', this._escKeydownHandler);
   }

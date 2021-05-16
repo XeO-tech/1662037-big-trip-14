@@ -6,7 +6,7 @@ import EmptyListPlaceholderView  from '../view/no-events.js';
 import ErrorView from '../view/error.js';
 import EventPresenter, {State as EventPresenterState} from './event.js';
 import NewEventPresenter from './event-new.js';
-import { remove, render } from '../utils/render.js';
+import { remove, render, RenderPosition } from '../utils/render.js';
 import { sortByPrice, sortByTime, sortByStartDate } from '../utils/events.js';
 import { SortTypes, UserActions, UpdateTypes, FilterTypes } from '../consts.js';
 import { filters } from '../utils/filters.js';
@@ -60,12 +60,12 @@ export default class TripPresenter {
   }
 
   _renderLoading() {
-    render(this._mainContainerElement, this._loadingComponent, 'afterbegin');
+    render(this._mainContainerElement, this._loadingComponent, RenderPosition.AFTERBEGIN);
   }
 
   renderError() {
     remove(this._loadingComponent);
-    render(this._mainContainerElement, this._errorView, 'afterbegin');
+    render(this._mainContainerElement, this._errorView, RenderPosition.AFTERBEGIN);
   }
 
   _renderBoard({resetTripInfo = true} = {}) {
@@ -116,7 +116,7 @@ export default class TripPresenter {
   }
 
   _renderEmptyList() {
-    render(this._eventListContainerElement, this._emptyListPlaceholderComponent, 'beforebegin');
+    render(this._eventListContainerElement, this._emptyListPlaceholderComponent, RenderPosition.BEFOREBEGIN);
   }
 
   _renderSort() {
@@ -127,7 +127,7 @@ export default class TripPresenter {
     this._sortingPanelComponent = new SortingPanelView(this._currentSortType);
 
     this._sortingPanelComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
-    render(this._mainContainerElement, this._sortingPanelComponent, 'afterbegin');
+    render(this._mainContainerElement, this._sortingPanelComponent, RenderPosition.AFTERBEGIN);
   }
 
   _renderTripInfo() {
@@ -137,7 +137,7 @@ export default class TripPresenter {
 
     this._tripInfoComponent = new TripInfoView(this._getEvents({getUnfiltered: true}));
 
-    render(this._tripInfoContainerElement, this._tripInfoComponent, 'afterbegin');
+    render(this._tripInfoContainerElement, this._tripInfoComponent, RenderPosition.AFTERBEGIN);
   }
 
   _renderTripCost() {
@@ -147,7 +147,7 @@ export default class TripPresenter {
 
     this._tripCostComponent = new TripCostView(this._getEvents({getUnfiltered: true}));
 
-    render(this._tripInfoContainerElement, this._tripCostComponent, 'beforeend');
+    render(this._tripInfoContainerElement, this._tripCostComponent, RenderPosition.BEFOREEND);
   }
 
   _handleModeChange() {

@@ -6,7 +6,7 @@ import SiteMenuView from './view/site-menu.js';
 import StatisticsView from './view/statistics.js';
 import TripPesenter from './presenter/trip.js';
 import FiltersPresenter from './presenter/filters.js';
-import { render, remove } from './utils/render.js';
+import { render, remove, RenderPosition } from './utils/render.js';
 import { MenuItems, UpdateTypes, FilterTypes } from './consts.js';
 import Api from './api.js';
 
@@ -39,7 +39,7 @@ const handleMenuClick = (target) => {
     case MenuItems.STATS:
       statisticsView = new StatisticsView(eventsModel.getEvents());
       tripPresenter.hideElement();
-      render(mainContainerElement, statisticsView, 'beforeend');
+      render(mainContainerElement, statisticsView, RenderPosition.BEFOREEND);
       break;
   }
 };
@@ -53,7 +53,7 @@ const setNewEventButtonClickHandler = () => {
 
 const setupInterface = () => {
   filtersPresenter.init();
-  render(menuContainerElement, siteMenuView, 'beforeend');
+  render(menuContainerElement, siteMenuView, RenderPosition.BEFOREEND);
   siteMenuView.setMenuClickHandler(handleMenuClick);
   newEventButtonElement.disabled = false;
   setNewEventButtonClickHandler();

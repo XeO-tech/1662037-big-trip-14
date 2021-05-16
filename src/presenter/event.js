@@ -1,4 +1,4 @@
-import { render, replace, remove } from '../utils/render.js';
+import { render, replace, remove, RenderPosition } from '../utils/render.js';
 import EventItemView from '../view/event-item.js';
 import AddAndEditFormView from '../view/form-add-and-edit-event.js';
 import { UserActions, UpdateTypes } from '../consts.js';
@@ -45,7 +45,7 @@ export default class EventPresenter {
     this._eventEditFormComponent.setDeleteClickHandler(this._handleDeleteClick);
 
     if (prevEventComponent === null || prevEventEditFormComponent === null) {
-      render(this._eventListElement, this._eventComponent, 'beforeend');
+      render(this._eventListElement, this._eventComponent, RenderPosition.BEFOREEND);
       return;
     }
     if (this._mode === Mode.DEFAULT) {
