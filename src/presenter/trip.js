@@ -78,7 +78,7 @@ export default class TripPresenter {
     this._destinationNames = this._destinationsModel.getCitiesNames();
     this._offersFullList = this._offersModel.getOffers();
 
-    if (Object.keys(this._getEvents()).length === 0) {
+    if (this._getEvents().length === 0 && this._filtersModel.getFilter() === FilterTypes.All) {
       this._renderEmptyList();
       return;
     }
@@ -86,13 +86,21 @@ export default class TripPresenter {
     this._renderSort();
     this._renderEvents();
 
+    if (this._getEvents().length === 0 && this._filtersModel.getFilter() !== FilterTypes.All) {
+      this._filtersModel.setFilter(UpdateTypes.MINOR, FilterTypes.ALL);
+    }
+
     if (resetTripInfo) {
       this._renderTripInfo();
       this._renderTripCost();
     }
   }
 
-  _getEvents() {
+  _getEvents({getUnfiltered = false} = {}) {
+    if (getUnfiltered) {
+      return this._eventsModel.getEvents();
+    }
+
     const filterType = this._filtersModel.getFilter();
     const events = this._eventsModel.getEvents();
 
@@ -127,7 +135,7 @@ export default class TripPresenter {
       this._tripInfoComponent = null;
     }
 
-    this._tripInfoComponent = new TripInfoView(this._getEvents());
+    this._tripInfoComponent = new TripInfoView(this._getEvents({getUnfiltered: true}));
 
     render(this._tripInfoContainerElement, this._tripInfoComponent, 'afterbegin');
   }
@@ -137,7 +145,7 @@ export default class TripPresenter {
       this._tripCostComponent = null;
     }
 
-    this._tripCostComponent = new TripCostView(this._getEvents());
+    this._tripCostComponent = new TripCostView(this._getEvents({getUnfiltered: true}));
 
     render(this._tripInfoContainerElement, this._tripCostComponent, 'beforeend');
   }

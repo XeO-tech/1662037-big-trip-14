@@ -19,33 +19,33 @@ const createEventItemTemplate = (event) => {
   const {
     type,
     destination,
-    dateFrom: startDateTime,
-    dateTo: endDateTime,
-    basePrice: basePrice,
+    dateFrom,
+    dateTo,
+    basePrice,
     offers,
-    isFavorite: isFavorite,
+    isFavorite,
   } = event;
-  const eventDuration = dayjs.duration(dayjs(endDateTime).diff(dayjs(startDateTime)));
+  const eventDuration = dayjs.duration(dayjs(dateTo).diff(dayjs(dateFrom)));
   const { durationFormat, dateTimeFormat } = defineDateTimeFormats(eventDuration);
-  const startDay = dayjs(startDateTime).format('DD MMM');
-  const startDateTimeFormatted = dayjs(startDateTime).format(dateTimeFormat);
-  const endDateTimeFormatted = dayjs(endDateTime).format(dateTimeFormat);
+  const startDay = dayjs(dateFrom).format('DD MMM');
+  const dateFromFormatted = dayjs(dateFrom).format(dateTimeFormat);
+  const dateToFormatted = dayjs(dateTo).format(dateTimeFormat);
   const eventDurationFormatted = eventDuration.format(durationFormat);
   const favoriteClassName = isFavorite ? 'event__favorite-btn--active': '';
   const typeFormatted = type.charAt(0).toUpperCase() + type.slice(1);
 
   return `<li class="trip-events__item">
   <div class="event">
-    <time class="event__date" datetime="${startDateTime}">${startDay}</time>
+    <time class="event__date" datetime="${dateFrom}">${startDay}</time>
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
     </div>
     <h3 class="event__title">${typeFormatted} ${destination.name}</h3>
     <div class="event__schedule">
       <p class="event__time">
-        <time class="event__start-time" datetime="${startDateTime}">${startDateTimeFormatted}</time>
+        <time class="event__start-time" datetime="${dateFrom}">${dateFromFormatted}</time>
         &mdash;
-        <time class="event__end-time" datetime="${endDateTime}">${endDateTimeFormatted}</time>
+        <time class="event__end-time" datetime="${dateTo}">${dateToFormatted}</time>
       </p>
       <p class="event__duration">${eventDurationFormatted}</p>
     </div>
