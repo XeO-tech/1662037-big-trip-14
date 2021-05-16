@@ -64,4 +64,16 @@ export default class EventNewPresenter {
       isSaving: true,
     }, true);
   }
+
+  setAborting() {
+    const resetFormState = () => {
+      this._eventEditFormComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      }, true);
+    };
+
+    this._eventEditFormComponent.shake(resetFormState);
+  }
 }
