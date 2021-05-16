@@ -4,7 +4,7 @@ import LoadingView from '../view/loading.js';
 import SortingPanelView from '../view/sorting-panel.js';
 import EmptyListPlaceholderView  from '../view/no-events.js';
 import ErrorView from '../view/error.js';
-import EventPresenter from './event.js';
+import EventPresenter, {State as EventPresenterState} from './event.js';
 import NewEventPresenter from './event-new.js';
 import { remove, render } from '../utils/render.js';
 import { sortByPrice, sortByTime, sortByStartDate } from '../utils/events.js';
@@ -152,16 +152,19 @@ export default class TripPresenter {
   _handleViewAction(userAction, updateType, update) {
     switch (userAction) {
       case UserActions.UPDATE_EVENT:
+        this._eventPresenters[update.id].setViewState(EventPresenterState.SAVING);
         this._api.updateEvent(update).then((response) => {
           this._eventsModel.updateEvent(updateType, response);
         });
         break;
       case UserActions.ADD_EVENT:
+        this._newEventPresenter.setSaving();
         this._api.addEvent(update).then((response) => {
           this._eventsModel.addEvent(updateType, response);
         });
         break;
       case UserActions.DELETE_EVENT:
+        this._eventPresenters[update.id].setViewState(EventPresenterState.DELETING);
         this._api.deleteEvent(update).then(() => {
           this._eventsModel.deleteEvent(updateType, update);
         });

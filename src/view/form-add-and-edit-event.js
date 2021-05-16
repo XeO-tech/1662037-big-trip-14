@@ -4,12 +4,12 @@ import dayjs from 'dayjs';
 import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
-const renderTypesMenu = (currentType) => {
+const renderTypesMenu = (currentType, isDisabled) => {
   return EventTypes
     .map((type) => {
       const typeFormatted = type.charAt(0).toUpperCase() + type.slice(1);
       return `<div class="event__type-item">
-      <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${type === currentType ? 'checked' : ''}>
+      <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${type === currentType ? 'checked' : ''} ${isDisabled ? 'disabled' : ''}>
       <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${typeFormatted}</label>
       </div>`;
     })
@@ -22,7 +22,7 @@ const renderDestinationsOptions = (avaliableDestinations) => {
     .join('');
 };
 
-const renderOffers = (offers, offersFullList, type) => {
+const renderOffers = (offers, offersFullList, type, isDisabled) => {
   let counter = 0;
 
   const checkedOffersTitles = offers.map((offer) => offer.title);
@@ -34,7 +34,7 @@ const renderOffers = (offers, offersFullList, type) => {
       const offerShortCut = offer.title.toLowerCase().replace(/\s+/g, '_');
       counter++;
       return `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerShortCut}-${counter}" type="checkbox" name="${offer.title}" ${offers.length === 0 ? '' : checkedOffersTitles.some((title) => title === offer.title) ? 'checked' : ''}>
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerShortCut}-${counter}" type="checkbox" name="${offer.title}" ${offers.length === 0 ? '' : checkedOffersTitles.some((title) => title === offer.title) ? 'checked' : ''} ${isDisabled ? 'disabled' : ''}>
       <label class="event__offer-label" for="event-offer-${offerShortCut}-${counter}">
         <span class="event__offer-title">${offer.title}</span>
         &plus;&euro;&nbsp;
@@ -66,6 +66,9 @@ const createAddAndEditFormTemplate = (eventInfo = {}, offersFullList) => {
     offers,
     avaliableDestinations,
     isAddNewEventForm,
+    isDisabled,
+    isSaving,
+    isDeleting,
   } = eventInfo;
 
   const dateFromFormatted = dateFrom === null ? '' : dayjs(dateFrom).format('DD/MM/YY HH:mm');
@@ -85,9 +88,9 @@ const createAddAndEditFormTemplate = (eventInfo = {}, offersFullList) => {
         </label>
         <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
         <div class="event__type-list">
-          <fieldset class="event__type-group">
+          <fieldset class="event__type-group" >
             <legend class="visually-hidden">Event type</legend>
-            ${renderTypesMenu(type)}
+            ${renderTypesMenu(type, isDisabled)}
           </fieldset>
         </div>
       </div>
@@ -95,28 +98,28 @@ const createAddAndEditFormTemplate = (eventInfo = {}, offersFullList) => {
         <label class="event__label  event__type-output" for="event-destination-1">
           ${type}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination === null ? '' : destination.name}" list="destination-list-1" required>
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination === null ? '' : destination.name}" list="destination-list-1" required ${isDisabled ? 'disabled' : ''}>
         <datalist id="destination-list-1">
           ${renderDestinationsOptions(avaliableDestinations)}
         </datalist>
       </div>
       <div class="event__field-group  event__field-group--time">
         <label class="visually-hidden" for="event-start-time-1">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dateFromFormatted}">
+        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dateFromFormatted}" ${isDisabled ? 'disabled' : ''}>
         &mdash;
         <label class="visually-hidden" for="event-end-time-1">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateToFormatted}">
+        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateToFormatted}" ${isDisabled ? 'disabled' : ''}>
       </div>
       <div class="event__field-group  event__field-group--price">
         <label class="event__label" for="event-price-1">
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}" required>
+        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}" required ${isDisabled ? 'disabled' : ''}>
       </div>
-      <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-      <button class="event__reset-btn" type="reset">${isAddNewEventForm ? 'Cancel' : 'Delete'}</button>
-      ${isAddNewEventForm ? '' : `<button class="event__rollup-btn" type="button">
+      <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving' : 'Save'}</button>
+      <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${isAddNewEventForm ? 'Cancel' : isDeleting ? 'Deleting' : 'Delete'}</button>
+      ${isAddNewEventForm ? '' : `<button class="event__rollup-btn" type="button" ${isDisabled ? 'disabled' : ''}>
       <span class="visually-hidden">Open event</span>
     </button>`}
     </header>
@@ -124,7 +127,7 @@ const createAddAndEditFormTemplate = (eventInfo = {}, offersFullList) => {
       <section class="event__section  event__section--offers ${offersClassName}">
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
         <div class="event__available-offers">
-          ${renderOffers(offers, offersFullList, type)}
+          ${renderOffers(offers, offersFullList, type, isDisabled)}
         </div>
       </section>
       <section class="event__section  event__section--destination ${destinationClassName}">
@@ -199,6 +202,11 @@ export default class AddAndEditForm extends SmartView {
   _deleteClickHandler(evt) {
     evt.preventDefault();
     this._callback.delete(this.parseDataToEventInfo(this._data));
+  }
+
+  _cancelClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.cancel(this.parseDataToEventInfo(this._data));
   }
 
   _arrowClickHandler() {
@@ -348,6 +356,11 @@ export default class AddAndEditForm extends SmartView {
     this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._deleteClickHandler);
   }
 
+  setCancelClickHandler(callback) {
+    this._callback.cancel = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._cancelClickHandler);
+  }
+
   restoreHandlers() {
     this._setInnerHandlers();
     this._setDatePicker();
@@ -385,6 +398,9 @@ export default class AddAndEditForm extends SmartView {
         dateTo: null,
         avaliableDestinations: this._destinationNames,
         isAddNewEventForm,
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
       };
     }
     return Object.assign(
@@ -405,6 +421,9 @@ export default class AddAndEditForm extends SmartView {
 
     delete data.isAddNewEventForm;
     delete data.avaliableDestinations;
+    delete data.isDisabled;
+    delete data.isSaving;
+    delete data.isDeleting;
 
     return data;
   }

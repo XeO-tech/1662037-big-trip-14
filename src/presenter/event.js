@@ -8,6 +8,11 @@ const Mode = {
   EDITING: 'EDITING',
 };
 
+export const State = {
+  SAVING: 'SAVING',
+  DELETING: 'DELETING',
+};
+
 export default class EventPresenter {
   constructor(changeEvent, changeMode) {
     this._eventComponent = null;
@@ -47,6 +52,7 @@ export default class EventPresenter {
     }
     if (this._mode === Mode.EDITING) {
       replace(this._eventEditFormComponent, prevEventEditFormComponent);
+      this._mode = Mode.DEFAULT;
     }
     remove(prevEventComponent);
     remove(prevEventEditFormComponent);
@@ -88,7 +94,7 @@ export default class EventPresenter {
 
   _handleFormSubmit(eventItem) {
     this._changeEvent(UserActions.UPDATE_EVENT, UpdateTypes.MAJOR, eventItem);
-    this._replaceEditFormWitnEvent();
+    // this._replaceEditFormWitnEvent();
   }
 
   _handleDeleteClick() {
@@ -121,6 +127,22 @@ export default class EventPresenter {
       evt.preventDefault();
       this._eventEditFormComponent.reset(this._data);
       this._replaceEditFormWitnEvent();
+    }
+  }
+
+  setViewState(state) {
+    switch(state) {
+      case State.SAVING:
+        this._eventEditFormComponent.updateData({
+          isDisabled: true,
+          isSaving: true,
+        }, true);
+        break;
+      case State.DELETING:
+        this._eventEditFormComponent.updateData({
+          isDisabled: true,
+          isDeleting: true,
+        }, true);
     }
   }
 }

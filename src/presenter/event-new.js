@@ -10,7 +10,7 @@ export default class EventNewPresenter {
 
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._escKeydownHandler = this._escKeydownHandler.bind(this);
-    this._handleDeleteClick = this._handleDeleteClick.bind(this);
+    this._handleDeleteClick = this._handleCancelClick.bind(this);
   }
 
   init(offersFullList, destinationFullList, destinationNames) {
@@ -22,7 +22,7 @@ export default class EventNewPresenter {
     this._newEventButon = document.querySelector('.trip-main__event-add-btn');
 
     this._eventEditFormComponent.setSubmitHandler(this._handleFormSubmit);
-    this._eventEditFormComponent.setDeleteClickHandler(this._handleDeleteClick);
+    this._eventEditFormComponent.setCancelClickHandler(this._handleCancelClick);
 
     this._newEventButon.disabled = true;
 
@@ -45,10 +45,9 @@ export default class EventNewPresenter {
 
   _handleFormSubmit(eventItem) {
     this._changeEvent(UserActions.ADD_EVENT, UpdateTypes.MAJOR, eventItem);
-    this.destroy();
   }
 
-  _handleDeleteClick() {
+  _handleCancelClick() {
     this.destroy();
   }
 
@@ -57,5 +56,12 @@ export default class EventNewPresenter {
       evt.preventDefault();
       this.destroy();
     }
+  }
+
+  setSaving() {
+    this._eventEditFormComponent.updateData({
+      isDisabled: true,
+      isSaving: true,
+    }, true);
   }
 }
