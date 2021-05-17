@@ -3,7 +3,7 @@ import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
-import { sortDataAndLabels } from '../utils/events.js';
+import { sortDataAndLabels, defineDateTimeFormats } from '../utils/events.js';
 dayjs.extend(duration);
 
 const BAR_HEIGHT = 55;
@@ -207,7 +207,10 @@ const renderTimeSpentChart = (timeSpentChartContainerElement, events) => {
             if (val === 0) {
               return '';
             }
-            return `${dayjs.duration(val).format('DD[D] HH[H] mm[M]')}`;
+            const durationValue = dayjs.duration(val);
+            const format = defineDateTimeFormats(durationValue).durationFormat;
+
+            return `${durationValue.format(format)}`;
           },
         },
       },
