@@ -213,7 +213,7 @@ const renderTimeSpentChart = (timeSpentChartContainerElement, events) => {
       },
       title: {
         display: true,
-        text: 'TYPE',
+        text: 'TIME-SPEND',
         fontColor: '#000000',
         fontSize: 23,
         position: 'left',
