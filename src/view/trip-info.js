@@ -17,11 +17,21 @@ const generateTripRoute = (events) => {
 };
 
 const generateTripDates = (events) => {
-  const startDate = events.map((element) => element.dateFrom).sort(sortByDateAscending)[0];
-  const endDate =  events.map((element) => element.dateTo).sort(sortByDateDescending)[0];
-  const endDateFormat = dayjs(startDate).month() === dayjs(endDate).month() ? 'DD' : 'MMM DD';
+  const startDate = dayjs(events
+    .map((element) => element.dateFrom)
+    .sort(sortByDateAscending)[0]);
 
-  return `${dayjs(startDate).format('MMM DD')}&nbsp;&mdash;&nbsp;${dayjs(endDate).format(endDateFormat)}`;
+  const endDate =  dayjs(events
+    .map((element) => element.dateTo)
+    .sort(sortByDateDescending)[0]);
+
+  if (startDate.isSame(endDate, 'day')) {
+    return `${startDate.format('MMM DD')}`;
+  }
+
+  const endDateFormat = startDate.isSame(endDate, 'month') ? 'DD' : 'MMM DD';
+
+  return `${startDate.format('MMM DD')}&nbsp;&mdash;&nbsp;${endDate.format(endDateFormat)}`;
 };
 
 const createTripInfoTemplate = (events) => {
