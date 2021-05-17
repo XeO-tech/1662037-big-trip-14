@@ -1,10 +1,10 @@
 import AbstractView from './abstract.js';
-import {SortTypes} from '../consts.js';
+import {SortType} from '../consts.js';
 
 const createSortingPanelTemplate = (currentSortType) => {
   return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
   <div class="trip-sort__item  trip-sort__item--day">
-    <input id="sort-day" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-day" ${currentSortType === SortTypes.DEFAULT ? 'checked': ''}>
+    <input id="sort-day" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-day" ${currentSortType === SortType.DEFAULT ? 'checked': ''}>
     <label class="trip-sort__btn" for="sort-day">Day</label>
   </div>
 
@@ -14,12 +14,12 @@ const createSortingPanelTemplate = (currentSortType) => {
   </div>
 
   <div class="trip-sort__item  trip-sort__item--time">
-    <input id="sort-time" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-time" ${currentSortType === SortTypes.TIME ? 'checked': ''}>
+    <input id="sort-time" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-time" ${currentSortType === SortType.TIME ? 'checked': ''}>
     <label class="trip-sort__btn" for="sort-time">Time</label>
   </div>
 
   <div class="trip-sort__item  trip-sort__item--price">
-    <input id="sort-price" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-price" ${currentSortType === SortTypes.PRICE ? 'checked': ''}>
+    <input id="sort-price" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-price" ${currentSortType === SortType.PRICE ? 'checked': ''}>
     <label class="trip-sort__btn" for="sort-price">Price</label>
   </div>
 

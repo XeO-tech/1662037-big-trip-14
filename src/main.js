@@ -7,7 +7,7 @@ import StatisticsView from './view/statistics.js';
 import TripPesenter from './presenter/trip.js';
 import FiltersPresenter from './presenter/filters.js';
 import { render, remove, RenderPosition } from './utils/render.js';
-import { MenuItems, UpdateTypes, FilterTypes } from './consts.js';
+import { MenuItem, UpdateType, FilterType } from './consts.js';
 import Api from './api.js';
 
 const AUTHORIZATION = 'Basic 3424nklfsdl1mcs';
@@ -31,12 +31,12 @@ let statisticsView = null;
 
 const handleMenuClick = (target) => {
   switch (target) {
-    case MenuItems.TABLE:
-      filtersModel.setFilter(UpdateTypes.MINOR, FilterTypes.ALL);
+    case MenuItem.TABLE:
+      filtersModel.setFilter(UpdateType.MINOR, FilterType.ALL);
       remove(statisticsView);
       tripPresenter.showElement();
       break;
-    case MenuItems.STATS:
+    case MenuItem.STATS:
       statisticsView = new StatisticsView(eventsModel.getEvents());
       tripPresenter.hideElement();
       render(mainContainerElement, statisticsView, RenderPosition.BEFOREEND);
@@ -69,7 +69,7 @@ api
   .then((offers) => offersModel.setOffers(offers))
   .then(() => api.getEvents())
   .then((events) => {
-    eventsModel.setEvents(UpdateTypes.INIT, events);
+    eventsModel.setEvents(UpdateType.INIT, events);
     setupInterface();
   })
   .catch((err) => {
@@ -77,7 +77,7 @@ api
       tripPresenter.renderError();
       return;
     }
-    eventsModel.setEvents(UpdateTypes.INIT, []);
+    eventsModel.setEvents(UpdateType.INIT, []);
     setupInterface();
   });
 

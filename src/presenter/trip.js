@@ -8,7 +8,7 @@ import EventPresenter, {State as EventPresenterState} from './event.js';
 import NewEventPresenter from './event-new.js';
 import { remove, render, RenderPosition } from '../utils/render.js';
 import { sortByPrice, sortByTime, sortByStartDate } from '../utils/events.js';
-import { SortTypes, UserActions, UpdateTypes, FilterTypes } from '../consts.js';
+import { SortType, UserAction, UpdateType, FilterType } from '../consts.js';
 import { filters } from '../utils/filters.js';
 
 export default class TripPresenter {
@@ -32,7 +32,7 @@ export default class TripPresenter {
     this._mainContainerElement = document.querySelector('.trip-events');
     this._eventListContainerElement = document.querySelector('.trip-events__list');
 
-    this._currentSortType = SortTypes.DEFAULT;
+    this._currentSortType = SortType.DEFAULT;
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -78,7 +78,7 @@ export default class TripPresenter {
     this._destinationNames = this._destinationsModel.getCitiesNames();
     this._offersFullList = this._offersModel.getOffers();
 
-    if (this._getEvents().length === 0 && this._filtersModel.getFilter() === FilterTypes.All) {
+    if (this._getEvents().length === 0 && this._filtersModel.getFilter() === FilterType.All) {
       this._renderEmptyList();
       return;
     }
@@ -86,8 +86,8 @@ export default class TripPresenter {
     this._renderSort();
     this._renderEvents();
 
-    if (this._getEvents().length === 0 && this._filtersModel.getFilter() !== FilterTypes.All) {
-      this._filtersModel.setFilter(UpdateTypes.MINOR, FilterTypes.ALL);
+    if (this._getEvents().length === 0 && this._filtersModel.getFilter() !== FilterType.All) {
+      this._filtersModel.setFilter(UpdateType.MINOR, FilterType.ALL);
     }
 
     if (resetTripInfo) {
@@ -107,9 +107,9 @@ export default class TripPresenter {
     const filteredEvents = filters[filterType](events);
 
     switch (this._currentSortType) {
-      case SortTypes.TIME:
+      case SortType.TIME:
         return filteredEvents.sort(sortByTime);
-      case SortTypes.PRICE:
+      case SortType.PRICE:
         return filteredEvents.sort(sortByPrice);
     }
     return filteredEvents.sort(sortByStartDate);
@@ -159,7 +159,7 @@ export default class TripPresenter {
 
   _handleViewAction(userAction, updateType, update) {
     switch (userAction) {
-      case UserActions.UPDATE_EVENT:
+      case UserAction.UPDATE_EVENT:
         this._eventPresenters[update.id].setViewState(EventPresenterState.SAVING);
         this._api
           .updateEvent(update)
@@ -168,7 +168,7 @@ export default class TripPresenter {
           })
           .catch(() => this._eventPresenters[update.id].setViewState(EventPresenterState.ABORTING));
         break;
-      case UserActions.ADD_EVENT:
+      case UserAction.ADD_EVENT:
         this._newEventPresenter.setSaving();
         this._api
           .addEvent(update)
@@ -177,7 +177,7 @@ export default class TripPresenter {
           })
           .catch(() => this._newEventPresenter.setAborting());
         break;
-      case UserActions.DELETE_EVENT:
+      case UserAction.DELETE_EVENT:
         this._eventPresenters[update.id].setViewState(EventPresenterState.DELETING);
         this._api
           .deleteEvent(update)
@@ -191,20 +191,20 @@ export default class TripPresenter {
 
   _handleModelEvent(updateType, data) {
     switch (updateType) {
-      case UpdateTypes.PATCH:
+      case UpdateType.PATCH:
         this._eventPresenters[data.id].init(data, this._offersFullList, this._destinationsFullList, this._destinationNames);
         break;
       // При смене фильтра или переключении с экрана со списком точек маршрута на экран статистики и обратно сортировка сбрасывается на состояние «Day». Информация о поездке не перерисовывается
-      case UpdateTypes.MINOR:
+      case UpdateType.MINOR:
         this._clearBoard({resetSortType: true, resetTripInfo: false});
         this._renderBoard({resetTripInfo: false});
         break;
       // При добавлении, изменении, удалении события перерисовываем всю доску и информацию о поездке
-      case UpdateTypes.MAJOR:
+      case UpdateType.MAJOR:
         this._clearBoard();
         this._renderBoard();
         break;
-      case UpdateTypes.INIT:
+      case UpdateType.INIT:
         this._isLoading = false;
         remove(this._loadingComponent);
         this._renderBoard();
@@ -237,12 +237,12 @@ export default class TripPresenter {
     }
 
     if (resetSortType) {
-      this._currentSortType = SortTypes.DEFAULT;
+      this._currentSortType = SortType.DEFAULT;
     }
   }
 
   createEvent() {
-    this._filtersModel.setFilter(UpdateTypes.MINOR, FilterTypes.ALL);
+    this._filtersModel.setFilter(UpdateType.MINOR, FilterType.ALL);
     this._newEventPresenter.init(this._offersFullList, this._destinationsFullList, this._destinationNames);
   }
 

@@ -1,6 +1,6 @@
 import FilterView from '../view/filters.js';
 import { render, replace, remove, RenderPosition } from '../utils/render.js';
-import { FilterTypes, UpdateTypes } from '../consts.js';
+import { FilterType, UpdateType } from '../consts.js';
 import { filters } from '../utils/filters.js';
 
 export default class Filters {
@@ -43,7 +43,7 @@ export default class Filters {
       return;
     }
 
-    this._filtersModel.setFilter(UpdateTypes.MINOR, filterType);
+    this._filtersModel.setFilter(UpdateType.MINOR, filterType);
   }
 
   _getFilters() {
@@ -51,19 +51,19 @@ export default class Filters {
 
     return [
       {
-        type: FilterTypes.ALL,
+        type: FilterType.ALL,
         name: 'Everything',
         active: events.length !== 0,
       },
       {
-        type: FilterTypes.FUTURE,
+        type: FilterType.FUTURE,
         name: 'Future',
-        active: filters[FilterTypes.FUTURE](events).length !== 0,
+        active: filters[FilterType.FUTURE](events).length !== 0,
       },
       {
-        type: FilterTypes.PAST,
+        type: FilterType.PAST,
         name: 'Past',
-        active: filters[FilterTypes.PAST](events).length !== 0,
+        active: filters[FilterType.PAST](events).length !== 0,
       },
     ];
   }

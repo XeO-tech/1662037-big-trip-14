@@ -1,6 +1,6 @@
 import { render, remove, RenderPosition } from '../utils/render.js';
 import AddAndEditFormView from '../view/form-add-and-edit-event.js';
-import { UserActions, UpdateTypes } from '../consts.js';
+import { UserAction, UpdateType } from '../consts.js';
 
 export default class EventNewPresenter {
   constructor(changeEvent) {
@@ -44,7 +44,7 @@ export default class EventNewPresenter {
   }
 
   _handleFormSubmit(eventItem) {
-    this._changeEvent(UserActions.ADD_EVENT, UpdateTypes.MAJOR, eventItem);
+    this._changeEvent(UserAction.ADD_EVENT, UpdateType.MAJOR, eventItem);
   }
 
   _handleCancelClick() {

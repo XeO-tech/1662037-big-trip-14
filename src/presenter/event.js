@@ -1,7 +1,7 @@
 import { render, replace, remove, RenderPosition } from '../utils/render.js';
 import EventItemView from '../view/event-item.js';
 import AddAndEditFormView from '../view/form-add-and-edit-event.js';
-import { UserActions, UpdateTypes } from '../consts.js';
+import { UserAction, UpdateType } from '../consts.js';
 
 const Mode = {
   DEFAULT: 'DEFALT',
@@ -94,14 +94,14 @@ export default class EventPresenter {
   }
 
   _handleFormSubmit(eventItem) {
-    this._changeEvent(UserActions.UPDATE_EVENT, UpdateTypes.MAJOR, eventItem);
+    this._changeEvent(UserAction.UPDATE_EVENT, UpdateType.MAJOR, eventItem);
     // this._replaceEditFormWitnEvent();
   }
 
   _handleDeleteClick() {
     this._changeEvent(
-      UserActions.DELETE_EVENT,
-      UpdateTypes.MAJOR,
+      UserAction.DELETE_EVENT,
+      UpdateType.MAJOR,
       Object.assign(
         {},
         this._data,
@@ -111,8 +111,8 @@ export default class EventPresenter {
 
   _handleFavoriteClick() {
     this._changeEvent(
-      UserActions.UPDATE_EVENT,
-      UpdateTypes.PATCH,
+      UserAction.UPDATE_EVENT,
+      UpdateType.PATCH,
       Object.assign(
         {},
         this._data,

@@ -2,32 +2,32 @@ export const EventTypes = ['taxi', 'bus', 'train', 'ship', 'transport', 'drive',
 
 export const cities = ['Los Angeles', 'San Francisco', 'Las Vegas'];
 
-export const SortTypes = {
+export const SortType = {
   DEFAULT: 'sort-day',
   TIME: 'sort-time',
   PRICE: 'sort-price',
 };
 
-export const UserActions = {
+export const UserAction = {
   UPDATE_EVENT: 'UPDATE_EVENT',
   ADD_EVENT: 'ADD_EVENT',
   DELETE_EVENT: 'DELETE_EVENT',
 };
 
-export const UpdateTypes = {
+export const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
   INIT: 'INIT',
 };
 
-export const FilterTypes = {
+export const FilterType = {
   ALL: 'everything',
   FUTURE: 'future',
   PAST: 'past',
 };
 
-export const MenuItems = {
+export const MenuItem = {
   TABLE: 'Table',
   STATS: 'Stats',
 };
