@@ -48,13 +48,16 @@ export default class EventPresenter {
       render(this._eventListElement, this._eventComponent, RenderPosition.BEFOREEND);
       return;
     }
+
     if (this._mode === Mode.DEFAULT) {
       replace(this._eventComponent, prevEventComponent);
     }
+
     if (this._mode === Mode.EDITING) {
       replace(this._eventEditFormComponent, prevEventEditFormComponent);
       this._mode = Mode.DEFAULT;
     }
+
     remove(prevEventComponent);
     remove(prevEventEditFormComponent);
   }
@@ -95,7 +98,6 @@ export default class EventPresenter {
 
   _handleFormSubmit(eventItem) {
     this._changeEvent(UserAction.UPDATE_EVENT, UpdateType.MAJOR, eventItem);
-    // this._replaceEditFormWitnEvent();
   }
 
   _handleDeleteClick() {
@@ -154,7 +156,6 @@ export default class EventPresenter {
         }, true);
         break;
       case State.ABORTING:
-        this._eventComponent.shake(resetFormState);
         this._eventEditFormComponent.shake(resetFormState);
         break;
     }

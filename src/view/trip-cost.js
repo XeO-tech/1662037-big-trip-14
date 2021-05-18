@@ -1,12 +1,10 @@
 import AbstractView from './abstract.js';
+import { calculateTripCost } from '../utils/events.js';
 
 const createTripCostTemplate = (events) => {
-  const totalPrice = events.reduce((accumulator1, eventElement) => {
-    const offersTotalCost = eventElement.offers.reduce((accumulator2, offerElement) => accumulator2 + offerElement.price, 0);
-    return accumulator1 + eventElement.basePrice + offersTotalCost;
-  }, 0);
+
   return `<p class="trip-info__cost">
-  Total: &euro;&nbsp;<span class="trip-info__cost-value">${totalPrice}</span>
+  Total: &euro;&nbsp;<span class="trip-info__cost-value">${calculateTripCost(events)}</span>
 </p>`;
 };
 

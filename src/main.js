@@ -1,3 +1,4 @@
+import Api from './api.js';
 import EventsModel from './model/events.js';
 import DestinationsModel from './model/destinations.js';
 import OffersModel from './model/offers.js';
@@ -8,7 +9,6 @@ import TripPesenter from './presenter/trip.js';
 import FiltersPresenter from './presenter/filters.js';
 import { render, remove, RenderPosition } from './utils/render.js';
 import { MenuItem, UpdateType, FilterType } from './consts.js';
-import Api from './api.js';
 
 const AUTHORIZATION = 'Basic 3424nklfsdl1mcs';
 const END_POINT = 'https://14.ecmascript.pages.academy/big-trip';
@@ -45,10 +45,8 @@ const handleMenuClick = (target) => {
 };
 
 const setNewEventButtonClickHandler = () => {
-  newEventButtonElement.addEventListener('click', (evt) => {
-    evt.preventDefault();
-    tripPresenter.createEvent();
-  });
+  newEventButtonElement.addEventListener('click', () =>
+    tripPresenter.createEvent());
 };
 
 const setupInterface = () => {

@@ -5,11 +5,12 @@ import { filters } from '../utils/filters.js';
 
 export default class Filters {
   constructor(filtersModel, eventsModel) {
-    this._filtersModel = filtersModel;
     this._filtersContainerElement = document.querySelector('.trip-controls__filters');
-    this._eventsModel = eventsModel;
 
+    this._filtersModel = filtersModel;
+    this._eventsModel = eventsModel;
     this._filtersComponent = null;
+
 
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleFilterTypeChange = this._handleFilterTypeChange.bind(this);
@@ -53,17 +54,17 @@ export default class Filters {
       {
         type: FilterType.ALL,
         name: 'Everything',
-        active: events.length !== 0,
+        isActive: events.length !== 0,
       },
       {
         type: FilterType.FUTURE,
         name: 'Future',
-        active: filters[FilterType.FUTURE](events).length !== 0,
+        isActive: filters[FilterType.FUTURE](events).length !== 0,
       },
       {
         type: FilterType.PAST,
         name: 'Past',
-        active: filters[FilterType.PAST](events).length !== 0,
+        isActive: filters[FilterType.PAST](events).length !== 0,
       },
     ];
   }

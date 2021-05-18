@@ -8,6 +8,7 @@ const renderTypesMenu = (currentType, isDisabled) => {
   return EventTypes
     .map((type) => {
       const typeFormatted = type.charAt(0).toUpperCase() + type.slice(1);
+
       return `<div class="event__type-item">
       <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${type === currentType ? 'checked' : ''} ${isDisabled ? 'disabled' : ''}>
       <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${typeFormatted}</label>
@@ -23,19 +24,17 @@ const renderDestinationsOptions = (avaliableDestinations) => {
 };
 
 const renderOffers = (offers, offersFullList, type, isDisabled) => {
-  let counter = 0;
-
   const checkedOffersTitles = offers.map((offer) => offer.title);
 
-  const allOffersForSelectedType = offersFullList.find((element) => element.type === type).offers;
+  const allOffersForSelectedType = offersFullList.find((offer) => offer.type === type).offers;
 
   return allOffersForSelectedType
     .map((offer) => {
       const offerShortCut = offer.title.toLowerCase().replace(/\s+/g, '_');
-      counter++;
+
       return `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerShortCut}-${counter}" type="checkbox" name="${offer.title}" ${offers.length === 0 ? '' : checkedOffersTitles.some((title) => title === offer.title) ? 'checked' : ''} ${isDisabled ? 'disabled' : ''}>
-      <label class="event__offer-label" for="event-offer-${offerShortCut}-${counter}">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerShortCut}" type="checkbox" name="${offer.title}" ${offers.length === 0 ? '' : checkedOffersTitles.some((title) => title === offer.title) ? 'checked' : ''} ${isDisabled ? 'disabled' : ''}>
+      <label class="event__offer-label" for="event-offer-${offerShortCut}">
         <span class="event__offer-title">${offer.title}</span>
         &plus;&euro;&nbsp;
         <span class="event__offer-price">${offer.price}</span>
@@ -151,8 +150,8 @@ export default class AddAndEditForm extends SmartView {
     this._destinationsFullList = destinationFullList;
     this._destinationNames = destinationNames;
     this._startDatePicker = null;
-    this._endDatePicker = null;
     this._data = this.parseEventInfoToData(eventInfo);
+    this._endDatePicker = null;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._cancelClickHandler = this._cancelClickHandler.bind(this);
@@ -173,21 +172,21 @@ export default class AddAndEditForm extends SmartView {
   }
 
   _getSelectedOffers() {
-    const selectedOffersData = [];
+    const selectedOffersForType = [];
 
     const selectedOffersTitles = [...document.querySelectorAll('.event__offer-selector input[type=\'checkbox\']:checked')].map((element) => element.name);
 
-    const allOffersForSelectedType = this._offersFullList.find((element) => element.type === this._data.type).offers;
+    const allOffersForType = this._offersFullList.find((element) => element.type === this._data.type).offers;
 
-    allOffersForSelectedType.forEach((offer, ind) => {
+    allOffersForType.forEach((offer, ind) => {
       selectedOffersTitles.forEach((selectedOfferTitle) => {
         if (selectedOfferTitle === offer.title) {
-          selectedOffersData.push(allOffersForSelectedType[ind]);
+          selectedOffersForType.push(allOffersForType[ind]);
         }
       });
     });
 
-    return selectedOffersData;
+    return selectedOffersForType;
   }
 
   _formSubmitHandler(evt) {
@@ -202,6 +201,7 @@ export default class AddAndEditForm extends SmartView {
 
   _deleteClickHandler(evt) {
     evt.preventDefault();
+
     this._callback.delete(this.parseDataToEventInfo(this._data));
   }
 
@@ -252,6 +252,7 @@ export default class AddAndEditForm extends SmartView {
       dateInput.reportValidity();
       return;
     }
+
     dateInput.setCustomValidity('');
     dateInput.reportValidity();
 
@@ -269,6 +270,7 @@ export default class AddAndEditForm extends SmartView {
       dateInput.reportValidity();
       return;
     }
+
     dateInput.setCustomValidity('');
     dateInput.reportValidity();
 
@@ -283,6 +285,7 @@ export default class AddAndEditForm extends SmartView {
     if (isNaN(price) || !Number.isInteger(price)) {
       evt.target.setCustomValidity('Please, use integer number value');
     }
+
     evt.target.reportValidity();
 
     if (evt.target.validity.valid === true) {
@@ -325,18 +328,25 @@ export default class AddAndEditForm extends SmartView {
 
     this._startDatePicker = flatpickr(
       this.getElement().querySelector('#event-start-time-1'),
-      Object.assign({}, flatpickrBaseSettings, {
-        defaultDate: this._data.dateFrom,
-        onChange: this._startDateChangeHandler,
-      }));
-    this._startDatePicker._input.onkeydown = () => false;
+      Object.assign(
+        {},
+        flatpickrBaseSettings,
+        {
+          defaultDate: this._data.isAddNewEventForm ? new Date().toISOString() : this._data.dateFrom,
+          onChange: this._startDateChangeHandler,
+        }));
 
     this._endDatePicker = flatpickr(
       this.getElement().querySelector('#event-end-time-1'),
-      Object.assign({}, flatpickrBaseSettings, {
-        defaultDate: this._data.dateTo,
-        onChange: this._endDateChangeHandler,
-      }));
+      Object.assign(
+        {},
+        flatpickrBaseSettings,
+        {
+          defaultDate: this._data.isAddNewEventForm ? new Date().toISOString() : this._data.dateTo,
+          onChange: this._endDateChangeHandler,
+        }));
+
+    this._startDatePicker._input.onkeydown = () => false;
     this._endDatePicker._input.onkeydown = () => false;
   }
 
@@ -344,6 +354,7 @@ export default class AddAndEditForm extends SmartView {
     if (this.getElement().querySelector('.event__rollup-btn') === null) {
       return;
     }
+
     this._callback.arrowClick = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._arrowClickHandler);
   }
@@ -368,7 +379,8 @@ export default class AddAndEditForm extends SmartView {
     this._setDatePicker();
     this.setSubmitHandler(this._callback.submit);
     this.setArrowClickHandler(this._callback.arrowClick);
-    this.setDeleteClickHandler(this._callback.delete);
+
+    this._data.isAddNewEventForm ? this.setCancelClickHandler(this._callback.cancel) : this.setDeleteClickHandler(this._callback.delete);
   }
 
   reset(eventInfo) {
@@ -382,6 +394,7 @@ export default class AddAndEditForm extends SmartView {
       this._startDatePicker.destroy();
       this._startDatePicker = null;
     }
+
     if (this._endDatePicker) {
       this._endDatePicker.destroy();
       this._endDatePicker = null;
@@ -390,6 +403,7 @@ export default class AddAndEditForm extends SmartView {
 
   parseEventInfoToData(eventInfo) {
     const  isAddNewEventForm = Object.keys(eventInfo).length === 0;
+
     if (isAddNewEventForm) {
       return {
         type: 'flight',
@@ -405,6 +419,7 @@ export default class AddAndEditForm extends SmartView {
         isDeleting: false,
       };
     }
+
     return Object.assign(
       {},
       eventInfo,

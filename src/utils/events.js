@@ -66,3 +66,11 @@ export const sortDataAndLabels = (events, calculateData) => {
     sortedLabels,
   };
 };
+
+export const calculateTripCost = (events) => {
+  return events.reduce((accumulator1, eventElement) => {
+    const offersTotalCost = eventElement.offers.reduce((accumulator2, offerElement) => accumulator2 + offerElement.price, 0);
+
+    return accumulator1 + eventElement.basePrice + offersTotalCost;
+  }, 0);
+};

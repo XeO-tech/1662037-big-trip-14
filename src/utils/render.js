@@ -14,6 +14,7 @@ export const createElement = (template) => {
 
 export const render = (container, component, position) => {
   const element = component.getElement();
+
   switch (position) {
     case RenderPosition.BEFOREBEGIN:
       container.parentNode.append(element);
@@ -28,10 +29,10 @@ export const render = (container, component, position) => {
 };
 
 export const replace = (newChild, oldChild) => {
-
   if (oldChild instanceof Abstract) {
     oldChild = oldChild.getElement();
   }
+
   if (newChild instanceof Abstract) {
     newChild = newChild.getElement();
   }
@@ -41,6 +42,7 @@ export const replace = (newChild, oldChild) => {
   if (parent === null || oldChild === null || newChild === null) {
     throw new Error ('Can\'t replace non existing elements');
   }
+
   parent.replaceChild(newChild, oldChild);
 };
 
@@ -48,9 +50,11 @@ export const remove = (component) => {
   if (component === null) {
     return;
   }
+
   if (!(component instanceof Abstract)) {
     throw new Error('Only components can be removed');
   }
+
   component.getElement().remove();
   component.removeElement();
 };

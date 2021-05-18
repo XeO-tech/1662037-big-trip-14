@@ -16,6 +16,7 @@ export default class Smart extends Abstract {
     }
 
     this._data = Object.assign({}, this._data, updatedInfo);
+
     if (rerenderFlag) {
       this.updateElement();
     }
@@ -24,6 +25,7 @@ export default class Smart extends Abstract {
   updateElement() {
     const prevElement = this.getElement();
     const parentElement = prevElement.parentElement;
+
     this.removeElement();
     const newElement = this.getElement();
 

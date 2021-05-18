@@ -36,13 +36,16 @@ export default class SortingPanel extends AbstractView {
     this._currentSortType = currentSortType;
     this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
   }
+
   getTemplate() {
     return createSortingPanelTemplate(this._currentSortType);
   }
+
   _sortTypeChangeHandler(evt) {
     if (evt.target.tagName !== 'LABEL') {
       return;
     }
+
     this._callback.sortTypeChange(evt.target.control.id);
   }
 

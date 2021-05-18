@@ -1,12 +1,12 @@
 import AbstractView from './abstract.js';
 
 const createFilterItemTemplate = (filter, currentFilterType) => {
-  const {type, name, active} = filter;
-  const nameLowerCase = name.toLowerCase();
+  const {type, name, isActive} = filter;
+  const nameFormatted = name.toLowerCase();
 
   return `<div class="trip-filters__filter">
-  <input id="filter-${nameLowerCase}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${nameLowerCase}" ${currentFilterType === type ? 'checked' : ''} ${active ? '' : 'disabled'}>
-  <label class="trip-filters__filter-label" for="filter-${nameLowerCase}">${name}</label>
+  <input id="filter-${nameFormatted}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${nameFormatted}" ${currentFilterType === type ? 'checked' : ''} ${isActive ? '' : 'disabled'}>
+  <label class="trip-filters__filter-label" for="filter-${nameFormatted}">${name}</label>
 </div>`;
 };
 
@@ -32,6 +32,7 @@ export default class FiltersPanel extends AbstractView {
   getTemplate() {
     return createFiltersTemplate(this._filters, this._currentFilterType);
   }
+
   _filterTypeChangeHandler(evt) {
     evt.preventDefault();
     this._callback.filterTypeChange(evt.target.value);

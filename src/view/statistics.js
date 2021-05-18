@@ -286,10 +286,7 @@ export default class Statistics extends AbstractView {
     const typeChartContainerElement = this.getElement().querySelector('.statistics__chart--transport');
     const timeSpentChartContainerElement = this.getElement().querySelector('.statistics__chart--time');
 
-    // Рассчитаем высоту канваса в зависимости от того, сколько данных в него будет передаваться
-    moneyChartContainerElement.height = BAR_HEIGHT * 9;
-    typeChartContainerElement.height = BAR_HEIGHT * 9;
-    timeSpentChartContainerElement.height = BAR_HEIGHT * 9;
+    moneyChartContainerElement.height = typeChartContainerElement.height = timeSpentChartContainerElement.height = BAR_HEIGHT * 9;
 
     renderMoneyChart(moneyChartContainerElement, this._events);
     renderTypeChart(typeChartContainerElement, this._events);

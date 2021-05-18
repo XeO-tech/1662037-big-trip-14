@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import { sortEventsByStartDateAscending, sortByDateAscending, sortByDateDescending } from '../utils/events.js';
 import AbstractView from './abstract.js';
 
-const generateTripRoute = (events) => {
+const createTripRouteTemplate = (events) => {
   const eventsSortedByStartDate = sortEventsByStartDateAscending(events);
 
   const uniqueDestinations = Array.from(new Set (eventsSortedByStartDate.map((element) => element.destination.name)));
@@ -16,7 +16,7 @@ const generateTripRoute = (events) => {
   return uniqueDestinations.join(' &mdash; ');
 };
 
-const generateTripDates = (events) => {
+const createTripDatesTemplate = (events) => {
   const startDate = dayjs(events
     .map((element) => element.dateFrom)
     .sort(sortByDateAscending)[0]);
@@ -36,8 +36,8 @@ const generateTripDates = (events) => {
 
 const createTripInfoTemplate = (events) => {
   return `<div class="trip-info__main">
-  <h1 class="trip-info__title">${generateTripRoute(events)}</h1>
-  <p class="trip-info__dates">${generateTripDates(events)}</p>
+  <h1 class="trip-info__title">${createTripRouteTemplate(events)}</h1>
+  <p class="trip-info__dates">${createTripDatesTemplate(events)}</p>
 </div>`;
 };
 

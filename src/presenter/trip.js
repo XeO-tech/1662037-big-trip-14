@@ -16,6 +16,7 @@ export default class TripPresenter {
     this._eventPresenters = {};
     this._isLoading = true;
     this._api = api;
+    this._currentSortType = SortType.DEFAULT;
 
     this._eventsModel = eventsModel;
     this._destinationsModel = destinationsModel;
@@ -32,7 +33,6 @@ export default class TripPresenter {
     this._mainContainerElement = document.querySelector('.trip-events');
     this._eventListContainerElement = document.querySelector('.trip-events__list');
 
-    this._currentSortType = SortType.DEFAULT;
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -96,11 +96,7 @@ export default class TripPresenter {
     }
   }
 
-  _getEvents({getUnfiltered = false} = {}) {
-    if (getUnfiltered) {
-      return this._eventsModel.getEvents();
-    }
-
+  _getEvents() {
     const filterType = this._filtersModel.getFilter();
     const events = this._eventsModel.getEvents();
 
@@ -135,7 +131,7 @@ export default class TripPresenter {
       this._tripInfoComponent = null;
     }
 
-    this._tripInfoComponent = new TripInfoView(this._getEvents({getUnfiltered: true}));
+    this._tripInfoComponent = new TripInfoView(this._eventsModel.getEvents());
 
     render(this._tripInfoContainerElement, this._tripInfoComponent, RenderPosition.AFTERBEGIN);
   }
@@ -145,7 +141,7 @@ export default class TripPresenter {
       this._tripCostComponent = null;
     }
 
-    this._tripCostComponent = new TripCostView(this._getEvents({getUnfiltered: true}));
+    this._tripCostComponent = new TripCostView(this._eventsModel.getEvents());
 
     render(this._tripInfoContainerElement, this._tripCostComponent, RenderPosition.BEFOREEND);
   }
