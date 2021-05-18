@@ -16,8 +16,8 @@ export const State = {
 
 export default class EventPresenter {
   constructor(changeEvent, changeMode) {
-    this._eventComponent = null;
-    this._eventEditFormComponent = null;
+    this._eventView = null;
+    this._eventEditFormView = null;
     this._eventListElement = document.querySelector('.trip-events__list');
     this._changeEvent = changeEvent;
     this._changeMode = changeMode;
@@ -33,56 +33,56 @@ export default class EventPresenter {
 
   init(eventItem, offersFullList, destinationFullList, destinationNames) {
     this._data = eventItem;
-    const prevEventComponent = this._eventComponent;
-    const prevEventEditFormComponent = this._eventEditFormComponent;
-    this._eventComponent = new EventItemView(eventItem);
-    this._eventEditFormComponent = new AddAndEditFormView(eventItem, offersFullList, destinationFullList, destinationNames);
+    const prevEventView = this._eventView;
+    const prevEventEditFormView = this._eventEditFormView;
+    this._eventView = new EventItemView(eventItem);
+    this._eventEditFormView = new AddAndEditFormView(eventItem, offersFullList, destinationFullList, destinationNames);
 
-    this._eventComponent.setArrowClickHandler(this._handleDownArrowClick);
-    this._eventComponent.setFavoriteClickHandler(this._handleFavoriteClick);
-    this._eventEditFormComponent.setArrowClickHandler(this._handleUpArrowClick);
-    this._eventEditFormComponent.setSubmitHandler(this._handleFormSubmit);
-    this._eventEditFormComponent.setDeleteClickHandler(this._handleDeleteClick);
+    this._eventView.setArrowClickHandler(this._handleDownArrowClick);
+    this._eventView.setFavoriteClickHandler(this._handleFavoriteClick);
+    this._eventEditFormView.setArrowClickHandler(this._handleUpArrowClick);
+    this._eventEditFormView.setSubmitHandler(this._handleFormSubmit);
+    this._eventEditFormView.setDeleteClickHandler(this._handleDeleteClick);
 
-    if (prevEventComponent === null || prevEventEditFormComponent === null) {
-      render(this._eventListElement, this._eventComponent, RenderPosition.BEFOREEND);
+    if (prevEventView === null || prevEventEditFormView === null) {
+      render(this._eventListElement, this._eventView, RenderPosition.BEFOREEND);
       return;
     }
 
     if (this._mode === Mode.DEFAULT) {
-      replace(this._eventComponent, prevEventComponent);
+      replace(this._eventView, prevEventView);
     }
 
     if (this._mode === Mode.EDITING) {
-      replace(this._eventEditFormComponent, prevEventEditFormComponent);
+      replace(this._eventEditFormView, prevEventEditFormView);
       this._mode = Mode.DEFAULT;
     }
 
-    remove(prevEventComponent);
-    remove(prevEventEditFormComponent);
+    remove(prevEventView);
+    remove(prevEventEditFormView);
   }
 
   destroy() {
-    remove(this._eventComponent);
-    remove(this._eventEditFormComponent);
+    remove(this._eventView);
+    remove(this._eventEditFormView);
   }
 
   resetView() {
     if (this._mode !== Mode.DEFAULT) {
-      this._eventEditFormComponent.reset(this._data);
+      this._eventEditFormView.reset(this._data);
       this._replaceEditFormWitnEvent();
     }
   }
 
   _replaceEventWithEditForm() {
-    replace(this._eventEditFormComponent, this._eventComponent);
+    replace(this._eventEditFormView, this._eventView);
     document.addEventListener('keydown', this._escKeydownHandler);
     this._changeMode();
     this._mode = Mode.EDITING;
   }
 
   _replaceEditFormWitnEvent() {
-    replace(this._eventComponent, this._eventEditFormComponent);
+    replace(this._eventView, this._eventEditFormView);
     document.removeEventListener('keydown', this._escKeydownHandler);
     this._mode = Mode.DEFAULT;
   }
@@ -92,7 +92,7 @@ export default class EventPresenter {
   }
 
   _handleUpArrowClick() {
-    this._eventEditFormComponent.reset(this._data);
+    this._eventEditFormView.reset(this._data);
     this._replaceEditFormWitnEvent();
   }
 
@@ -128,14 +128,14 @@ export default class EventPresenter {
   _escKeydownHandler(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
-      this._eventEditFormComponent.reset(this._data);
+      this._eventEditFormView.reset(this._data);
       this._replaceEditFormWitnEvent();
     }
   }
 
   setViewState(state) {
     const resetFormState = () => {
-      this._eventEditFormComponent.updateData({
+      this._eventEditFormView.updateData({
         isDisabled: false,
         isSaving: false,
         isDeleting: false,
@@ -144,19 +144,19 @@ export default class EventPresenter {
 
     switch(state) {
       case State.SAVING:
-        this._eventEditFormComponent.updateData({
+        this._eventEditFormView.updateData({
           isDisabled: true,
           isSaving: true,
         }, true);
         break;
       case State.DELETING:
-        this._eventEditFormComponent.updateData({
+        this._eventEditFormView.updateData({
           isDisabled: true,
           isDeleting: true,
         }, true);
         break;
       case State.ABORTING:
-        this._eventEditFormComponent.shake(resetFormState);
+        this._eventEditFormView.shake(resetFormState);
         break;
     }
   }

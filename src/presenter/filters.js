@@ -9,7 +9,7 @@ export default class Filters {
 
     this._filtersModel = filtersModel;
     this._eventsModel = eventsModel;
-    this._filtersComponent = null;
+    this._filtersView = null;
 
 
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -21,18 +21,18 @@ export default class Filters {
 
   init() {
     const filters = this._getFilters();
-    const prevFiltersComponent = this._filtersComponent;
+    const prevFiltersView = this._filtersView;
 
-    this._filtersComponent = new FilterView(filters, this._filtersModel.getFilter());
-    this._filtersComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
+    this._filtersView = new FilterView(filters, this._filtersModel.getFilter());
+    this._filtersView.setFilterTypeChangeHandler(this._handleFilterTypeChange);
 
-    if (prevFiltersComponent === null) {
-      render(this._filtersContainerElement, this._filtersComponent, RenderPosition.BEFOREEND);
+    if (prevFiltersView === null) {
+      render(this._filtersContainerElement, this._filtersView, RenderPosition.BEFOREEND);
       return;
     }
 
-    replace(this._filtersComponent, prevFiltersComponent);
-    remove (prevFiltersComponent);
+    replace(this._filtersView, prevFiltersView);
+    remove (prevFiltersView);
   }
 
   _handleModelEvent() {

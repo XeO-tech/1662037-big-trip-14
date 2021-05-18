@@ -12,8 +12,8 @@ export const createElement = (template) => {
   return newElement.firstChild;
 };
 
-export const render = (container, component, position) => {
-  const element = component.getElement();
+export const render = (container, viewComponent, position) => {
+  const element = viewComponent.getElement();
 
   switch (position) {
     case RenderPosition.BEFOREBEGIN:
@@ -46,15 +46,15 @@ export const replace = (newChild, oldChild) => {
   parent.replaceChild(newChild, oldChild);
 };
 
-export const remove = (component) => {
-  if (component === null) {
+export const remove = (viewComponent) => {
+  if (viewComponent === null) {
     return;
   }
 
-  if (!(component instanceof Abstract)) {
+  if (!(viewComponent instanceof Abstract)) {
     throw new Error('Only components can be removed');
   }
 
-  component.getElement().remove();
-  component.removeElement();
+  viewComponent.getElement().remove();
+  viewComponent.removeElement();
 };

@@ -23,9 +23,9 @@ export default class TripPresenter {
     this._offersModel = offersModel;
     this._filtersModel = filtersModel;
 
-    this._sortingPanelComponent = null;
-    this._emptyListPlaceholderComponent = new EmptyListPlaceholderView();
-    this._loadingComponent = new LoadingView();
+    this._sortingPanelView = null;
+    this._emptyListPlaceholderView = new EmptyListPlaceholderView();
+    this._loadingView = new LoadingView();
     this._errorView = new ErrorView();
 
 
@@ -60,11 +60,11 @@ export default class TripPresenter {
   }
 
   _renderLoading() {
-    render(this._mainContainerElement, this._loadingComponent, RenderPosition.AFTERBEGIN);
+    render(this._mainContainerElement, this._loadingView, RenderPosition.AFTERBEGIN);
   }
 
   renderError() {
-    remove(this._loadingComponent);
+    remove(this._loadingView);
     render(this._mainContainerElement, this._errorView, RenderPosition.AFTERBEGIN);
   }
 
@@ -112,38 +112,38 @@ export default class TripPresenter {
   }
 
   _renderEmptyList() {
-    render(this._eventListContainerElement, this._emptyListPlaceholderComponent, RenderPosition.BEFOREBEGIN);
+    render(this._eventListContainerElement, this._emptyListPlaceholderView, RenderPosition.BEFOREBEGIN);
   }
 
   _renderSort() {
-    if (this._sortingPanelComponent !== null) {
-      this._sortingPanelComponent = null;
+    if (this._sortingPanelView !== null) {
+      this._sortingPanelView = null;
     }
 
-    this._sortingPanelComponent = new SortingPanelView(this._currentSortType);
+    this._sortingPanelView = new SortingPanelView(this._currentSortType);
 
-    this._sortingPanelComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
-    render(this._mainContainerElement, this._sortingPanelComponent, RenderPosition.AFTERBEGIN);
+    this._sortingPanelView.setSortTypeChangeHandler(this._handleSortTypeChange);
+    render(this._mainContainerElement, this._sortingPanelView, RenderPosition.AFTERBEGIN);
   }
 
   _renderTripInfo() {
-    if (this._tripInfoComponent !== null) {
-      this._tripInfoComponent = null;
+    if (this._tripInfoView !== null) {
+      this._tripInfoView = null;
     }
 
-    this._tripInfoComponent = new TripInfoView(this._eventsModel.getEvents());
+    this._tripInfoView = new TripInfoView(this._eventsModel.getEvents());
 
-    render(this._tripInfoContainerElement, this._tripInfoComponent, RenderPosition.AFTERBEGIN);
+    render(this._tripInfoContainerElement, this._tripInfoView, RenderPosition.AFTERBEGIN);
   }
 
   _renderTripCost() {
-    if (this._tripCostComponent !== null) {
-      this._tripCostComponent = null;
+    if (this._tripCostView !== null) {
+      this._tripCostView = null;
     }
 
-    this._tripCostComponent = new TripCostView(this._eventsModel.getEvents());
+    this._tripCostView = new TripCostView(this._eventsModel.getEvents());
 
-    render(this._tripInfoContainerElement, this._tripCostComponent, RenderPosition.BEFOREEND);
+    render(this._tripInfoContainerElement, this._tripCostView, RenderPosition.BEFOREEND);
   }
 
   _handleModeChange() {
@@ -202,7 +202,7 @@ export default class TripPresenter {
         break;
       case UpdateType.INIT:
         this._isLoading = false;
-        remove(this._loadingComponent);
+        remove(this._loadingView);
         this._renderBoard();
         break;
     }
@@ -223,13 +223,13 @@ export default class TripPresenter {
       .values(this._eventPresenters)
       .forEach((presenter) => presenter.destroy());
     this._eventPresenters = {};
-    remove(this._sortingPanelComponent);
-    remove(this._emptyListPlaceholderComponent);
-    remove(this._loadingComponent);
+    remove(this._sortingPanelView);
+    remove(this._emptyListPlaceholderView);
+    remove(this._loadingView);
 
     if (resetTripInfo) {
-      remove(this._tripCostComponent);
-      remove(this._tripInfoComponent);
+      remove(this._tripCostView);
+      remove(this._tripInfoView);
     }
 
     if (resetSortType) {
@@ -244,7 +244,7 @@ export default class TripPresenter {
 
   hideElement() {
     this._eventListContainerElement.classList.add('visually-hidden');
-    this._sortingPanelComponent.getElement().classList.add('visually-hidden');
+    this._sortingPanelView.getElement().classList.add('visually-hidden');
 
     const elementsWithLine = [...document.querySelectorAll('.page-body__container')];
     elementsWithLine.forEach((element) => {
@@ -255,7 +255,7 @@ export default class TripPresenter {
 
   showElement() {
     this._eventListContainerElement.classList.remove('visually-hidden');
-    this._sortingPanelComponent.getElement().classList.remove('visually-hidden');
+    this._sortingPanelView.getElement().classList.remove('visually-hidden');
 
     const elementsWithoutLine = [...document.querySelectorAll('.page-body__container-no-after')];
     elementsWithoutLine.forEach((element) => {
