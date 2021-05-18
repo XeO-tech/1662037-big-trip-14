@@ -49,23 +49,19 @@ export default class TripPresenter {
     this._renderBoard();
   }
 
-  _renderEvent(eventItem) {
-    const eventPresenter = new EventPresenter(this._handleViewAction, this._handleModeChange);
-    eventPresenter.init(eventItem, this._offersFullList, this._destinationsFullList, this._destinationNames);
-    this._eventPresenters[eventItem.id] = eventPresenter;
-  }
+  _getEvents() {
+    const filterType = this._filtersModel.getFilter();
+    const events = this._eventsModel.getEvents();
 
-  _renderEvents() {
-    this._getEvents().forEach((eventItem) => this._renderEvent(eventItem));
-  }
+    const filteredEvents = filters[filterType](events);
 
-  _renderLoading() {
-    render(this._mainContainerElement, this._loadingView, RenderPosition.AFTERBEGIN);
-  }
-
-  renderError() {
-    remove(this._loadingView);
-    render(this._mainContainerElement, this._errorView, RenderPosition.AFTERBEGIN);
+    switch (this._currentSortType) {
+      case SortType.TIME:
+        return filteredEvents.sort(sortByTime);
+      case SortType.PRICE:
+        return filteredEvents.sort(sortByPrice);
+    }
+    return filteredEvents.sort(sortByStartDate);
   }
 
   _renderBoard({resetTripInfo = true} = {}) {
@@ -96,19 +92,23 @@ export default class TripPresenter {
     }
   }
 
-  _getEvents() {
-    const filterType = this._filtersModel.getFilter();
-    const events = this._eventsModel.getEvents();
+  _renderEvent(eventItem) {
+    const eventPresenter = new EventPresenter(this._handleViewAction, this._handleModeChange);
+    eventPresenter.init(eventItem, this._offersFullList, this._destinationsFullList, this._destinationNames);
+    this._eventPresenters[eventItem.id] = eventPresenter;
+  }
 
-    const filteredEvents = filters[filterType](events);
+  _renderEvents() {
+    this._getEvents().forEach((eventItem) => this._renderEvent(eventItem));
+  }
 
-    switch (this._currentSortType) {
-      case SortType.TIME:
-        return filteredEvents.sort(sortByTime);
-      case SortType.PRICE:
-        return filteredEvents.sort(sortByPrice);
-    }
-    return filteredEvents.sort(sortByStartDate);
+  _renderLoading() {
+    render(this._mainContainerElement, this._loadingView, RenderPosition.AFTERBEGIN);
+  }
+
+  renderError() {
+    remove(this._loadingView);
+    render(this._mainContainerElement, this._errorView, RenderPosition.AFTERBEGIN);
   }
 
   _renderEmptyList() {

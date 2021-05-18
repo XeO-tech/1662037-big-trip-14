@@ -9,7 +9,6 @@ dayjs.extend(duration);
 const BAR_HEIGHT = 55;
 
 const renderMoneyChart = (moneyChartContainerElement, events) => {
-
   const calculateDataForEvents = (eventsForType) => {
     if (eventsForType.length === 0) {
       return 0;
@@ -281,6 +280,10 @@ export default class Statistics extends AbstractView {
     this._setCharts();
   }
 
+  getTemplate() {
+    return createStatisticsTemplate();
+  }
+
   _setCharts() {
     const moneyChartContainerElement = this.getElement().querySelector('.statistics__chart--money');
     const typeChartContainerElement = this.getElement().querySelector('.statistics__chart--transport');
@@ -291,9 +294,5 @@ export default class Statistics extends AbstractView {
     renderMoneyChart(moneyChartContainerElement, this._events);
     renderTypeChart(typeChartContainerElement, this._events);
     renderTimeSpentChart(timeSpentChartContainerElement, this._events);
-  }
-
-  getTemplate() {
-    return createStatisticsTemplate();
   }
 }

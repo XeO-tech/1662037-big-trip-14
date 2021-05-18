@@ -46,6 +46,7 @@ export default class TripInfo extends AbstractView {
     super();
     this._events = events;
   }
+
   getTemplate() {
     return createTripInfoTemplate(this._events);
   }

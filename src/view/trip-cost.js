@@ -13,6 +13,7 @@ export default class TripCost extends AbstractView {
     super();
     this._events = events;
   }
+
   getTemplate() {
     return createTripCostTemplate(this._events);
   }

@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
-const renderTypesMenu = (currentType, isDisabled) => {
+const createTypesMenuTemplate = (currentType, isDisabled) => {
   return EventTypes
     .map((type) => {
       const typeFormatted = type.charAt(0).toUpperCase() + type.slice(1);
@@ -17,13 +17,13 @@ const renderTypesMenu = (currentType, isDisabled) => {
     .join('');
 };
 
-const renderDestinationsOptions = (avaliableDestinations) => {
+const createDestinationsOptionsTemplate = (avaliableDestinations) => {
   return avaliableDestinations
     .map((destination) => `<option value="${destination}"></option>`)
     .join('');
 };
 
-const renderOffers = (offers, offersFullList, type, isDisabled) => {
+const createOffersTemplate = (offers, offersFullList, type, isDisabled) => {
   const checkedOffersTitles = offers.map((offer) => offer.title);
 
   const allOffersForSelectedType = offersFullList.find((offer) => offer.type === type).offers;
@@ -44,7 +44,7 @@ const renderOffers = (offers, offersFullList, type, isDisabled) => {
     .join('');
 };
 
-const renderPhotos = (pictures) => {
+const createPhotosTemplate = (pictures) => {
   if (pictures.length === 0) {
     return '';
   }
@@ -89,7 +89,7 @@ const createAddAndEditFormTemplate = (eventInfo = {}, offersFullList) => {
         <div class="event__type-list">
           <fieldset class="event__type-group" >
             <legend class="visually-hidden">Event type</legend>
-            ${renderTypesMenu(type, isDisabled)}
+            ${createTypesMenuTemplate(type, isDisabled)}
           </fieldset>
         </div>
       </div>
@@ -99,7 +99,7 @@ const createAddAndEditFormTemplate = (eventInfo = {}, offersFullList) => {
         </label>
         <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination === null ? '' : destination.name}" list="destination-list-1" required ${isDisabled ? 'disabled' : ''}>
         <datalist id="destination-list-1">
-          ${renderDestinationsOptions(avaliableDestinations)}
+          ${createDestinationsOptionsTemplate(avaliableDestinations)}
         </datalist>
       </div>
       <div class="event__field-group  event__field-group--time">
@@ -126,7 +126,7 @@ const createAddAndEditFormTemplate = (eventInfo = {}, offersFullList) => {
       <section class="event__section  event__section--offers ${offersClassName}">
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
         <div class="event__available-offers">
-          ${renderOffers(offers, offersFullList, type, isDisabled)}
+          ${createOffersTemplate(offers, offersFullList, type, isDisabled)}
         </div>
       </section>
       <section class="event__section  event__section--destination ${destinationClassName}">
@@ -134,7 +134,7 @@ const createAddAndEditFormTemplate = (eventInfo = {}, offersFullList) => {
         <p class="event__destination-description">${destination === null || destination.description.length === 0 ? '' : destination.description}</p>
         <div class="event__photos-container">
                       <div class="event__photos-tape">
-                       ${destination === null || destination.pictures.length === 0 ? '': renderPhotos(destination.pictures)}
+                       ${destination === null || destination.pictures.length === 0 ? '': createPhotosTemplate(destination.pictures)}
                       </div>
                     </div>
       </section>

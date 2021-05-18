@@ -35,18 +35,6 @@ export default class Filters {
     remove (prevFiltersView);
   }
 
-  _handleModelEvent() {
-    this.init();
-  }
-
-  _handleFilterTypeChange(filterType) {
-    if (this._filtersModel.getFilter() === filterType) {
-      return;
-    }
-
-    this._filtersModel.setFilter(UpdateType.MINOR, filterType);
-  }
-
   _getFilters() {
     const events = this._eventsModel.getEvents();
 
@@ -67,5 +55,17 @@ export default class Filters {
         isActive: filters[FilterType.PAST](events).length !== 0,
       },
     ];
+  }
+
+  _handleModelEvent() {
+    this.init();
+  }
+
+  _handleFilterTypeChange(filterType) {
+    if (this._filtersModel.getFilter() === filterType) {
+      return;
+    }
+
+    this._filtersModel.setFilter(UpdateType.MINOR, filterType);
   }
 }

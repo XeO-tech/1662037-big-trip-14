@@ -4,7 +4,7 @@ import { defineDateTimeFormats } from '../utils/events.js';
 import AbstractView from './abstract.js';
 dayjs.extend(duration);
 
-const renderOffers = (offers) => {
+const createOffersTemplate = (offers) => {
   const renderedOffers = offers.map((offer) => {
     return `<li class="event__offer">
     <span class="event__offer-title">${offer.title}</span>
@@ -58,7 +58,7 @@ const createEventItemTemplate = (eventInfo) => {
     </p>
     <h4 class="visually-hidden">Offers:</h4>
     <ul class="event__selected-offers">
-      ${renderOffers(offers)}
+      ${createOffersTemplate(offers)}
     </ul>
     <button class="event__favorite-btn ${favoriteClassName}" type="button">
       <span class="visually-hidden">Add to favorite</span>

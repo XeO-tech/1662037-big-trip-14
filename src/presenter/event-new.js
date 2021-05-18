@@ -17,6 +17,7 @@ export default class EventNewPresenter {
     if (this._eventEditFormView !== null) {
       return;
     }
+
     const eventItem = {};
     this._eventEditFormView = new AddAndEditFormView( eventItem, offersFullList, destinationFullList, destinationNames);
     this._newEventButon = document.querySelector('.trip-main__event-add-btn');
