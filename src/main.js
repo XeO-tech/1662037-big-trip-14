@@ -1,4 +1,4 @@
-import Api from './api.js';
+import Api from './api/api.js';
 import EventsModel from './model/events.js';
 import DestinationsModel from './model/destinations.js';
 import OffersModel from './model/offers.js';
@@ -7,13 +7,22 @@ import SiteMenuView from './view/site-menu.js';
 import StatisticsView from './view/statistics.js';
 import TripPesenter from './presenter/trip.js';
 import FiltersPresenter from './presenter/filters.js';
+import Store from './api/store.js';
+import Provider from './api/provider.js';
 import { render, remove, RenderPosition } from './utils/render.js';
 import { MenuItem, UpdateType, FilterType } from './consts.js';
+import { isOnline } from './utils/common.js';
+import { toast } from './utils/toast.js';
 
 const AUTHORIZATION = 'Basic 3424nklfsdl1mcs';
 const END_POINT = 'https://14.ecmascript.pages.academy/big-trip';
+const STORE_PREFIX = 'bigtrip-localstorage';
+const STORE_VER = 'v1';
+const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
 
 const api = new Api(END_POINT, AUTHORIZATION);
+const store = new Store(STORE_NAME, window.localStorage);
+const apiWithProvider = new Provider(api, store);
 
 const menuContainerElement = document.querySelector('.trip-main__trip-controls');
 const mainContainerElement = document.querySelector('.trip-events');
@@ -24,7 +33,7 @@ const destinationsModel = new DestinationsModel();
 const offersModel = new OffersModel();
 const filtersModel = new FiltersModel();
 const siteMenuView = new SiteMenuView();
-const tripPresenter = new TripPesenter(eventsModel, destinationsModel, offersModel, filtersModel, api);
+const tripPresenter = new TripPesenter(eventsModel, destinationsModel, offersModel, filtersModel, apiWithProvider);
 const filtersPresenter = new FiltersPresenter(filtersModel, eventsModel);
 
 let statisticsView = null;
@@ -45,8 +54,13 @@ const handleMenuClick = (target) => {
 };
 
 const setNewEventButtonClickHandler = () => {
-  newEventButtonElement.addEventListener('click', () =>
-    tripPresenter.createEvent());
+  newEventButtonElement.addEventListener('click', () => {
+    if (!isOnline()) {
+      toast('You can\'t create new event offline');
+      return;
+    }
+    tripPresenter.createEvent();
+  });
 };
 
 const setupInterface = () => {
@@ -60,12 +74,12 @@ const setupInterface = () => {
 newEventButtonElement.disabled = true;
 tripPresenter.init();
 
-api
+apiWithProvider
   .getDestinations()
   .then((destinations) => destinationsModel.setDestinations(destinations))
-  .then(() => api.getOffers())
+  .then(() => apiWithProvider.getOffers())
   .then((offers) => offersModel.setOffers(offers))
-  .then(() => api.getEvents())
+  .then(() => apiWithProvider.getEvents())
   .then((events) => {
     eventsModel.setEvents(UpdateType.INIT, events);
     setupInterface();
@@ -79,3 +93,15 @@ api
     setupInterface();
   });
 
+window.addEventListener('load', () => {
+  navigator.serviceWorker.register('./sw.js');
+});
+
+window.addEventListener('online', () => {
+  document.title = document.title.replace(' [offline]', '');
+  apiWithProvider.sync();
+});
+
+window.addEventListener('offline', () => {
+  document.title += ' [offline]';
+});

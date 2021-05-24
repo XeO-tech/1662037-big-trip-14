@@ -2,6 +2,8 @@ import { render, replace, remove, RenderPosition } from '../utils/render.js';
 import EventItemView from '../view/event-item.js';
 import AddAndEditFormView from '../view/form-add-and-edit-event.js';
 import { UserAction, UpdateType } from '../consts.js';
+import { isOnline } from '../utils/common.js';
+import { toast } from '../utils/toast.js';
 
 const Mode = {
   DEFAULT: 'DEFALT',
@@ -88,6 +90,11 @@ export default class EventPresenter {
   }
 
   _handleDownArrowClick() {
+    if (!isOnline()) {
+      toast('You can\'t edit event offline');
+      return;
+    }
+
     this._replaceEventWithEditForm();
   }
 
@@ -97,10 +104,20 @@ export default class EventPresenter {
   }
 
   _handleFormSubmit(eventItem) {
+    if (!isOnline()) {
+      toast('You can\'t save event offline');
+      return;
+    }
+
     this._changeEvent(UserAction.UPDATE_EVENT, UpdateType.MAJOR, eventItem);
   }
 
   _handleDeleteClick() {
+    if (!isOnline()) {
+      toast('You can\'t delete event offline');
+      return;
+    }
+
     this._changeEvent(
       UserAction.DELETE_EVENT,
       UpdateType.MAJOR,
