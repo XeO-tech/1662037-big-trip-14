@@ -1,36 +1,20 @@
 import EventsModel from '../model/events.js';
 import { isOnline } from '../utils/common.js';
+import { DataType } from '../consts.js';
 
 const getSyncedEvents = (items) => {
   return items.filter(({success}) => success)
     .map(({payload}) => payload.point);
 };
 
-const createStoreStructure = (items) => {
-  const events = items.reduce((acc, current) => {
-    return Object.assign({}, acc, {
-      [current.id]: current,
-    });
-  }, {});
-  return {'events': events}
-};
+const createStoreStructure = (items, dataType) => {
+  const reducedEvents = items.reduce((acc, current) => {
 
-const createDestinationsStructure = (items) => {
-  const destinations = items.reduce((acc, current) => {
     return Object.assign({}, acc, {
-      [current.name]: current,
+      [current[dataType.ID_KEY]]: current,
     });
   }, {});
-  return {'destinations': destinations}
-};
-
-const createOffersStructure = (items) => {
-  const offers = items.reduce((acc, current) => {
-    return Object.assign({}, acc, {
-      [current.type]: current,
-    });
-  }, {});
-  return {'offers': offers}
+  return {[dataType.NAME]: reducedEvents}
 };
 
 export default class Provider {
@@ -43,14 +27,14 @@ export default class Provider {
     if (isOnline()) {
       return this._api.getEvents()
         .then((events) => {
-          const items = createStoreStructure(events.map(EventsModel.adaptToServer));
+          const items = createStoreStructure(events.map(EventsModel.adaptToServer), DataType.EVENTS);
           this._store.setItems(items);
 
           return events;
         });
     }
 
-    const storeEvents = Object.values(this._store.getItems()['events']);
+    const storeEvents = Object.values(this._store.getItems()[DataType.EVENTS.NAME]);
 
     return Promise.resolve(storeEvents.map(EventsModel.adaptToClient));
   }
@@ -59,14 +43,14 @@ export default class Provider {
     if (isOnline()) {
       return this._api.getDestinations()
         .then((destinations) => {
-          const items = createDestinationsStructure(destinations);
+          const items = createStoreStructure(destinations, DataType.DESTINATIONS);
           this._store.setItems(items);
 
           return destinations;
         });
     }
 
-    const storeDestinations = Object.values(this._store.getItems()['destinations']);
+    const storeDestinations = Object.values(this._store.getItems()[DataType.DESTINATIONS.NAME]);
 
     return Promise.resolve(storeDestinations);
   }
@@ -75,13 +59,13 @@ export default class Provider {
     if (isOnline()) {
       return this._api.getOffers()
         .then((offers) => {
-          const items = createOffersStructure(offers);
+          const items = createStoreStructure(offers, DataType.OFFERS);
           this._store.setItems(items);
 
           return offers;
         });
     }
-    const storeOffers = Object.values(this._store.getItems()['offers']);
+    const storeOffers = Object.values(this._store.getItems()[DataType.OFFERS.NAME]);
 
     return Promise.resolve(storeOffers);
   }
@@ -123,7 +107,7 @@ export default class Provider {
 
   sync() {
     if (isOnline()) {
-      const storeEvents = Object.values(this._store.getItems()['events']);
+      const storeEvents = Object.values(this._store.getItems()[DataType.EVENTS.NAME]);
 
       return this._api.sync(storeEvents)
         .then((response) => {

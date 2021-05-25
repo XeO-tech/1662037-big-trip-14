@@ -29,3 +29,18 @@ export const MenuItem = {
   TABLE: 'Table',
   STATS: 'Stats',
 };
+
+export const DataType = {
+  EVENTS: {
+    NAME: 'events',
+    ID_KEY: 'id',
+  },
+  DESTINATIONS: {
+    NAME: 'destinations',
+    ID_KEY: 'name',
+  },
+  OFFERS: {
+    NAME: 'offers',
+    ID_KEY: 'type',
+  }
+}

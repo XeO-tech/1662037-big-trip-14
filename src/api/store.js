@@ -1,3 +1,5 @@
+import { DataType } from '../consts.js';
+
 export default class Store {
   constructor(key, storage) {
     this._storage = storage;
@@ -25,13 +27,13 @@ export default class Store {
 
   setEventItem(key, value) {
     const store = this.getItems();
-    const events = this.getItems()['events'];
+    const events = this.getItems()[DataType.EVENTS.NAME];
 
     this._storage.setItem(
       this._storeKey,
       JSON.stringify(
         Object.assign({}, store, {
-          'events': Object.assign({}, events, {[key]: value})
+          [DataType.EVENTS.NAME]: Object.assign({}, events, {[key]: value})
           }
         ),
       ),
@@ -41,7 +43,7 @@ export default class Store {
   removeEventItem(key) {
     const store = this.getItems();
 
-    delete store['events'][key];
+    delete store[DataType.EVENTS.NAME][key];
 
     this._storage.setItem(
       this._storeKey,
