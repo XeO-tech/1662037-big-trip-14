@@ -3,7 +3,7 @@ import { isOnline } from '../utils/common.js';
 
 const getSyncedEvents = (items) => {
   return items.filter(({success}) => success)
-    .map(({payload}) => payload.task);
+    .map(({payload}) => payload.point);
 };
 
 const createStoreStructure = (items) => {
@@ -88,7 +88,7 @@ export default class Provider {
 
   updateEvent(eventItem) {
     if (isOnline()) {
-      return this._api.updateTask(eventItem)
+      return this._api.updateEvent(eventItem)
         .then((updatedEvent) => {
           this._store.setEventItem(updatedEvent.id, EventsModel.adaptToServer(updatedEvent));
           return updatedEvent;
@@ -123,7 +123,7 @@ export default class Provider {
 
   sync() {
     if (isOnline()) {
-      const storeEvents = Object.values(this._store.getItems());
+      const storeEvents = Object.values(this._store.getItems()['events']);
 
       return this._api.sync(storeEvents)
         .then((response) => {
