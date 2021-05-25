@@ -7,11 +7,30 @@ const getSyncedEvents = (items) => {
 };
 
 const createStoreStructure = (items) => {
-  return items.reduce((acc, current) => {
+  const events = items.reduce((acc, current) => {
     return Object.assign({}, acc, {
       [current.id]: current,
     });
   }, {});
+  return {'events': events}
+};
+
+const createDestinationsStructure = (items) => {
+  const destinations = items.reduce((acc, current) => {
+    return Object.assign({}, acc, {
+      [current.name]: current,
+    });
+  }, {});
+  return {'destinations': destinations}
+};
+
+const createOffersStructure = (items) => {
+  const offers = items.reduce((acc, current) => {
+    return Object.assign({}, acc, {
+      [current.type]: current,
+    });
+  }, {});
+  return {'offers': offers}
 };
 
 export default class Provider {
@@ -26,64 +45,66 @@ export default class Provider {
         .then((events) => {
           const items = createStoreStructure(events.map(EventsModel.adaptToServer));
           this._store.setItems(items);
+
           return events;
         });
     }
 
-    const storeEvents = Object.values(this._store.getItems());
+    const storeEvents = Object.values(this._store.getItems()['events']);
 
     return Promise.resolve(storeEvents.map(EventsModel.adaptToClient));
   }
 
-  // getDestinations() {
-  //   if (isOnline()) {
-  //     return this._api.getDestinations()
-  //       .then((destinations) => {
-  //         const items = createStoreStructure(destinations);
-  //         this._store.setItems(items);
-  //         return destinations;
-  //       });
-  //   }
+  getDestinations() {
+    if (isOnline()) {
+      return this._api.getDestinations()
+        .then((destinations) => {
+          const items = createDestinationsStructure(destinations);
+          this._store.setItems(items);
 
-  //   const storeDestinations = Object.values(this._store.getItems());
+          return destinations;
+        });
+    }
 
-  //   return Promise.resolve(storeDestinations);
-  // }
+    const storeDestinations = Object.values(this._store.getItems()['destinations']);
 
-  // getOffers() {
-  //   if (isOnline()) {
-  //     return this._api.getOffers()
-  //       .then((offers) => {
-  //         const items = createStoreStructure(offers);
-  //         this._store.setItems(items);
-  //         return offers;
-  //       });
-  //   }
+    return Promise.resolve(storeDestinations);
+  }
 
-  //   const storeOffers = Object.values(this._store.getItems());
+  getOffers() {
+    if (isOnline()) {
+      return this._api.getOffers()
+        .then((offers) => {
+          const items = createOffersStructure(offers);
+          this._store.setItems(items);
 
-  //   return Promise.resolve(storeOffers);
-  // }
+          return offers;
+        });
+    }
+    const storeOffers = Object.values(this._store.getItems()['offers']);
+
+    return Promise.resolve(storeOffers);
+  }
 
   updateEvent(eventItem) {
     if (isOnline()) {
       return this._api.updateTask(eventItem)
         .then((updatedEvent) => {
-          this._store.setItem(updatedEvent.id, EventsModel.adaptToServer(updatedEvent));
+          this._store.setEventItem(updatedEvent.id, EventsModel.adaptToServer(updatedEvent));
           return updatedEvent;
         });
     }
 
-    this._store.setItem(eventItem.id, EventsModel.adaptToServer(Object.assign({}, eventItem)));
+    this._store.setEventItem(eventItem.id, EventsModel.adaptToServer(Object.assign({}, eventItem)));
 
     return Promise.resolve(eventItem);
   }
 
   addEvent(eventItem) {
     if (isOnline()) {
-      return this._api.addTask(eventItem)
+      return this._api.addEvent(eventItem)
         .then((newEvent) => {
-          this._store.setItem(newEvent.id, EventsModel.adaptToServer(newEvent));
+          this._store.setEventItem(newEvent.id, EventsModel.adaptToServer(newEvent));
           return newEvent;
         });
     }
@@ -91,10 +112,10 @@ export default class Provider {
     return Promise.reject(new Error('Add event failed'));
   }
 
-  deleteTask(eventItem) {
+  deleteEvent(eventItem) {
     if (isOnline()) {
-      return this._api.deleteTask(eventItem)
-        .then(() => this._store.removeItem(eventItem.id));
+      return this._api.deleteEvent(eventItem)
+        .then(() => this._store.removeEventItem(eventItem.id));
     }
 
     return Promise.reject(new Error('Delete task failed'));

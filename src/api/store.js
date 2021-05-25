@@ -13,33 +13,40 @@ export default class Store {
   }
 
   setItems(items) {
-    this._storage.setItem(
-      this._storeKey,
-      JSON.stringify(items),
-    );
-  }
-
-  setItem(key, value) {
     const store = this.getItems();
 
     this._storage.setItem(
       this._storeKey,
       JSON.stringify(
-        Object.assign({}, store, {
-          [key]: value,
-        }),
+        Object.assign({}, store, items),
       ),
     );
   }
 
-  removeItem(key) {
+  setEventItem(key, value) {
     const store = this.getItems();
-
-    delete store[key];
+    const events = this.getItems()['events'];
 
     this._storage.setItem(
       this._storeKey,
-      JSON.stringify(store),
+      JSON.stringify(
+        Object.assign({}, store, {
+          'events': Object.assign({}, events, {[key]: value})
+          }
+        ),
+      ),
+    );
+  }
+
+  removeEventItem(key) {
+    const store = this.getItems();
+
+    delete store['events'][key];
+
+    this._storage.setItem(
+      this._storeKey,
+      JSON.stringify(store,
+      ),
     );
   }
 }

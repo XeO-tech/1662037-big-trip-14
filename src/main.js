@@ -74,12 +74,12 @@ const setupInterface = () => {
 newEventButtonElement.disabled = true;
 tripPresenter.init();
 
-api
+apiWithProvider
   .getDestinations()
   .then((destinations) => destinationsModel.setDestinations(destinations))
-  .then(() => api.getOffers())
+  .then(() => apiWithProvider.getOffers())
   .then((offers) => offersModel.setOffers(offers))
-  .then(() => api.getEvents())
+  .then(() => apiWithProvider.getEvents())
   .then((events) => {
     eventsModel.setEvents(UpdateType.INIT, events);
     setupInterface();
