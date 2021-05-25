@@ -20,7 +20,7 @@ export default class Provider {
     this._store = store;
   }
 
-  getTasks() {
+  getEvents() {
     if (isOnline()) {
       return this._api.getEvents()
         .then((events) => {
@@ -34,7 +34,36 @@ export default class Provider {
 
     return Promise.resolve(storeEvents.map(EventsModel.adaptToClient));
   }
-  //добавить метод для офферов и пунктов назначения
+
+  // getDestinations() {
+  //   if (isOnline()) {
+  //     return this._api.getDestinations()
+  //       .then((destinations) => {
+  //         const items = createStoreStructure(destinations);
+  //         this._store.setItems(items);
+  //         return destinations;
+  //       });
+  //   }
+
+  //   const storeDestinations = Object.values(this._store.getItems());
+
+  //   return Promise.resolve(storeDestinations);
+  // }
+
+  // getOffers() {
+  //   if (isOnline()) {
+  //     return this._api.getOffers()
+  //       .then((offers) => {
+  //         const items = createStoreStructure(offers);
+  //         this._store.setItems(items);
+  //         return offers;
+  //       });
+  //   }
+
+  //   const storeOffers = Object.values(this._store.getItems());
+
+  //   return Promise.resolve(storeOffers);
+  // }
 
   updateEvent(eventItem) {
     if (isOnline()) {
