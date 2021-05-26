@@ -20,7 +20,7 @@ const createFiltersTemplate = (filters, currentFilterType) => {
   </form>`;
 };
 
-export default class FiltersPanel extends AbstractView {
+export default class Filters extends AbstractView {
   constructor(filters, currentFilterType) {
     super();
     this._filters = filters;

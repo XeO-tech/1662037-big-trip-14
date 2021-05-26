@@ -2,12 +2,14 @@ import dayjs from 'dayjs';
 import { sortEventsByStartDateAscending, sortByDateAscending, sortByDateDescending } from '../utils/events.js';
 import AbstractView from './abstract.js';
 
+const MAX_DESTINATIONS = 3;
+
 const createTripRouteTemplate = (events) => {
   const eventsSortedByStartDate = sortEventsByStartDateAscending(events);
 
   const uniqueDestinations = Array.from(new Set (eventsSortedByStartDate.map((element) => element.destination.name)));
 
-  if (uniqueDestinations.length > 3) {
+  if (uniqueDestinations.length > MAX_DESTINATIONS) {
     const finalDestinationsList = [uniqueDestinations[0], ' ... ', uniqueDestinations[uniqueDestinations.length - 1]];
 
     return finalDestinationsList.join(' &mdash; ');

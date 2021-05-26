@@ -1,5 +1,5 @@
 import { render, remove, RenderPosition } from '../utils/render.js';
-import AddAndEditFormView from '../view/form-add-and-edit-event.js';
+import AddAndEditFormView from '../view/add-and-edit-form.js';
 import { UserAction, UpdateType } from '../consts.js';
 import { isOnline } from '../utils/common.js';
 import { toast } from '../utils/toast.js';

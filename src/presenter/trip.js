@@ -2,7 +2,7 @@ import TripInfoView from '../view/trip-info.js';
 import TripCostView from '../view/trip-cost.js';
 import LoadingView from '../view/loading.js';
 import SortingPanelView from '../view/sorting-panel.js';
-import EmptyListPlaceholderView  from '../view/no-events.js';
+import EmptyListPlaceholderView  from '../view/empty-list-placeholder.js';
 import ErrorView from '../view/error.js';
 import EventPresenter, {State as EventPresenterState} from './event.js';
 import NewEventPresenter from './event-new.js';

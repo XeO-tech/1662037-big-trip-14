@@ -3,7 +3,7 @@ import { render, replace, remove, RenderPosition } from '../utils/render.js';
 import { FilterType, UpdateType } from '../consts.js';
 import { filters } from '../utils/filters.js';
 
-export default class Filters {
+export default class FiltersPresenter {
   constructor(filtersModel, eventsModel) {
     this._filtersContainerElement = document.querySelector('.trip-controls__filters');
 
