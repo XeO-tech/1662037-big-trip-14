@@ -33,9 +33,8 @@ export default class Store {
       this._storeKey,
       JSON.stringify(
         Object.assign({}, store, {
-          [DataType.EVENTS.NAME]: Object.assign({}, events, {[key]: value})
-          }
-        ),
+          [DataType.EVENTS.NAME]: Object.assign({}, events, {[key]: value}),
+        }),
       ),
     );
   }
