@@ -282,8 +282,8 @@ export default class AddAndEditForm extends SmartView {
 
     evt.target.setCustomValidity('');
 
-    if (isNaN(price) || !Number.isInteger(price)) {
-      evt.target.setCustomValidity('Please, use integer number value');
+    if (isNaN(price) || !Number.isInteger(price) || price <= 0) {
+      evt.target.setCustomValidity('Please, use a positive integer value');
     }
 
     evt.target.reportValidity();
