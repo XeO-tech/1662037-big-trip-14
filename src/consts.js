@@ -42,5 +42,5 @@ export const DataType = {
   OFFERS: {
     NAME: 'offers',
     ID_KEY: 'type',
-  }
-}
+  },
+};

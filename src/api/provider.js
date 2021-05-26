@@ -14,7 +14,7 @@ const createStoreStructure = (items, dataType) => {
       [current[dataType.ID_KEY]]: current,
     });
   }, {});
-  return {[dataType.NAME]: reducedEvents}
+  return {[dataType.NAME]: reducedEvents};
 };
 
 export default class Provider {
