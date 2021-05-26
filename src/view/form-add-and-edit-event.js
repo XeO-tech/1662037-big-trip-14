@@ -318,6 +318,8 @@ export default class AddAndEditForm extends SmartView {
       this._endDatePicker = null;
     }
 
+    const defaultDate = new Date().toISOString();
+
     const flatpickrBaseSettings = {
       altInput: true,
       altFormat: 'j/m/y H:i',
@@ -332,7 +334,7 @@ export default class AddAndEditForm extends SmartView {
         {},
         flatpickrBaseSettings,
         {
-          defaultDate: this._data.isAddNewEventForm ? new Date().toISOString() : this._data.dateFrom,
+          defaultDate: this._data.isAddNewEventForm ? defaultDate : this._data.dateFrom,
           onChange: this._startDateChangeHandler,
         }));
 
@@ -342,12 +344,19 @@ export default class AddAndEditForm extends SmartView {
         {},
         flatpickrBaseSettings,
         {
-          defaultDate: this._data.isAddNewEventForm ? new Date().toISOString() : this._data.dateTo,
+          defaultDate: this._data.isAddNewEventForm ? defaultDate : this._data.dateTo,
           onChange: this._endDateChangeHandler,
         }));
 
     this._startDatePicker._input.onkeydown = () => false;
     this._endDatePicker._input.onkeydown = () => false;
+
+    if (this._data.isAddNewEventForm) {
+      this.updateData({
+        dateFrom: defaultDate,
+        dateTo: defaultDate,
+      }, false);
+    }
   }
 
   setArrowClickHandler(callback) {
