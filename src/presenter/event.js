@@ -91,7 +91,8 @@ export default class EventPresenter {
 
   _handleDownArrowClick() {
     if (!isOnline()) {
-      toast('You can\'t edit event offline');
+      toast('You can\'t edit event while offline');
+      this._eventView.shake();
       return;
     }
 
@@ -105,7 +106,8 @@ export default class EventPresenter {
 
   _handleFormSubmit(eventItem) {
     if (!isOnline()) {
-      toast('You can\'t save event offline');
+      toast('You can\'t save event while offline');
+      this._eventEditFormView.shake();
       return;
     }
 
@@ -114,7 +116,8 @@ export default class EventPresenter {
 
   _handleDeleteClick() {
     if (!isOnline()) {
-      toast('You can\'t delete event offline');
+      toast('You can\'t delete event while offline');
+      this._eventEditFormView.shake();
       return;
     }
 

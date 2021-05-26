@@ -1,6 +1,8 @@
 import { render, remove, RenderPosition } from '../utils/render.js';
 import AddAndEditFormView from '../view/form-add-and-edit-event.js';
 import { UserAction, UpdateType } from '../consts.js';
+import { isOnline } from '../utils/common.js';
+import { toast } from '../utils/toast.js';
 
 export default class EventNewPresenter {
   constructor(changeEvent) {
@@ -45,6 +47,12 @@ export default class EventNewPresenter {
   }
 
   _handleFormSubmit(eventItem) {
+    if (!isOnline()) {
+      toast('You can\'t save new event while offline');
+      this._eventEditFormView.shake();
+      return;
+    }
+
     this._changeEvent(UserAction.ADD_EVENT, UpdateType.MAJOR, eventItem);
   }
 

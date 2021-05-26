@@ -56,7 +56,7 @@ const handleMenuClick = (target) => {
 const setNewEventButtonClickHandler = () => {
   newEventButtonElement.addEventListener('click', () => {
     if (!isOnline()) {
-      toast('You can\'t create new event offline');
+      toast('You can\'t create new event while offline');
       return;
     }
     tripPresenter.createEvent();
@@ -103,5 +103,6 @@ window.addEventListener('online', () => {
 });
 
 window.addEventListener('offline', () => {
+  toast('Network connection lost');
   document.title += ' [offline]';
 });

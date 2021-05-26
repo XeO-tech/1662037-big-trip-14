@@ -10,6 +10,7 @@ import { remove, render, RenderPosition } from '../utils/render.js';
 import { sortByPrice, sortByTime, sortByStartDate } from '../utils/events.js';
 import { SortType, UserAction, UpdateType, FilterType } from '../consts.js';
 import { filters } from '../utils/filters.js';
+import { toast } from '../utils/toast.js';
 
 export default class TripPresenter {
   constructor(eventsModel, destinationsModel, offersModel, filtersModel, api) {
@@ -162,7 +163,9 @@ export default class TripPresenter {
           .then((response) => {
             this._eventsModel.updateEvent(updateType, response);
           })
-          .catch(() => this._eventPresenters[update.id].setViewState(EventPresenterState.ABORTING));
+          .catch(() => {
+            this._eventPresenters[update.id].setViewState(EventPresenterState.ABORTING);
+          });
         break;
       case UserAction.ADD_EVENT:
         this._newEventPresenter.setSaving();
@@ -171,7 +174,9 @@ export default class TripPresenter {
           .then((response) => {
             this._eventsModel.addEvent(updateType, response);
           })
-          .catch(() => this._newEventPresenter.setAborting());
+          .catch(() => {
+            this._newEventPresenter.setAborting();
+          });
         break;
       case UserAction.DELETE_EVENT:
         this._eventPresenters[update.id].setViewState(EventPresenterState.DELETING);
@@ -180,7 +185,10 @@ export default class TripPresenter {
           .then(() => {
             this._eventsModel.deleteEvent(updateType, update);
           })
-          .catch(() => this._eventPresenters[update.id].setViewState(EventPresenterState.ABORTING));
+          .catch(() => {
+            toast('You can\'t delete event while offline');
+            this._eventPresenters[update.id].setViewState(EventPresenterState.ABORTING);
+          });
         break;
     }
   }
