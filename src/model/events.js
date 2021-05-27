@@ -6,29 +6,13 @@ export default class Events extends Observer {
     this._events = [];
   }
 
-  setEvents(updateType, events) {
-    this._events = [...events];
-    this._notify(updateType);
-  }
-
   getEvents() {
     return this._events;
   }
 
-  updateEvent(updateType, updatedEvent) {
-    const index = this._events.findIndex((eventItem) => eventItem.id === updatedEvent.id);
-
-    if (index === -1) {
-      throw new Error ('Can\'t update the event which is not exist.');
-    }
-
-    this._events = [
-      ...this._events.slice(0, index),
-      updatedEvent,
-      ...this._events.slice(index + 1),
-    ];
-
-    this._notify(updateType, updatedEvent);
+  setEvents(updateType, events) {
+    this._events = [...events];
+    this._notify(updateType);
   }
 
   addEvent(updateType, newEvent) {
@@ -49,6 +33,22 @@ export default class Events extends Observer {
     ];
 
     this._notify(updateType);
+  }
+
+  updateEvent(updateType, updatedEvent) {
+    const index = this._events.findIndex((eventItem) => eventItem.id === updatedEvent.id);
+
+    if (index === -1) {
+      throw new Error ('Can\'t update the event which is not exist.');
+    }
+
+    this._events = [
+      ...this._events.slice(0, index),
+      updatedEvent,
+      ...this._events.slice(index + 1),
+    ];
+
+    this._notify(updateType, updatedEvent);
   }
 
   static adaptToClient(eventInfo) {

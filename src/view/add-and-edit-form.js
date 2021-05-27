@@ -167,10 +167,6 @@ export default class AddAndEditForm extends SmartView {
     this._setDatePicker();
   }
 
-  getTemplate() {
-    return createAddAndEditFormTemplate(this._data, this._offersFullList);
-  }
-
   _getSelectedOffers() {
     const selectedOffersForType = [];
 
@@ -189,122 +185,102 @@ export default class AddAndEditForm extends SmartView {
     return selectedOffersForType;
   }
 
-  _formSubmitHandler(evt) {
-    evt.preventDefault();
+  getTemplate() {
+    return createAddAndEditFormTemplate(this._data, this._offersFullList);
+  }
+  parseEventInfoToData(eventInfo) {
+    const  isAddNewEventForm = Object.keys(eventInfo).length === 0;
 
-    this.updateData({
-      offers: this._getSelectedOffers(),
-    }, false);
+    if (isAddNewEventForm) {
+      return {
+        type: 'flight',
+        offers: [],
+        destination: null,
+        basePrice: '',
+        dateFrom: null,
+        dateTo: null,
+        avaliableDestinations: this._destinationNames,
+        isAddNewEventForm,
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      };
+    }
 
-    this._callback.submit(this.parseDataToEventInfo(this._data));
+    return Object.assign(
+      {},
+      eventInfo,
+      {
+        avaliableDestinations: this._destinationNames,
+        isAddNewEventForm,
+      });
   }
 
-  _deleteClickHandler(evt) {
-    evt.preventDefault();
+  parseDataToEventInfo(data) {
+    data = Object.assign({}, data);
 
-    this._callback.delete(this.parseDataToEventInfo(this._data));
+    if (data.isAddNewEventForm) {
+      Object.assign(data, {isFavorite: false});
+    }
+
+    delete data.isAddNewEventForm;
+    delete data.avaliableDestinations;
+    delete data.isDisabled;
+    delete data.isSaving;
+    delete data.isDeleting;
+
+    return data;
   }
 
-  _cancelClickHandler(evt) {
-    evt.preventDefault();
+  removeElement() {
+    super.removeElement();
 
-    this._callback.cancel(this.parseDataToEventInfo(this._data));
+    if (this._startDatePicker) {
+      this._startDatePicker.destroy();
+      this._startDatePicker = null;
+    }
+
+    if (this._endDatePicker) {
+      this._endDatePicker.destroy();
+      this._endDatePicker = null;
+    }
   }
 
-  _arrowClickHandler() {
-    this._callback.arrowClick();
+  reset(eventInfo) {
+    this.updateData(this.parseEventInfoToData(eventInfo), true);
   }
 
-  _typeChangeHandler(evt) {
-    evt.preventDefault();
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this._setDatePicker();
+    this.setSubmitHandler(this._callback.submit);
+    this.setArrowClickHandler(this._callback.arrowClick);
 
-    this.updateData({
-      type: evt.target.value,
-      offers: [],
-    }, true);
+    this._data.isAddNewEventForm ? this.setCancelClickHandler(this._callback.cancel) : this.setDeleteClickHandler(this._callback.delete);
   }
 
-  _destinationChangeHandler(evt) {
-    evt.preventDefault();
-
-    const newDestinationData = this._destinationsFullList.find((element) => element.name === evt.target.value);
-
-    if (newDestinationData === undefined) {
-      evt.target.setCustomValidity('Please use destinations from the list');
-      evt.target.reportValidity();
+  setArrowClickHandler(callback) {
+    if (this.getElement().querySelector('.event__rollup-btn') === null) {
       return;
     }
 
-    evt.target.setCustomValidity('');
-    evt.target.reportValidity();
-
-    this.updateData({destination: newDestinationData, offers: this._getSelectedOffers()}, true);
+    this._callback.arrowClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._arrowClickHandler);
   }
 
-  _startDateChangeHandler() {
-    const selectedDate = arguments[0][0];
-    const dateInput = arguments[2].altInput;
-
-    if (this._data.dateTo !== undefined
-      && dayjs(selectedDate).isAfter(dayjs(this._data.dateTo)))
-    {
-      dateInput.setCustomValidity('Start date should be prior to or the same as end date');
-      dateInput.reportValidity();
-      return;
-    }
-
-    dateInput.setCustomValidity('');
-    dateInput.reportValidity();
-
-    this.updateData({dateFrom: selectedDate}, false);
+  setCancelClickHandler(callback) {
+    this._callback.cancel = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._cancelClickHandler);
   }
 
-  _endDateChangeHandler() {
-    const selectedDate = arguments[0][0];
-    const dateInput = arguments[2].altInput;
-
-    if (this._data.dateFrom !== undefined
-      && dayjs(this._data.dateFrom).isAfter(dayjs(selectedDate)))
-    {
-      dateInput.setCustomValidity('End date should be after or the same as start date');
-      dateInput.reportValidity();
-      return;
-    }
-
-    dateInput.setCustomValidity('');
-    dateInput.reportValidity();
-
-    this.updateData({dateTo: selectedDate}, false);
+  setDeleteClickHandler(callback) {
+    this._callback.delete = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._deleteClickHandler);
   }
 
-  _priceChangeHandler(evt) {
-    const price = Number(evt.target.value);
-
-    evt.target.setCustomValidity('');
-
-    if (isNaN(price) || !Number.isInteger(price) || price <= 0) {
-      evt.target.setCustomValidity('Please, use a positive integer value');
-    }
-
-    evt.target.reportValidity();
-
-    if (evt.target.validity.valid === true) {
-      this.updateData({basePrice: parseInt(evt.target.value)}, false);
-    }
-  }
-
-  _setInnerHandlers() {
-    this.getElement()
-      .querySelector('.event__type-group')
-      .addEventListener('change', this._typeChangeHandler);
-
-    this.getElement()
-      .querySelector('.event__input--destination')
-      .addEventListener('change', this._destinationChangeHandler);
-
-    this.getElement()
-      .querySelector('.event__input--price')
-      .addEventListener('change', this._priceChangeHandler);
+  setSubmitHandler(callback) {
+    this._callback.submit = callback;
+    this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
   }
 
   _setDatePicker() {
@@ -359,99 +335,122 @@ export default class AddAndEditForm extends SmartView {
     }
   }
 
-  setArrowClickHandler(callback) {
-    if (this.getElement().querySelector('.event__rollup-btn') === null) {
+  _setInnerHandlers() {
+    this.getElement()
+      .querySelector('.event__type-group')
+      .addEventListener('change', this._typeChangeHandler);
+
+    this.getElement()
+      .querySelector('.event__input--destination')
+      .addEventListener('change', this._destinationChangeHandler);
+
+    this.getElement()
+      .querySelector('.event__input--price')
+      .addEventListener('change', this._priceChangeHandler);
+  }
+
+  _arrowClickHandler() {
+    this._callback.arrowClick();
+  }
+
+  _cancelClickHandler(evt) {
+    evt.preventDefault();
+
+    this._callback.cancel(this.parseDataToEventInfo(this._data));
+  }
+
+  _deleteClickHandler(evt) {
+    evt.preventDefault();
+
+    this._callback.delete(this.parseDataToEventInfo(this._data));
+  }
+
+  _destinationChangeHandler(evt) {
+    evt.preventDefault();
+
+    const newDestinationData = this._destinationsFullList.find((element) => element.name === evt.target.value);
+
+    if (newDestinationData === undefined) {
+      evt.target.setCustomValidity('Please use destinations from the list');
+      evt.target.reportValidity();
       return;
     }
 
-    this._callback.arrowClick = callback;
-    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._arrowClickHandler);
+    evt.target.setCustomValidity('');
+    evt.target.reportValidity();
+
+    this.updateData({destination: newDestinationData, offers: this._getSelectedOffers()}, true);
   }
 
-  setSubmitHandler(callback) {
-    this._callback.submit = callback;
-    this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
-  }
+  _endDateChangeHandler() {
+    const selectedDate = arguments[0][0];
+    const dateInput = arguments[2].altInput;
 
-  setDeleteClickHandler(callback) {
-    this._callback.delete = callback;
-    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._deleteClickHandler);
-  }
-
-  setCancelClickHandler(callback) {
-    this._callback.cancel = callback;
-    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._cancelClickHandler);
-  }
-
-  restoreHandlers() {
-    this._setInnerHandlers();
-    this._setDatePicker();
-    this.setSubmitHandler(this._callback.submit);
-    this.setArrowClickHandler(this._callback.arrowClick);
-
-    this._data.isAddNewEventForm ? this.setCancelClickHandler(this._callback.cancel) : this.setDeleteClickHandler(this._callback.delete);
-  }
-
-  reset(eventInfo) {
-    this.updateData(this.parseEventInfoToData(eventInfo), true);
-  }
-
-  removeElement() {
-    super.removeElement();
-
-    if (this._startDatePicker) {
-      this._startDatePicker.destroy();
-      this._startDatePicker = null;
+    if (this._data.dateFrom !== undefined
+      && dayjs(this._data.dateFrom).isAfter(dayjs(selectedDate)))
+    {
+      dateInput.setCustomValidity('End date should be after or the same as start date');
+      dateInput.reportValidity();
+      return;
     }
 
-    if (this._endDatePicker) {
-      this._endDatePicker.destroy();
-      this._endDatePicker = null;
+    dateInput.setCustomValidity('');
+    dateInput.reportValidity();
+
+    this.updateData({dateTo: selectedDate}, false);
+  }
+
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+
+    this.updateData({
+      offers: this._getSelectedOffers(),
+    }, false);
+
+    this._callback.submit(this.parseDataToEventInfo(this._data));
+  }
+
+  _priceChangeHandler(evt) {
+    const price = Number(evt.target.value);
+
+    evt.target.setCustomValidity('');
+
+    if (isNaN(price) || !Number.isInteger(price) || price <= 0) {
+      evt.target.setCustomValidity('Please, use a positive integer value');
+    }
+
+    evt.target.reportValidity();
+
+    if (evt.target.validity.valid === true) {
+      this.updateData({basePrice: parseInt(evt.target.value)}, false);
     }
   }
 
-  parseEventInfoToData(eventInfo) {
-    const  isAddNewEventForm = Object.keys(eventInfo).length === 0;
+  _startDateChangeHandler() {
+    const selectedDate = arguments[0][0];
+    const dateInput = arguments[2].altInput;
 
-    if (isAddNewEventForm) {
-      return {
-        type: 'flight',
-        offers: [],
-        destination: null,
-        basePrice: '',
-        dateFrom: null,
-        dateTo: null,
-        avaliableDestinations: this._destinationNames,
-        isAddNewEventForm,
-        isDisabled: false,
-        isSaving: false,
-        isDeleting: false,
-      };
+    if (this._data.dateTo !== undefined
+      && dayjs(selectedDate).isAfter(dayjs(this._data.dateTo)))
+    {
+      dateInput.setCustomValidity('Start date should be prior to or the same as end date');
+      dateInput.reportValidity();
+      return;
     }
 
-    return Object.assign(
-      {},
-      eventInfo,
-      {
-        avaliableDestinations: this._destinationNames,
-        isAddNewEventForm,
-      });
+    dateInput.setCustomValidity('');
+    dateInput.reportValidity();
+
+    this.updateData({dateFrom: selectedDate}, false);
   }
 
-  parseDataToEventInfo(data) {
-    data = Object.assign({}, data);
+  _typeChangeHandler(evt) {
+    evt.preventDefault();
 
-    if (data.isAddNewEventForm) {
-      Object.assign(data, {isFavorite: false});
-    }
-
-    delete data.isAddNewEventForm;
-    delete data.avaliableDestinations;
-    delete data.isDisabled;
-    delete data.isSaving;
-    delete data.isDeleting;
-
-    return data;
+    this.updateData({
+      type: evt.target.value,
+      offers: [],
+    }, true);
   }
 }
 

@@ -34,17 +34,6 @@ export default class Api {
       .then(Api.toJSON);
   }
 
-  updateEvent(eventInfo) {
-    return this._load({
-      url: `points/${eventInfo.id}`,
-      method: Method.PUT,
-      body: JSON.stringify(EventsModel.adaptToServer(eventInfo)),
-      headers: new Headers({'Content-Type': 'application/json'}),
-    })
-      .then(Api.toJSON)
-      .then(EventsModel.adaptToClient);
-  }
-
   addEvent(eventInfo) {
     return this._load({
       url: 'points',
@@ -63,14 +52,15 @@ export default class Api {
     });
   }
 
-  sync(data) {
+  updateEvent(eventInfo) {
     return this._load({
-      url: 'points/sync',
-      method: Method.POST,
-      body: JSON.stringify(data),
+      url: `points/${eventInfo.id}`,
+      method: Method.PUT,
+      body: JSON.stringify(EventsModel.adaptToServer(eventInfo)),
       headers: new Headers({'Content-Type': 'application/json'}),
     })
-      .then(Api.toJSON);
+      .then(Api.toJSON)
+      .then(EventsModel.adaptToClient);
   }
 
   _load({
@@ -91,6 +81,16 @@ export default class Api {
       });
   }
 
+  sync(data) {
+    return this._load({
+      url: 'points/sync',
+      method: Method.POST,
+      body: JSON.stringify(data),
+      headers: new Headers({'Content-Type': 'application/json'}),
+    })
+      .then(Api.toJSON);
+  }
+  
   static checkStatus(response) {
     if (
       response.status < SuccessHTTPStatusRange.MIN ||

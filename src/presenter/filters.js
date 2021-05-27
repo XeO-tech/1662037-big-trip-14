@@ -57,15 +57,15 @@ export default class FiltersPresenter {
     ];
   }
 
-  _handleModelEvent() {
-    this.init();
-  }
-
   _handleFilterTypeChange(filterType) {
     if (this._filtersModel.getFilter() === filterType) {
       return;
     }
 
     this._filtersModel.setFilter(UpdateType.MINOR, filterType);
+  }
+
+  _handleModelEvent() {
+    this.init();
   }
 }

@@ -18,6 +18,11 @@ export default class SiteMenu extends AbstractView {
     return createSiteMenuTemplate();
   }
 
+  setMenuClickHandler(callback) {
+    this._callback.menuClick = callback;
+    this.getElement().addEventListener('click', this._menuClickHandler);
+  }
+
   _menuClickHandler(evt) {
     evt.preventDefault();
 
@@ -31,10 +36,5 @@ export default class SiteMenu extends AbstractView {
     evt.target.classList.add('trip-tabs__btn--active');
 
     this._callback.menuClick(evt.target.innerText);
-  }
-
-  setMenuClickHandler(callback) {
-    this._callback.menuClick = callback;
-    this.getElement().addEventListener('click', this._menuClickHandler);
   }
 }

@@ -69,11 +69,10 @@ export default class EventPresenter {
     remove(this._eventEditFormView);
   }
 
-  resetView() {
-    if (this._mode !== Mode.DEFAULT) {
-      this._eventEditFormView.reset(this._data);
-      this._replaceEditFormWitnEvent();
-    }
+  _replaceEditFormWitnEvent() {
+    replace(this._eventView, this._eventEditFormView);
+    document.removeEventListener('keydown', this._escKeydownHandler);
+    this._mode = Mode.DEFAULT;
   }
 
   _replaceEventWithEditForm() {
@@ -83,10 +82,39 @@ export default class EventPresenter {
     this._mode = Mode.EDITING;
   }
 
-  _replaceEditFormWitnEvent() {
-    replace(this._eventView, this._eventEditFormView);
-    document.removeEventListener('keydown', this._escKeydownHandler);
-    this._mode = Mode.DEFAULT;
+  resetView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._eventEditFormView.reset(this._data);
+      this._replaceEditFormWitnEvent();
+    }
+  }
+
+  setViewState(state) {
+    const resetFormState = () => {
+      this._eventEditFormView.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      }, true);
+    };
+
+    switch(state) {
+      case State.SAVING:
+        this._eventEditFormView.updateData({
+          isDisabled: true,
+          isSaving: true,
+        }, true);
+        break;
+      case State.DELETING:
+        this._eventEditFormView.updateData({
+          isDisabled: true,
+          isDeleting: true,
+        }, true);
+        break;
+      case State.ABORTING:
+        this._eventEditFormView.shake(resetFormState);
+        break;
+    }
   }
 
   _handleDownArrowClick() {
@@ -97,21 +125,6 @@ export default class EventPresenter {
     }
 
     this._replaceEventWithEditForm();
-  }
-
-  _handleUpArrowClick() {
-    this._eventEditFormView.reset(this._data);
-    this._replaceEditFormWitnEvent();
-  }
-
-  _handleFormSubmit(eventItem) {
-    if (!isOnline()) {
-      toast('You can\'t save event while offline');
-      this._eventEditFormView.shake();
-      return;
-    }
-
-    this._changeEvent(UserAction.UPDATE_EVENT, UpdateType.MAJOR, eventItem);
   }
 
   _handleDeleteClick() {
@@ -145,39 +158,26 @@ export default class EventPresenter {
     );
   }
 
+  _handleFormSubmit(eventItem) {
+    if (!isOnline()) {
+      toast('You can\'t save event while offline');
+      this._eventEditFormView.shake();
+      return;
+    }
+
+    this._changeEvent(UserAction.UPDATE_EVENT, UpdateType.MAJOR, eventItem);
+  }
+
+  _handleUpArrowClick() {
+    this._eventEditFormView.reset(this._data);
+    this._replaceEditFormWitnEvent();
+  }
+
   _escKeydownHandler(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
       this._eventEditFormView.reset(this._data);
       this._replaceEditFormWitnEvent();
-    }
-  }
-
-  setViewState(state) {
-    const resetFormState = () => {
-      this._eventEditFormView.updateData({
-        isDisabled: false,
-        isSaving: false,
-        isDeleting: false,
-      }, true);
-    };
-
-    switch(state) {
-      case State.SAVING:
-        this._eventEditFormView.updateData({
-          isDisabled: true,
-          isSaving: true,
-        }, true);
-        break;
-      case State.DELETING:
-        this._eventEditFormView.updateData({
-          isDisabled: true,
-          isDeleting: true,
-        }, true);
-        break;
-      case State.ABORTING:
-        this._eventEditFormView.shake(resetFormState);
-        break;
     }
   }
 }

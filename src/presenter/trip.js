@@ -65,6 +65,42 @@ export default class TripPresenter {
     return filteredEvents.sort(sortByStartDate);
   }
 
+  _clearBoard({resetSortType = false, resetTripInfo = true} = {}) {
+    this._newEventPresenter.destroy();
+    Object
+      .values(this._eventPresenters)
+      .forEach((presenter) => presenter.destroy());
+    this._eventPresenters = {};
+    remove(this._sortingPanelView);
+    remove(this._emptyListPlaceholderView);
+    remove(this._loadingView);
+
+    if (resetTripInfo) {
+      remove(this._tripCostView);
+      remove(this._tripInfoView);
+    }
+
+    if (resetSortType) {
+      this._currentSortType = SortType.DEFAULT;
+    }
+  }
+
+  createEvent() {
+    this._filtersModel.setFilter(UpdateType.MINOR, FilterType.ALL);
+    this._newEventPresenter.init(this._offersFullList, this._destinationsFullList, this._destinationNames);
+  }
+
+  hideElement() {
+    this._eventListContainerElement.classList.add('visually-hidden');
+    this._sortingPanelView.getElement().classList.add('visually-hidden');
+
+    const elementsWithLine = [...document.querySelectorAll('.page-body__container')];
+    elementsWithLine.forEach((element) => {
+      element.classList.add('page-body__container-no-after');
+      element.classList.remove('page-body__container');
+    });
+  }
+
   _renderBoard({resetTripInfo = true} = {}) {
     if (this._isLoading) {
       this._renderLoading();
@@ -93,6 +129,10 @@ export default class TripPresenter {
     }
   }
 
+  _renderEmptyList() {
+    render(this._eventListContainerElement, this._emptyListPlaceholderView, RenderPosition.BEFOREBEGIN);
+  }
+
   _renderEvent(eventItem) {
     const eventPresenter = new EventPresenter(this._handleViewAction, this._handleModeChange);
     eventPresenter.init(eventItem, this._offersFullList, this._destinationsFullList, this._destinationNames);
@@ -103,17 +143,13 @@ export default class TripPresenter {
     this._getEvents().forEach((eventItem) => this._renderEvent(eventItem));
   }
 
-  _renderLoading() {
-    render(this._mainContainerElement, this._loadingView, RenderPosition.AFTERBEGIN);
-  }
-
   renderError() {
     remove(this._loadingView);
     render(this._mainContainerElement, this._errorView, RenderPosition.AFTERBEGIN);
   }
 
-  _renderEmptyList() {
-    render(this._eventListContainerElement, this._emptyListPlaceholderView, RenderPosition.BEFOREBEGIN);
+  _renderLoading() {
+    render(this._mainContainerElement, this._loadingView, RenderPosition.AFTERBEGIN);
   }
 
   _renderSort() {
@@ -127,16 +163,6 @@ export default class TripPresenter {
     render(this._mainContainerElement, this._sortingPanelView, RenderPosition.AFTERBEGIN);
   }
 
-  _renderTripInfo() {
-    if (this._tripInfoView !== null) {
-      this._tripInfoView = null;
-    }
-
-    this._tripInfoView = new TripInfoView(this._eventsModel.getEvents());
-
-    render(this._tripInfoContainerElement, this._tripInfoView, RenderPosition.AFTERBEGIN);
-  }
-
   _renderTripCost() {
     if (this._tripCostView !== null) {
       this._tripCostView = null;
@@ -147,11 +173,64 @@ export default class TripPresenter {
     render(this._tripInfoContainerElement, this._tripCostView, RenderPosition.BEFOREEND);
   }
 
+  _renderTripInfo() {
+    if (this._tripInfoView !== null) {
+      this._tripInfoView = null;
+    }
+
+    this._tripInfoView = new TripInfoView(this._eventsModel.getEvents());
+
+    render(this._tripInfoContainerElement, this._tripInfoView, RenderPosition.AFTERBEGIN);
+  }
+
+  showElement() {
+    this._eventListContainerElement.classList.remove('visually-hidden');
+    this._sortingPanelView.getElement().classList.remove('visually-hidden');
+
+    const elementsWithoutLine = [...document.querySelectorAll('.page-body__container-no-after')];
+    elementsWithoutLine.forEach((element) => {
+      element.classList.add('page-body__container');
+      element.classList.remove('page-body__container-no-after');
+    });
+  }
+
   _handleModeChange() {
     this._newEventPresenter.destroy();
     Object
       .values(this._eventPresenters)
       .forEach((presenter) => presenter.resetView());
+  }
+
+  _handleModelEvent(updateType, data) {
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this._eventPresenters[data.id].init(data, this._offersFullList, this._destinationsFullList, this._destinationNames);
+        break;
+      // При смене фильтра или переключении с экрана со списком точек маршрута на экран статистики и обратно сортировка сбрасывается на состояние «Day». Информация о поездке не перерисовывается
+      case UpdateType.MINOR:
+        this._clearBoard({resetSortType: true, resetTripInfo: false});
+        this._renderBoard({resetTripInfo: false});
+        break;
+      // При добавлении, изменении, удалении события перерисовываем всю доску и информацию о поездке
+      case UpdateType.MAJOR:
+        this._clearBoard();
+        this._renderBoard();
+        break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingView);
+        this._renderBoard();
+        break;
+    }
+  }
+
+  _handleSortTypeChange(sortType) {
+    if (this._currentSortType === sortType) {
+      return;
+    }
+    this._currentSortType = sortType;
+    this._clearBoard({resetTripInfo: false});
+    this._renderBoard({resetTripInfo: false});
   }
 
   _handleViewAction(userAction, updateType, update) {
@@ -191,84 +270,5 @@ export default class TripPresenter {
           });
         break;
     }
-  }
-
-  _handleModelEvent(updateType, data) {
-    switch (updateType) {
-      case UpdateType.PATCH:
-        this._eventPresenters[data.id].init(data, this._offersFullList, this._destinationsFullList, this._destinationNames);
-        break;
-      // При смене фильтра или переключении с экрана со списком точек маршрута на экран статистики и обратно сортировка сбрасывается на состояние «Day». Информация о поездке не перерисовывается
-      case UpdateType.MINOR:
-        this._clearBoard({resetSortType: true, resetTripInfo: false});
-        this._renderBoard({resetTripInfo: false});
-        break;
-      // При добавлении, изменении, удалении события перерисовываем всю доску и информацию о поездке
-      case UpdateType.MAJOR:
-        this._clearBoard();
-        this._renderBoard();
-        break;
-      case UpdateType.INIT:
-        this._isLoading = false;
-        remove(this._loadingView);
-        this._renderBoard();
-        break;
-    }
-  }
-
-  _handleSortTypeChange(sortType) {
-    if (this._currentSortType === sortType) {
-      return;
-    }
-    this._currentSortType = sortType;
-    this._clearBoard({resetTripInfo: false});
-    this._renderBoard({resetTripInfo: false});
-  }
-
-  _clearBoard({resetSortType = false, resetTripInfo = true} = {}) {
-    this._newEventPresenter.destroy();
-    Object
-      .values(this._eventPresenters)
-      .forEach((presenter) => presenter.destroy());
-    this._eventPresenters = {};
-    remove(this._sortingPanelView);
-    remove(this._emptyListPlaceholderView);
-    remove(this._loadingView);
-
-    if (resetTripInfo) {
-      remove(this._tripCostView);
-      remove(this._tripInfoView);
-    }
-
-    if (resetSortType) {
-      this._currentSortType = SortType.DEFAULT;
-    }
-  }
-
-  createEvent() {
-    this._filtersModel.setFilter(UpdateType.MINOR, FilterType.ALL);
-    this._newEventPresenter.init(this._offersFullList, this._destinationsFullList, this._destinationNames);
-  }
-
-  hideElement() {
-    this._eventListContainerElement.classList.add('visually-hidden');
-    this._sortingPanelView.getElement().classList.add('visually-hidden');
-
-    const elementsWithLine = [...document.querySelectorAll('.page-body__container')];
-    elementsWithLine.forEach((element) => {
-      element.classList.add('page-body__container-no-after');
-      element.classList.remove('page-body__container');
-    });
-  }
-
-  showElement() {
-    this._eventListContainerElement.classList.remove('visually-hidden');
-    this._sortingPanelView.getElement().classList.remove('visually-hidden');
-
-    const elementsWithoutLine = [...document.querySelectorAll('.page-body__container-no-after')];
-    elementsWithoutLine.forEach((element) => {
-      element.classList.add('page-body__container');
-      element.classList.remove('page-body__container-no-after');
-    });
   }
 }

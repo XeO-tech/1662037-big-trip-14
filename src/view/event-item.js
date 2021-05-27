@@ -90,14 +90,6 @@ export default class EventItem extends AbstractView {
     this._element = null;
   }
 
-  _arrowClickHandler() {
-    this._callback.arrowClick();
-  }
-
-  _favoriteClickHandler() {
-    this._callback.favoriteClick();
-  }
-
   setArrowClickHandler(callback) {
     this._callback.arrowClick = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._arrowClickHandler);
@@ -106,5 +98,13 @@ export default class EventItem extends AbstractView {
   setFavoriteClickHandler(callback) {
     this._callback.favoriteClick = callback;
     this.getElement().querySelector('.event__favorite-btn').addEventListener('click', this._favoriteClickHandler);
+  }
+
+  _arrowClickHandler() {
+    this._callback.arrowClick();
+  }
+
+  _favoriteClickHandler() {
+    this._callback.favoriteClick();
   }
 }

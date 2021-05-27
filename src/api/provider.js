@@ -70,20 +70,6 @@ export default class Provider {
     return Promise.resolve(storeOffers);
   }
 
-  updateEvent(eventItem) {
-    if (isOnline()) {
-      return this._api.updateEvent(eventItem)
-        .then((updatedEvent) => {
-          this._store.setEventItem(updatedEvent.id, EventsModel.adaptToServer(updatedEvent));
-          return updatedEvent;
-        });
-    }
-
-    this._store.setEventItem(eventItem.id, EventsModel.adaptToServer(Object.assign({}, eventItem)));
-
-    return Promise.resolve(eventItem);
-  }
-
   addEvent(eventItem) {
     if (isOnline()) {
       return this._api.addEvent(eventItem)
@@ -105,6 +91,20 @@ export default class Provider {
     return Promise.reject(new Error('Delete task failed'));
   }
 
+  updateEvent(eventItem) {
+    if (isOnline()) {
+      return this._api.updateEvent(eventItem)
+        .then((updatedEvent) => {
+          this._store.setEventItem(updatedEvent.id, EventsModel.adaptToServer(updatedEvent));
+          return updatedEvent;
+        });
+    }
+
+    this._store.setEventItem(eventItem.id, EventsModel.adaptToServer(Object.assign({}, eventItem)));
+
+    return Promise.resolve(eventItem);
+  }
+  
   sync() {
     if (isOnline()) {
       const storeEvents = Object.values(this._store.getItems()[DataType.EVENTS.NAME]);

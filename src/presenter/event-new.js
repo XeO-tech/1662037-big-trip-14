@@ -46,34 +46,6 @@ export default class EventNewPresenter {
     document.removeEventListener('keydown', this._escKeydownHandler);
   }
 
-  _handleFormSubmit(eventItem) {
-    if (!isOnline()) {
-      toast('You can\'t save new event while offline');
-      this._eventEditFormView.shake();
-      return;
-    }
-
-    this._changeEvent(UserAction.ADD_EVENT, UpdateType.MAJOR, eventItem);
-  }
-
-  _handleCancelClick() {
-    this.destroy();
-  }
-
-  _escKeydownHandler(evt) {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
-      evt.preventDefault();
-      this.destroy();
-    }
-  }
-
-  setSaving() {
-    this._eventEditFormView.updateData({
-      isDisabled: true,
-      isSaving: true,
-    }, true);
-  }
-
   setAborting() {
     const resetFormState = () => {
       this._eventEditFormView.updateData({
@@ -84,5 +56,33 @@ export default class EventNewPresenter {
     };
 
     this._eventEditFormView.shake(resetFormState);
+  }
+
+  setSaving() {
+    this._eventEditFormView.updateData({
+      isDisabled: true,
+      isSaving: true,
+    }, true);
+  }
+
+  _handleCancelClick() {
+    this.destroy();
+  }
+
+  _handleFormSubmit(eventItem) {
+    if (!isOnline()) {
+      toast('You can\'t save new event while offline');
+      this._eventEditFormView.shake();
+      return;
+    }
+
+    this._changeEvent(UserAction.ADD_EVENT, UpdateType.MAJOR, eventItem);
+  }
+
+  _escKeydownHandler(evt) {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      this.destroy();
+    }
   }
 }
