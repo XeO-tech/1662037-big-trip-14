@@ -104,7 +104,7 @@ export default class Provider {
 
     return Promise.resolve(eventItem);
   }
-  
+
   sync() {
     if (isOnline()) {
       const storeEvents = Object.values(this._store.getItems()[DataType.EVENTS.NAME]);

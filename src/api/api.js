@@ -90,7 +90,7 @@ export default class Api {
     })
       .then(Api.toJSON);
   }
-  
+
   static checkStatus(response) {
     if (
       response.status < SuccessHTTPStatusRange.MIN ||
